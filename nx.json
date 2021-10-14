@@ -1,0 +1,38 @@
+{
+  "npmScope": "xevlabs-ng-utils",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {
+    "xevlabs-ng-utils-demo": {
+      "tags": []
+    },
+    "xevlabs-ng-utils-demo-e2e": {
+      "tags": [],
+      "implicitDependencies": ["xevlabs-ng-utils-demo"]
+    }
+  }
+}

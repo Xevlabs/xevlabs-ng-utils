@@ -33,6 +33,9 @@
     "xevlabs-ng-utils-demo-e2e": {
       "tags": [],
       "implicitDependencies": ["xevlabs-ng-utils-demo"]
+    },
+    "xevlabs-strapi-error-handling": {
+      "tags": []
     }
   }
 }

@@ -120,6 +120,31 @@
           }
         }
       }
+    },
+    "xevlabs-strapi-error-handling": {
+      "projectType": "library",
+      "root": "libs/xevlabs-strapi-error-handling",
+      "sourceRoot": "libs/xevlabs-strapi-error-handling/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-strapi-error-handling"],
+          "options": {
+            "jestConfig": "libs/xevlabs-strapi-error-handling/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-strapi-error-handling/src/**/*.ts",
+              "libs/xevlabs-strapi-error-handling/src/**/*.html"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

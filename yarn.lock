@@ -1643,6 +1643,20 @@
     merge-source-map "^1.1.0"
     schema-utils "^2.7.0"
 
+"@ngneat/hot-toast@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@ngneat/hot-toast/-/hot-toast-3.4.1.tgz#636a40708b624f6f6e790657fee9611798289b39"
+  integrity sha512-r7siXPOrqzWY2F8bL2nHyDkIY2w0q9/QpZHsWzZhYWlbunmA4eocJIxKzNzqsXFbF9cI8SEACjqSp19bX5ZHvw==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngneat/overview@^2.0.2":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@ngneat/overview/-/overview-2.0.4.tgz#8372fa4979e71bd33cd8707e59b5a25b48a9019f"
+  integrity sha512-8yD07AOqT431St8OYVklcp9G0qSXNSoPcytrHPNKPv2AUJNJctjRWZNHPLntKh59MiBxYt97SnRJxvuuh/yNHQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngneat/transloco-utils@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@ngneat/transloco-utils/-/transloco-utils-3.0.0.tgz#4265a345634489ed423b97f36e5ea482e8a98034"

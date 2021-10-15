@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { TranslocoService } from '@ngneat/transloco';
-import { SnackBarTypeEnum } from '../../enums';
+import { SnackBarTypeEnum } from '../enums';
 
 @Injectable({
   providedIn: 'root'

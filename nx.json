@@ -34,6 +34,9 @@
       "tags": [],
       "implicitDependencies": ["xevlabs-ng-utils-demo"]
     },
+    "xevlabs-snackbar": {
+      "tags": []
+    },
     "xevlabs-strapi-error-handling": {
       "tags": []
     }

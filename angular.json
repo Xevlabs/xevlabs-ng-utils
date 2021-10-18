@@ -121,6 +121,31 @@
         }
       }
     },
+    "xevlabs-snackbar": {
+      "projectType": "library",
+      "root": "libs/xevlabs-snackbar",
+      "sourceRoot": "libs/xevlabs-snackbar/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-snackbar"],
+          "options": {
+            "jestConfig": "libs/xevlabs-snackbar/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-snackbar/src/**/*.ts",
+              "libs/xevlabs-snackbar/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "xevlabs-strapi-error-handling": {
       "projectType": "library",
       "root": "libs/xevlabs-strapi-error-handling",

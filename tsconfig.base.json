@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@xevlabs-ng-utils/xevlabs-snackbar": [
+        "libs/xevlabs-snackbar/src/index.ts"
+      ],
       "@xevlabs-ng-utils/xevlabs-strapi-error-handling": [
         "libs/xevlabs-strapi-error-handling/src/index.ts"
       ]

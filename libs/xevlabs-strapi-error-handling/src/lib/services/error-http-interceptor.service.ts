@@ -20,7 +20,7 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
             map(result => result),
             catchError((error: any) => {
                 if (error instanceof HttpErrorResponse) {
-                    return this.handleError(error.error);
+                    return this.handleError(error);
                 } else {
                     return throwError(error);
                 }

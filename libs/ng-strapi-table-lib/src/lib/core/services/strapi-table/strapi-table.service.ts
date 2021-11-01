@@ -1,13 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FilterModel } from '../../../models/filter.model';
+import { TableLibOptionsModel } from '../../../models/table-lib-options.model';
 
 @Injectable({
   providedIn: null
 })
 export class StrapiTableService {
-  constructor(private http: HttpClient) {
+  private baseUrl: string;
+
+  constructor(private http: HttpClient,
+              @Inject('StrapiTableLibOptions') private readonly options: TableLibOptionsModel,
+  ) {
+    if (!options || !options.baseUrl) {
+      throw new Error('Error: No base url provided. Provide one by using the forRoot method of the lib')
+    }
+    this.baseUrl = options.baseUrl
   }
 
   count(collectionName: string, filters: FilterModel[]) {
@@ -15,7 +24,7 @@ export class StrapiTableService {
     filters.forEach(filter => {
       params = params.set(`${filter.attribute}_${filter.type}`, filter.value.toString());
     });
-    return this.http.get<number>(`http://localhost:1337/${collectionName}/count`, { params });
+    return this.http.get<number>(`${this.baseUrl}/${collectionName}/count`, { params });
   }
 
   find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
@@ -27,7 +36,7 @@ export class StrapiTableService {
     filters.forEach(filter => {
       params = params.set(`${filter.attribute}_${filter.type}`, filter.value.toString());
     });
-    return this.http.get<T[]>(`http://localhost:1337/${collectionName}`, {
+    return this.http.get<T[]>(`${this.baseUrl}/${collectionName}`, {
       params
     });
   }

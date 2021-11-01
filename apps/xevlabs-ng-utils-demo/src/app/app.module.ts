@@ -18,7 +18,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     TranslocoRootModule,
     XevlabsStrapiErrorHandlingModule,
     FlexLayoutModule,
-    NgStrapiTableLibModule,
+    NgStrapiTableLibModule.forRoot({
+      baseUrl: 'http://localhost:1337'
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],

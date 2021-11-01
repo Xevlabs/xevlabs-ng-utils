@@ -6,6 +6,8 @@ import { HotToastModule } from '@ngneat/hot-toast';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslocoRootModule } from './transloco/transloco-root.module';
 import { XevlabsStrapiErrorHandlingModule } from '@xevlabs-ng-utils/xevlabs-strapi-error-handling';
+import { NgStrapiTableLibModule } from '@xevlabs-ng-utils/ng-strapi-table-lib';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [AppComponent],
@@ -14,7 +16,9 @@ import { XevlabsStrapiErrorHandlingModule } from '@xevlabs-ng-utils/xevlabs-stra
     HotToastModule.forRoot(),
     HttpClientModule,
     TranslocoRootModule,
-    XevlabsStrapiErrorHandlingModule
+    XevlabsStrapiErrorHandlingModule,
+    FlexLayoutModule,
+    NgStrapiTableLibModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

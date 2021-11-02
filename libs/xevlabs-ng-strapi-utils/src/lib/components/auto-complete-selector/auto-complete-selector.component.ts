@@ -1,14 +1,14 @@
 import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RetrieveListService } from '../../core/services/retrieve-list/retrieve-list.service';
+import { ItemListService } from '../../core/services/item-list/item-list.service';
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',
-    styleUrls: ['./auto-complete-selector.component.css'],
+    styleUrls: ['./auto-complete-selector.component.scss'],
 
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -20,7 +20,7 @@ import { RetrieveListService } from '../../core/services/retrieve-list/retrieve-
         useExisting: AutoCompleteSelectorComponent,
         multi: true
     },
-        RetrieveListService
+        ItemListService
     ]
 })
 export class AutoCompleteSelectorComponent implements OnInit {
@@ -34,7 +34,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>;
     @ViewChild('chipList', { static: false }) chipList: any;
 
-    constructor(private formBuilder: FormBuilder, private itemListService: RetrieveListService) {
+    constructor(private formBuilder: FormBuilder, private itemListService: ItemListService) {
         this.autoCompleteForm = this.formBuilder.group({
             item: ['', Validators.required],
             searchQuery: ''
@@ -114,7 +114,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
         return;
     }
 
-    validate({ value }: FormControl) {
+    validate() {
         const isNotValid = (this.chipList && this.chipList.errorState);
         return isNotValid && {
             invalid: true

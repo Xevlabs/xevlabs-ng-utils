@@ -7,11 +7,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   imports: [CommonModule, HotToastModule, TranslocoModule],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: ErrorHttpInterceptorService,
-    multi: true
-  }]
+  providers: []
 
 })
 export class XevlabsStrapiErrorHandlingModule {

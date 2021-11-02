@@ -27,6 +27,7 @@ export class StrapiTableComponent implements AfterViewInit {
 
   public columnTypes = Object.values(ColumnTypesEnum)
   public columnTypesEnum = ColumnTypesEnum;
+
   ngAfterViewInit() {
     if (!this.dataSource) {
       throw new Error('Missing dataSource. Did you pass it to the component ?')

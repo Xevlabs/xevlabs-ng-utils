@@ -1,7 +1,7 @@
 import { StrapiFilterTypesEnum } from './strapi-filter-types.enum';
 
 export interface FilterModel {
-    attribute: string,
+    attribute: any,
     type: StrapiFilterTypesEnum,
     value: string,
 }

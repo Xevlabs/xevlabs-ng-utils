@@ -1,7 +1,6 @@
-<div class="strapi-table-container full-width full-height" fixedLayout="true">
-  <mat-progress-bar mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
-  <mat-table mat-table class="strapi-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
-
+<div class="strapi-table-container full-width full-height" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
+  <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
+  <mat-table fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
     <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
       <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''">{{ column.translationKey | transloco}}</mat-header-cell>
       <mat-cell *matCellDef="let entity">
@@ -33,6 +32,6 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns" ></mat-row>
   </mat-table>
-  <mat-paginator [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
+  <mat-paginator class="full-width" [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
                  [pageSizeOptions]="pageSizeOptions"></mat-paginator>
 </div>

@@ -2,8 +2,9 @@ import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@an
 import { FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ItemListService } from '../../core/services/item-list/item-list.service';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/ng-strapi-table-lib';
+
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
@@ -20,26 +21,31 @@ import { ItemListService } from '../../core/services/item-list/item-list.service
         useExisting: AutoCompleteSelectorComponent,
         multi: true
     },
-        ItemListService
+    StrapiTableService
     ]
 })
 export class AutoCompleteSelectorComponent implements OnInit {
 
     itemList: any[] = [];
-    filteredItemList: Observable<any[]> = new Observable<any[]>();
+    filteredItemList: any[] = [];
+    busy = true;
     @Input() path: any;
+    @Input() collectionName: any;
     @Input() prefix: any;
-    @Input() searchByAttribute = 'Name';
+    @Input() searchByAttribute: any;
     autoCompleteForm: FormGroup;
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>;
     @ViewChild('chipList', { static: false }) chipList: any;
 
-    constructor(private formBuilder: FormBuilder, private itemListService: ItemListService) {
+    constructor(
+        private formBuilder: FormBuilder,
+        private tableService: StrapiTableService
+    ) {
         this.autoCompleteForm = this.formBuilder.group({
             item: ['', Validators.required],
             searchQuery: ''
         });
-            
+
     }
 
     get searchQuery() {
@@ -64,18 +70,23 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.itemListService.retrieveList(this.path).subscribe((items: any) => {
-            this.itemList = items
+        this.tableService.find(this.collectionName, []).subscribe((items: any) => {
+            this.filteredItemList = items
+            this.busy = false
         })
         if (this.searchQuery) {
-            
-            this.filteredItemList = this.searchQuery.valueChanges.pipe(
-                map((searchTerm: string) => {
+            this.searchQuery.valueChanges.pipe(
+                debounceTime(250),
+                switchMap((searchTerm: string) => {
+                    this.busy = true
                     if (typeof searchTerm === 'string') {
                         return this.search(searchTerm);
                     }
                     return [];
-                }));
+                })).subscribe((filteredItemList) => {
+                    this.filteredItemList = filteredItemList
+                    this.busy = false
+                });
         }
         this.autoCompleteForm.statusChanges.subscribe((status: any) => {
             this.chipList.errorState = status === 'INVALID'
@@ -104,13 +115,16 @@ export class AutoCompleteSelectorComponent implements OnInit {
         }
     }
 
-    writeValue(controls?: number): void {
+    writeValue(controls?: any): void {
         if (controls) {
-            this.itemListService.getById(this.path, controls).subscribe((item: any) => {
-                this.item?.setValue(item);
+            this.busy = true
+            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
+            this.tableService.find(this.collectionName, [filter]).subscribe((item: any[]) => {
+                this.item?.setValue(item[0]);
                 this.searchQuery?.setValue('');
                 this.updateInput(this.autoCompleteForm.value);
                 this.searchQuery?.disable();
+                this.busy = false
             })
         }
         return;
@@ -123,10 +137,9 @@ export class AutoCompleteSelectorComponent implements OnInit {
         };
     }
 
-    search(searchQuery: string): any[] {
-        return this.itemList.filter((item: any) => {
-            return (item.name)?.toLowerCase()?.includes(searchQuery ? searchQuery?.toLowerCase() : '');
-        });
+    search(searchQuery: string): Observable<any> {
+        const filter = { attribute: this.searchByAttribute, type: StrapiFilterTypesEnum.CONTAINS, value: searchQuery?.toLowerCase() }
+        return this.tableService.find(this.collectionName, [filter])
     }
 
 }

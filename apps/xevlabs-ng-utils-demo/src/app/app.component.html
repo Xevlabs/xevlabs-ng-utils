@@ -1,4 +1,9 @@
 <main>
+  <div class="auto-complete-container">
+    <p>Autocomplete component test</p>
+    <xevlabs-ng-utils-auto-complete-selector [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'value'" [collectionName]="'translations'">
+    </xevlabs-ng-utils-auto-complete-selector>
+  </div>
   <div class="buttons-container">
     <button (click)="addFilter()"> Add filter </button>
     <button (click)="removeFilter()"> Remove filter </button>

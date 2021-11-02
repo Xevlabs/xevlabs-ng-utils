@@ -3,7 +3,7 @@
       <mat-label>{{ prefix }}</mat-label>
       <mat-chip-list #chipList>
         <mat-chip selected removable color="primary" *ngIf="item!.value?.id" (removed)="remove()" class="capitalize">
-          {{ item!.value.name }}
+          {{ item!.value[searchByAttribute] }}
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <input
@@ -14,9 +14,9 @@
   
       </mat-chip-list>
     </mat-form-field>
-    <mat-autocomplete #autocomplete='matAutocomplete'  (optionSelected)="add($event)">
+    <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)">
       <mat-option *ngFor="let option of itemList" [value]="option">
-        {{ option.name }}
+        {{ option[searchByAttribute] }}
       </mat-option>
     </mat-autocomplete>
   </form>

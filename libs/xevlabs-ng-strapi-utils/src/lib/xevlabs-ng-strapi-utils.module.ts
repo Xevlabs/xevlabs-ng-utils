@@ -17,5 +17,8 @@ import { MaterialModule } from './material/material.module';
     declarations: [
         AutoCompleteSelectorComponent
     ],
+    exports: [
+        AutoCompleteSelectorComponent
+    ]
 })
 export class XevlabsNgStrapiUtilsModule { }

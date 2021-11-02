@@ -29,7 +29,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     filteredItemList: Observable<any[]> = new Observable<any[]>();
     @Input() path: any;
     @Input() prefix: any;
-    @Input() required = false;
+    @Input() searchByAttribute = 'Name';
     autoCompleteForm: FormGroup;
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>;
     @ViewChild('chipList', { static: false }) chipList: any;
@@ -39,9 +39,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
             item: ['', Validators.required],
             searchQuery: ''
         });
-        this.itemListService.retrieveList(this.path).subscribe((items: any) => {
-            this.itemList = items
-        })
+            
     }
 
     get searchQuery() {
@@ -66,7 +64,11 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.itemListService.retrieveList(this.path).subscribe((items: any) => {
+            this.itemList = items
+        })
         if (this.searchQuery) {
+            
             this.filteredItemList = this.searchQuery.valueChanges.pipe(
                 map((searchTerm: string) => {
                     if (typeof searchTerm === 'string') {
@@ -80,8 +82,8 @@ export class AutoCompleteSelectorComponent implements OnInit {
         })
     }
 
-    updateInput(form: { object: any, searchQuery: string } | null) {
-        this.onChange(form?.object.id);
+    updateInput(form: { item: any, searchQuery: string } | null) {
+        this.onChange(form?.item.id);
         this.onTouched();
     }
 
@@ -123,7 +125,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
 
     search(searchQuery: string): any[] {
         return this.itemList.filter((item: any) => {
-            return (item.name).toLowerCase().includes(searchQuery ? searchQuery.toLowerCase() : '');
+            return (item.name)?.toLowerCase()?.includes(searchQuery ? searchQuery?.toLowerCase() : '');
         });
     }
 

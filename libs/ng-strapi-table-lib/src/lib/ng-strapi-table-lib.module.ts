@@ -12,7 +12,6 @@ import { TableLibOptionsModel } from './models/table-lib-options.model';
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule,
     MaterialModule,
     TranslocoModule,
     FlexLayoutModule

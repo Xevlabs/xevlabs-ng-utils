@@ -1,4 +1,4 @@
-<div class="strapi-table-container full-width full-height">
+<div class="strapi-table-container full-width full-height" fixedLayout="true">
   <mat-progress-bar mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
   <mat-table mat-table class="strapi-table mat-elevation-z8" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
 
@@ -6,12 +6,12 @@
       <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''">{{ column.translationKey | transloco}}</mat-header-cell>
       <mat-cell *matCellDef="let entity">
         <ng-container [ngSwitch]="column.type">
-          <ng-container *ngSwitchCase="columnTypesEnum.DATE">
+          <span class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.DATE">
             {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : entity[column.key]}}
-          </ng-container>
-          <ng-container *ngSwitchDefault>
+          </span>
+          <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault>
             {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
-          </ng-container>
+          </span>
         </ng-container>
       </mat-cell>
     </ng-container>

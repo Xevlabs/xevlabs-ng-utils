@@ -1,0 +1,8 @@
+<div class="auto-complete-wrapper" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
+    <p>{{"TEST.AUTO_COMPLETE_TEST" | transloco: { value: path } }}</p>
+    <form [formGroup]="autoCompleteForm">
+        <xevlabs-ng-utils-auto-complete-selector [path]="path" [searchByAttribute]="'Name'" [prefix]="'Test'" formControlName="selectedItemId">
+        </xevlabs-ng-utils-auto-complete-selector>
+        <p>{{selectedItemId?.value}}</p>
+    </form>
+</div>

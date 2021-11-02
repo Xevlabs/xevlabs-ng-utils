@@ -1,1 +1,9 @@
-{}
+{
+  "TEST_NAV": {
+    "TITLE_DESC": "This screen is mean to redirect the user to test the various components of this library",
+    "GOTO_AUTO_COMPLETE": "Test auto-complete component"
+  },
+  "TEST": {
+    "AUTO_COMPLETE_TEST": "This is meant to test the autocomplete component. It is linked to the database by the following path variable : {{value}}"
+  }
+}

@@ -21,7 +21,7 @@ import { StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/ng-
         useExisting: AutoCompleteSelectorComponent,
         multi: true
     },
-    StrapiTableService
+        StrapiTableService
     ]
 })
 export class AutoCompleteSelectorComponent implements OnInit {
@@ -78,8 +78,8 @@ export class AutoCompleteSelectorComponent implements OnInit {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string) => {
-                    this.busy = true
                     if (typeof searchTerm === 'string') {
+                        this.busy = true
                         return this.search(searchTerm);
                     }
                     return [];

@@ -1,0 +1,1 @@
+export const autoCompleteLinkPath = 'http://localhost:1337/test-collections';

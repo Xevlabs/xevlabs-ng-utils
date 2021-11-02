@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { autoCompleteLinkPath } from '../core/test-variables';
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-wrapper',
@@ -7,7 +8,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
     styleUrls: ['./auto-complete-wrapper.component.scss']
 })
 export class AutoCompleteWrapperComponent {
-    path = 'http://localhost:1337/test-collections'
+    path = autoCompleteLinkPath;
     autoCompleteForm: FormGroup;
 
     constructor(private formBuilder: FormBuilder) {

@@ -1,4 +1,5 @@
 export enum ColumnTypesEnum {
   STRING = 'STRING',
-  DATE = 'DATE'
+  DATE = 'DATE',
+  TEMPLATE = 'TEMPLATE'
 }

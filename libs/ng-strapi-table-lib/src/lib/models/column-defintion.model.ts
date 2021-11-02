@@ -1,4 +1,5 @@
 import { ColumnTypesEnum } from './columnTypesEnum';
+import { TemplateRef } from '@angular/core'
 
 export interface ColumnDefinitionModel {
   key: string,
@@ -6,6 +7,7 @@ export interface ColumnDefinitionModel {
   sortable?: boolean,
   hidden?: boolean,
   displayedProp?: string,
-  type: ColumnTypesEnum
+  type: ColumnTypesEnum,
+  template?: TemplateRef<any>
 }
 

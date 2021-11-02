@@ -9,6 +9,11 @@
           <span class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.DATE">
             {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : entity[column.key]}}
           </span>
+          <ng-container class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.TEMPLATE">
+            <ng-container *ngIf="column.template">
+              <ng-container *ngTemplateOutlet="column.template; context:{entity: entity}"></ng-container>
+            </ng-container>
+          </ng-container>
           <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault>
             {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
           </span>

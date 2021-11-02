@@ -15,11 +15,17 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@xevlabs-ng-utils/ng-strapi-table-lib": [
+        "libs/ng-strapi-table-lib/src/index.ts"
+      ],
       "@xevlabs-ng-utils/xevlabs-snackbar": [
         "libs/xevlabs-snackbar/src/index.ts"
       ],
       "@xevlabs-ng-utils/xevlabs-strapi-error-handling": [
         "libs/xevlabs-strapi-error-handling/src/index.ts"
+      ],
+      "@xevlabs-ng-utils/xevlabs-strapi-table": [
+        "libs/ng-strapi-table-lib/src/index.ts"
       ]
     }
   },

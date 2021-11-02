@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "ng-strapi-table-lib": {
+      "tags": []
+    },
     "xevlabs-ng-utils-demo": {
       "tags": []
     },

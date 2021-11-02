@@ -1,6 +1,31 @@
 {
   "version": 1,
   "projects": {
+    "xevlabs-ng-strapi-utils": {
+      "projectType": "library",
+      "root": "libs/xevlabs-ng-strapi-utils",
+      "sourceRoot": "libs/xevlabs-ng-strapi-utils/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-ng-strapi-utils"],
+          "options": {
+            "jestConfig": "libs/xevlabs-ng-strapi-utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-ng-strapi-utils/src/**/*.ts",
+              "libs/xevlabs-ng-strapi-utils/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "xevlabs-ng-utils-demo": {
       "projectType": "application",
       "root": "apps/xevlabs-ng-utils-demo",

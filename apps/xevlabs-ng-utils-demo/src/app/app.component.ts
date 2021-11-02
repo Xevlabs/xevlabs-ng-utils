@@ -17,7 +17,6 @@ import { environment } from '../environments/environment';
 export class AppComponent {
 
   public dataSource: StrapiDatasource<any>;
-  public path = environment.baseUrl
   public filters: FilterModel[] = [];
   public columnsDefinition: ColumnDefinitionModel[] = [
     {

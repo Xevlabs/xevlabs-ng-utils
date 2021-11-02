@@ -10,15 +10,18 @@ import { XevlabsNgStrapiUtilsModule } from '@xevlabs-ng-utils/xevlabs-ng-strapi-
 import { NgStrapiTableLibModule } from '@xevlabs-ng-utils/ng-strapi-table-lib';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { environment } from '../environments/environment';
+import { AutoCompleteWrapperComponent } from './auto-complete-wrapper/auto-complete-wrapper.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, AutoCompleteWrapperComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HotToastModule.forRoot(),
     HttpClientModule,
     TranslocoRootModule,
+    ReactiveFormsModule,
     XevlabsStrapiErrorHandlingModule,
     XevlabsNgStrapiUtilsModule,
     FlexLayoutModule,

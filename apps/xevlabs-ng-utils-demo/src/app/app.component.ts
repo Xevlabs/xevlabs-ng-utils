@@ -6,6 +6,7 @@ import {
   StrapiDatasource, StrapiFilterTypesEnum,
   StrapiTableService
 } from '@xevlabs-ng-utils/ng-strapi-table-lib';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'xevlabs-ng-utils-root',

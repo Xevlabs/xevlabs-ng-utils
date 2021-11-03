@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } 
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
-import { StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/ng-strapi-table-lib';
+import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/ng-strapi-table-lib';
 
 
 @Component({
@@ -30,6 +30,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     filteredItemList: any[] = [];
     busy = true;
     @Input() path: any;
+    @Input() filters: FilterModel[] = [];
     @Input() collectionName: any;
     @Input() prefix: any;
     @Input() searchByAttribute: any;
@@ -56,6 +57,10 @@ export class AutoCompleteSelectorComponent implements OnInit {
         return this.autoCompleteForm.get('item');
     }
 
+    getErrors(type: string) {
+        return this.autoCompleteForm.get(type)?.errors;
+    }
+
     onTouched = () => { };
 
     registerOnTouched(fn: any): void {
@@ -70,7 +75,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.tableService.find(this.collectionName, []).subscribe((items: any) => {
+        this.tableService.find(this.collectionName, this.filters).subscribe((items: any) => {
             this.filteredItemList = items
             this.busy = false
         })
@@ -83,7 +88,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
                         return this.search(searchTerm);
                     }
                     return [];
-                })).subscribe((filteredItemList) => {
+                })).subscribe((filteredItemList: any) => {
                     this.filteredItemList = filteredItemList
                     this.busy = false
                 });
@@ -139,7 +144,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
 
     search(searchQuery: string): Observable<any> {
         const filter = { attribute: this.searchByAttribute, type: StrapiFilterTypesEnum.CONTAINS, value: searchQuery?.toLowerCase() }
-        return this.tableService.find(this.collectionName, [filter])
+        return this.tableService.find(this.collectionName, [...this.filters, filter])
     }
 
 }

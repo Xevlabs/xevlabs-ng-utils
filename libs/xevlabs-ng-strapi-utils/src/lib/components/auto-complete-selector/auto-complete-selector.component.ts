@@ -57,10 +57,6 @@ export class AutoCompleteSelectorComponent implements OnInit {
         return this.autoCompleteForm.get('item');
     }
 
-    getErrors(type: string) {
-        return this.autoCompleteForm.get(type)?.errors;
-    }
-
     onTouched = () => { };
 
     registerOnTouched(fn: any): void {
@@ -93,9 +89,6 @@ export class AutoCompleteSelectorComponent implements OnInit {
                     this.busy = false
                 });
         }
-        this.autoCompleteForm.statusChanges.subscribe((status: any) => {
-            this.chipList.errorState = status === 'INVALID'
-        })
     }
 
     updateInput(form: { item: any, searchQuery: string } | null) {
@@ -114,7 +107,6 @@ export class AutoCompleteSelectorComponent implements OnInit {
             this.item?.setValue(event.option.value);
             this.searchQuery?.setValue(null);
             this.refInput.nativeElement.value = '';
-            this.chipList.errorState = !this.item?.value.uid;
             this.updateInput(this.autoCompleteForm.value);
             this.searchQuery?.disable();
         }
@@ -136,10 +128,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     validate() {
-        const isNotValid = (this.chipList && this.chipList.errorState);
-        return isNotValid && {
-            invalid: true
-        };
+        return this.item?.invalid ? { invalid: true } : null
     }
 
     search(searchQuery: string): Observable<any> {

@@ -1,6 +1,9 @@
 <form [formGroup]="autoCompleteForm">
     <mat-form-field class="chip-list full-width" appearance="outline">
         <mat-label>{{ prefix }}</mat-label>
+        <mat-error *ngIf="item.errors?.required">
+            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
+         >
         <mat-chip-list #chipList>
             <mat-chip selected removable color="primary" *ngIf="item!.value?.id" (removed)="remove()"
                 class="capitalize">

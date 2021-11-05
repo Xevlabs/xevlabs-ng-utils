@@ -24,6 +24,16 @@ export class StrapiDatasource<T> implements DataSource<T> {
     return this.entitySubject.asObservable();
   }
 
+  reload() {
+    this.loadEntities(
+        this.filters$.value,
+        this.sort.direction,
+        this.sort.active,
+        this.paginator.pageIndex,
+        this.paginator.pageSize
+    );
+  }
+
   disconnect(collectionViewer: CollectionViewer): void {
     this.entitySubject.complete();
     this.loadingSubject.complete();

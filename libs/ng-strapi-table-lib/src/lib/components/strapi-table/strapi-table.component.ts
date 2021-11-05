@@ -20,7 +20,7 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() pageSize = 10;
   @Input() actionButtons! : ActionButtonModel[];
 
-  @Output() actionToggled = new EventEmitter<ActionButtonModel>()
+  @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -45,8 +45,8 @@ export class StrapiTableComponent implements AfterViewInit {
       .concat(this.actionButtons ? ['actionButtons'] : [])
   }
 
-  handleActionButtonTrigger(action: ActionButtonModel) {
-    this.actionToggled.emit(action)
+  handleActionButtonTrigger(action: ActionButtonModel, entity: any) {
+    this.actionToggled.emit({ type: action.type,  entity} )
   }
 
 }

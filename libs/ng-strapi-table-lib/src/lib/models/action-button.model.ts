@@ -2,5 +2,7 @@ export interface ActionButtonModel {
   type: string,
   icon: string,
   color: 'accent' | 'primary' | 'warn',
-  tooltipKey?: string
+  tooltipKey?: string,
+  conditionField?: string,
+  conditionValue?: any
 }

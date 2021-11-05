@@ -27,10 +27,10 @@
     ]
   },
   "projects": {
-    "xevlabs-ng-strapi-utils": {
-        "tags": []
-    },
     "ng-strapi-table-lib": {
+      "tags": []
+    },
+    "xevlabs-ng-strapi-utils": {
       "tags": []
     },
     "xevlabs-ng-utils-demo": {

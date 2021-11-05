@@ -1,6 +1,6 @@
 <div class="strapi-table-container full-width full-height" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
   <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
-  <mat-table fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
+  <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
     <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
       <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''">{{ column.translationKey | transloco}}</mat-header-cell>
       <mat-cell *matCellDef="let entity">
@@ -20,12 +20,16 @@
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="actionButtons">
-      <mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTION_BUTTONS' | transloco}}</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef fxLayout="row" fxLayoutAlign="end center" class="action-buttons-container">{{ 'COMMON.ACTION_BUTTONS' | transloco}}</mat-header-cell>
       <mat-cell *matCellDef="let entity">
         <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center" class="action-buttons-container">
-          <button [color]="action.color" *ngFor="let action of actionButtons" mat-mini-fab (click)="handleActionButtonTrigger(action)" [matTooltip]="action.tooltipKey | transloco">
-            <mat-icon>{{action.icon}}</mat-icon>
-          </button>
+          <ng-container *ngFor="let action of actionButtons">
+            <button [color]="action.color" *ngIf="!action.conditionField || (entity[action.conditionField] === action.conditionValue)" mat-mini-fab (click)="handleActionButtonTrigger(action, entity)" [matTooltip]="action.tooltipKey | transloco">
+              <div fxLayout="row" fxLayoutAlign="center center">
+                <mat-icon>{{action.icon}}</mat-icon>
+              </div>
+            </button>
+          </ng-container>
         </div>
       </mat-cell>
     </ng-container>

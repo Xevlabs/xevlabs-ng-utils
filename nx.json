@@ -45,6 +45,9 @@
     },
     "xevlabs-strapi-error-handling": {
       "tags": []
+    },
+    "xevlabs-ui-utils": {
+      "tags": []
     }
   }
 }

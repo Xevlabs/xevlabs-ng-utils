@@ -29,6 +29,9 @@
       ],
       "@xevlabs-ng-utils/xevlabs-strapi-table": [
         "libs/ng-strapi-table-lib/src/index.ts"
+      ],
+      "@xevlabs-ng-utils/xevlabs-ui-utils": [
+        "libs/xevlabs-ui-utils/src/index.ts"
       ]
     }
   },

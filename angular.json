@@ -220,6 +220,31 @@
           }
         }
       }
+    },
+    "xevlabs-ui-utils": {
+      "projectType": "library",
+      "root": "libs/xevlabs-ui-utils",
+      "sourceRoot": "libs/xevlabs-ui-utils/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-ui-utils"],
+          "options": {
+            "jestConfig": "libs/xevlabs-ui-utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-ui-utils/src/**/*.ts",
+              "libs/xevlabs-ui-utils/src/**/*.html"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

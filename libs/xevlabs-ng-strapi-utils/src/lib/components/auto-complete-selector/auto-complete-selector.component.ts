@@ -34,6 +34,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     @Input() collectionName: any;
     @Input() prefix: any;
     @Input() searchByAttribute: any;
+    @Input() submitEvent$: any;
     autoCompleteForm: FormGroup;
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>;
     @ViewChild('chipList', { static: false }) chipList: any;
@@ -89,6 +90,12 @@ export class AutoCompleteSelectorComponent implements OnInit {
                     this.busy = false
                 });
         }
+        this.autoCompleteForm.statusChanges.subscribe(status => {
+            this.chipList.errorState = status === 'INVALID'
+        })
+        this.submitEvent$.subscribe(() => {
+            this.searchQuery?.setValue(null);
+        })
     }
 
     updateInput(form: { item: any, searchQuery: string } | null) {
@@ -107,6 +114,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
             this.item?.setValue(event.option.value);
             this.searchQuery?.setValue(null);
             this.refInput.nativeElement.value = '';
+            this.chipList.errorState = !this.item?.value.uid;
             this.updateInput(this.autoCompleteForm.value);
             this.searchQuery?.disable();
         }
@@ -128,7 +136,8 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     validate() {
-        return this.item?.invalid ? { invalid: true } : null
+        const isNotValid = (this.chipList && this.chipList.errorState);
+        return isNotValid
     }
 
     search(searchQuery: string): Observable<any> {

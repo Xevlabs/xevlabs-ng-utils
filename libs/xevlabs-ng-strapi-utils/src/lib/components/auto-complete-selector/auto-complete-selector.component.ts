@@ -64,7 +64,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
         this.onTouched = fn;
     }
 
-    onChange = (_: string) => {
+    onChange = (_: {id: string}) => {
     };
 
     registerOnChange(fn: any): void {
@@ -99,7 +99,7 @@ export class AutoCompleteSelectorComponent implements OnInit {
     }
 
     updateInput(form: { item: any, searchQuery: string } | null) {
-        this.onChange(form?.item.id);
+        this.onChange({id: form?.item.id});
         this.onTouched();
     }
 

@@ -21,7 +21,6 @@ export class ConfirmationModalComponent implements OnInit {
     if (this.data) {
       this.content = this.data.content;
       this.translationContent = this.data.translationContent;
-      console.log(this.translationContent)
     }
   }
 

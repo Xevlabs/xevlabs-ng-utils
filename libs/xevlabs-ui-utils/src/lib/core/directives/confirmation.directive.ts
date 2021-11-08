@@ -18,7 +18,7 @@ export class ConfirmationDirective {
     $event.stopPropagation();
     if (this.isActive) {
       this.matDialog.open(ConfirmationModalComponent, {
-        panelClass: ['confirmation-modal', 'no-size-modal'],
+        panelClass: ['confirmation-modal'],
         data: {
           content: this.content,
           translationContent: this.translationContent

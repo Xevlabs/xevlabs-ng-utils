@@ -18,7 +18,7 @@ export class ConfirmationDirective {
     $event.stopPropagation();
     if (this.isActive) {
       this.matDialog.open(ConfirmationModalComponent, {
-        panelClass: ['verdiflor-modal', 'no-size-modal'],
+        panelClass: ['confirmation-modal', 'no-size-modal'],
         data: {
           content: this.content,
           translationContent: this.translationContent

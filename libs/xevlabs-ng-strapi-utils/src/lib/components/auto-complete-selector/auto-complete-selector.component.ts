@@ -1,10 +1,17 @@
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Observable } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
-import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table';
-
+import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core'
+import {
+    ControlValueAccessor,
+    FormBuilder,
+    FormGroup,
+    NG_VALIDATORS,
+    NG_VALUE_ACCESSOR,
+    Validators,
+} from '@angular/forms'
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
+import { Observable } from 'rxjs'
+import { debounceTime, switchMap } from 'rxjs/operators'
+import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
+import { MatChipList } from '@angular/material/chips'
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
@@ -14,135 +21,135 @@ import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => AutoCompleteSelectorComponent),
-        multi: true
+        multi: true,
     },
-    {
-        provide: NG_VALIDATORS,
-        useExisting: AutoCompleteSelectorComponent,
-        multi: true
-    },
-        StrapiTableService
-    ]
+        {
+            provide: NG_VALIDATORS,
+            useExisting: AutoCompleteSelectorComponent,
+            multi: true,
+        },
+        StrapiTableService,
+    ],
 })
-export class AutoCompleteSelectorComponent implements OnInit {
+export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccessor {
+    @Input() path!: string
+    @Input() filters: FilterModel[] = []
+    @Input() collectionName!: string
+    @Input() prefix!: string
+    @Input() searchByAttribute!: string
+    @Input() submitEvent$!: Observable<void>
 
-    itemList: any[] = [];
-    filteredItemList: any[] = [];
-    busy = true;
-    @Input() path: any;
-    @Input() filters: FilterModel[] = [];
-    @Input() collectionName: any;
-    @Input() prefix: any;
-    @Input() searchByAttribute: any;
-    @Input() submitEvent$: any;
-    autoCompleteForm: FormGroup;
-    @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>;
-    @ViewChild('chipList', { static: false }) chipList: any;
+    itemList: Record<string, unknown>[] = []
+    filteredItemList: Record<string, unknown>[] = []
+    busy = true
+    autoCompleteForm!: FormGroup
 
+    onChange!: (_: { id: number }) => void
+    onTouched!: () => void
+
+    @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
+    @ViewChild('chipList', { static: false }) chipList!: MatChipList
     constructor(
         private formBuilder: FormBuilder,
-        private tableService: StrapiTableService
-    ) {
-        this.autoCompleteForm = this.formBuilder.group({
-            item: ['', Validators.required],
-            searchQuery: ''
-        });
-
-    }
+        private tableService: StrapiTableService,
+    ) {}
 
     get searchQuery() {
-        return this.autoCompleteForm.get('searchQuery');
+        return this.autoCompleteForm.get('searchQuery')
     }
 
     get item() {
-        return this.autoCompleteForm.get('item');
+        return this.autoCompleteForm.get('item')
     }
 
-    onTouched = () => { };
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn
     }
 
-    onChange = (_: string) => {
-    };
-
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
+    registerOnChange(fn: (_: { id: number }) => void): void {
+        this.onChange = fn
     }
 
     ngOnInit() {
-        this.tableService.find(this.collectionName, this.filters).subscribe((items: any) => {
+        this.autoCompleteForm = this.formBuilder.group({
+            item: ['', Validators.required],
+            searchQuery: '',
+        })
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters)
+            .subscribe((items: Record<string, unknown>[]) => {
             this.filteredItemList = items
             this.busy = false
         })
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
-                switchMap((searchTerm: string) => {
+                switchMap((searchTerm: string | undefined) => {
                     if (typeof searchTerm === 'string') {
                         this.busy = true
-                        return this.search(searchTerm);
+                        return this.search<Record<string, unknown>>(searchTerm)
                     }
-                    return [];
-                })).subscribe((filteredItemList: any) => {
-                    this.filteredItemList = filteredItemList
-                    this.busy = false
-                });
+                    return []
+                }))
+                .subscribe((filteredItemList: Record<string, unknown>[]) => {
+                this.filteredItemList = filteredItemList
+                this.busy = false
+            })
         }
         this.autoCompleteForm.statusChanges.subscribe(status => {
             this.chipList.errorState = status === 'INVALID'
         })
         this.submitEvent$.subscribe(() => {
-            this.searchQuery?.setValue(null);
+            this.searchQuery?.setValue(null)
         })
     }
 
-    updateInput(form: { item: any, searchQuery: string } | null) {
-        this.onChange(form?.item.id);
-        this.onTouched();
+    updateInput(form: { item: { id: number }, searchQuery: string } | null) {
+        this.onChange({ id: form?.item.id as number })
+        this.onTouched()
     }
 
     remove() {
-        this.item?.setValue(null);
+        this.item?.setValue(null)
         this.updateInput(null)
-        this.searchQuery?.enable();
+        this.searchQuery?.enable()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
         if (event.option.value !== '') {
-            this.item?.setValue(event.option.value);
-            this.searchQuery?.setValue(null);
-            this.refInput.nativeElement.value = '';
-            this.chipList.errorState = !this.item?.value.uid;
-            this.updateInput(this.autoCompleteForm.value);
-            this.searchQuery?.disable();
+            this.item?.setValue(event.option.value)
+            this.searchQuery?.setValue(null)
+            this.refInput.nativeElement.value = ''
+            this.chipList.errorState = !this.item?.value.uid
+            this.updateInput(this.autoCompleteForm.value)
+            this.searchQuery?.disable()
         }
     }
 
-    writeValue(controls?: any): void {
+    writeValue(controls?: unknown): void {
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
-            this.tableService.find(this.collectionName, [filter]).subscribe((item: any[]) => {
-                this.item?.setValue(item[0]);
-                this.searchQuery?.setValue('');
-                this.updateInput(this.autoCompleteForm.value);
-                this.searchQuery?.disable();
+            this.tableService.find(this.collectionName, [filter]).subscribe((item: unknown[]) => {
+                this.item?.setValue(item[0])
+                this.searchQuery?.setValue('')
+                this.updateInput(this.autoCompleteForm.value)
+                this.searchQuery?.disable()
                 this.busy = false
             })
         }
-        return;
     }
 
     validate() {
-        const isNotValid = (this.chipList && this.chipList.errorState);
-        return isNotValid
+        return (this.chipList && this.chipList.errorState)
     }
 
-    search(searchQuery: string): Observable<any> {
-        const filter = { attribute: this.searchByAttribute, type: StrapiFilterTypesEnum.CONTAINS, value: searchQuery?.toLowerCase() }
-        return this.tableService.find(this.collectionName, [...this.filters, filter])
+    search<T>(searchQuery: string): Observable<T[]> {
+        const filter = {
+            attribute: this.searchByAttribute,
+            type: StrapiFilterTypesEnum.CONTAINS,
+            value: searchQuery?.toLowerCase(),
+        }
+        return this.tableService.find<T>(this.collectionName, [...this.filters, filter])
     }
 
 }

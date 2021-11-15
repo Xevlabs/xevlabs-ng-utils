@@ -44,7 +44,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     busy = true
     autoCompleteForm!: FormGroup
 
-    onChange!: (_: { id: number }) => void
+    onChange!: (_: { id: number } | null) => void
     onTouched!: () => void
 
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
@@ -66,7 +66,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         this.onTouched = fn
     }
 
-    registerOnChange(fn: (_: { id: number }) => void): void {
+    registerOnChange(fn: (_: { id: number } | null) => void): void {
         this.onChange = fn
     }
 
@@ -104,7 +104,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
-        this.onChange({ id: form?.item.id as number })
+        this.onChange(form ? { id: form?.item.id as number } : null)
         this.onTouched()
     }
 

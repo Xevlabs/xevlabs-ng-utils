@@ -5,20 +5,25 @@ import { TranslocoModule } from '@ngneat/transloco'
 import { MaterialModule } from './material/material.module'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { ConfirmationDirective } from './core/directives/confirmation.directive'
+import { FormControlPipe } from './core/pipes/form-control/form-control.pipe'
+import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
 	imports: [
 		CommonModule,
 		TranslocoModule,
 		MaterialModule,
-		FlexLayoutModule
+		FlexLayoutModule,
+        ReactiveFormsModule
 	],
 	declarations: [
 		ConfirmationModalComponent,
-		ConfirmationDirective
+		ConfirmationDirective,
+        FormControlPipe
 	],
 	exports: [
-		ConfirmationDirective
+		ConfirmationDirective,
+        FormControlPipe
 	]
 })
 export class XevlabsUiUtilsModule {

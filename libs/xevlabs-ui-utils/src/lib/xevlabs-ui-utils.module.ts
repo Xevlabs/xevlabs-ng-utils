@@ -9,22 +9,22 @@ import { FormControlPipe } from './core/pipes/form-control/form-control.pipe'
 import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
-	imports: [
-		CommonModule,
-		TranslocoModule,
-		MaterialModule,
-		FlexLayoutModule,
+    imports: [
+        CommonModule,
+        TranslocoModule,
+        MaterialModule,
+        FlexLayoutModule,
         ReactiveFormsModule
-	],
-	declarations: [
-		ConfirmationModalComponent,
-		ConfirmationDirective,
+    ],
+    declarations: [
+        ConfirmationModalComponent,
+        ConfirmationDirective,
         FormControlPipe
-	],
-	exports: [
-		ConfirmationDirective,
+    ],
+    exports: [
+        ConfirmationDirective,
         FormControlPipe
-	]
+    ]
 })
 export class XevlabsUiUtilsModule {
 }

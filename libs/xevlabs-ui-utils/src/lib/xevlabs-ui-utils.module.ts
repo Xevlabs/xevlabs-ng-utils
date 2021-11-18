@@ -7,6 +7,8 @@ import { FlexLayoutModule } from '@angular/flex-layout'
 import { ConfirmationDirective } from './core/directives/confirmation.directive'
 import { FormControlPipe } from './core/pipes/form-control/form-control.pipe'
 import { ReactiveFormsModule } from '@angular/forms'
+import { FlagEmojiPipe } from './core/pipes/flag-emoji/flag-emoji.pipe'
+import { PhoneNumberInputComponent } from './components/phone-number-input/phone-number-input.component'
 
 @NgModule({
     imports: [
@@ -19,11 +21,15 @@ import { ReactiveFormsModule } from '@angular/forms'
     declarations: [
         ConfirmationModalComponent,
         ConfirmationDirective,
-        FormControlPipe
+        FormControlPipe,
+        PhoneNumberInputComponent,
+        FlagEmojiPipe
     ],
     exports: [
         ConfirmationDirective,
-        FormControlPipe
+        FormControlPipe,
+        PhoneNumberInputComponent,
+        FlagEmojiPipe
     ]
 })
 export class XevlabsUiUtilsModule {

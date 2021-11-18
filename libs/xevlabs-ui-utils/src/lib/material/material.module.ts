@@ -8,23 +8,23 @@ import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
-	declarations: [],
-	imports: [
-		MatButtonModule,
-		MatIconModule,
-		MatDialogModule,
+    declarations: [],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
         MatInputModule,
         MatFormFieldModule,
         MatSelectModule,
-	],
-	exports: [
-		MatButtonModule,
-		MatIconModule,
-		MatDialogModule,
+    ],
+    exports: [
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
         MatInputModule,
         MatFormFieldModule,
         MatSelectModule,
-	],
+    ],
 })
 export class MaterialModule {
 }

@@ -7,7 +7,7 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field class="full-width white" fxFlex=10 appearance="outline">
-        <input type="text" class="white" [disabled]="true" matInput [value]="selectedCountryPhone">
+        <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
     </mat-form-field>
     <mat-form-field class="full-width white" appearance="outline">
         <mat-label>{{label | transloco}}</mat-label>

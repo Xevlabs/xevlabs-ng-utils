@@ -24,7 +24,7 @@ export class PhoneNumberInputComponent implements OnInit {
     @Input() label!: string;
     countries = countries;
     phoneNumberControl!: FormControl;
-    selectedCountryPhone: string = '+' + countries[0].phone.toString();
+    selectedCountryPhone: string = countries[0].phone.toString();
 
     onChange!: (value: string) => void
     onTouched!: () => void
@@ -40,19 +40,23 @@ export class PhoneNumberInputComponent implements OnInit {
     }
 
     get selectedCountry() {
-        return this.countries.filter(country => '+' + (country.phone) == this.selectedCountryPhone)[0]
+        return this.countries.filter((country: any) => (country.phone) == this.selectedCountryPhone)[0]
     }
 
     ngOnInit() {
         this.selectedCountryPhone = localStorage.getItem('dialCode')!
         this.phoneNumberControl = this.formBuilder.control('', [Validators.required, Validators.pattern(phonePattern())])
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
-            this.onChange(this.selectedCountryPhone + value)
+            if (value.charAt(0) === '0') {
+                value = value.substring(1)
+            }
+            let internationalPhoneNumber = this.selectedCountryPhone + value
+            this.onChange(internationalPhoneNumber)
         })
     }
 
     setCountryPhoneCode(selection: MatSelectChange) {
-        this.selectedCountryPhone = '+' + selection.value.phone;
+        this.selectedCountryPhone = selection.value.phone;
         localStorage.setItem('dialCode', this.selectedCountryPhone)
     }
 
@@ -65,6 +69,5 @@ export class PhoneNumberInputComponent implements OnInit {
     validate() {
         return this.phoneNumberControl.invalid ? { invalid: true } : null
     }
-
 
 }

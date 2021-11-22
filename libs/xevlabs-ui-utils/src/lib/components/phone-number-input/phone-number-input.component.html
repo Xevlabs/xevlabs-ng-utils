@@ -1,0 +1,21 @@
+<form fxLayout="row" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
+    <mat-form-field class="full-width white" appearance="outline" fxFlex=25>
+        <mat-select (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
+            <mat-option *ngFor="let country of countries" [value]="country">
+                {{ country.name + ' - ' + (country.code | flagEmoji) }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width white" fxFlex=10 appearance="outline">
+        <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
+    </mat-form-field>
+    <mat-form-field class="full-width white" appearance="outline">
+        <mat-label>{{label | transloco}}</mat-label>
+        <mat-error *ngIf="phoneNumberControl?.errors?.required">
+            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
+        <mat-error *ngIf="phoneNumberControl?.errors?.pattern">
+            {{"ERRORS.FIELD_PATTERN" | transloco}}</mat-error>
+        <mat-icon matSuffix>phone</mat-icon>
+        <input type="text" matInput [formControl]="phoneNumberControl">
+    </mat-form-field>
+</form>

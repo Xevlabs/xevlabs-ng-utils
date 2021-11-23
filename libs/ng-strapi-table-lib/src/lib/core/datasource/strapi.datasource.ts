@@ -105,7 +105,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	}
     
     search(searchText: string) {
-        let newFilters = this.filters$.value.filter(filter => filter.type !== StrapiFilterTypesEnum.SEARCH)
+        const newFilters = this.filters$.value.filter(filter => filter.type !== StrapiFilterTypesEnum.SEARCH)
         newFilters.push({attribute: '', type: StrapiFilterTypesEnum.SEARCH, value: searchText.toLowerCase()})
         this.updateFilters(newFilters)
     }

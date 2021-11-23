@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
-import * as Http from 'http'
 
 @Injectable({
 	providedIn: null,
@@ -47,7 +46,7 @@ export class StrapiTableService {
 					params = params.append(`${filter.attribute}_${filter.type}`, filterValue.toString())
 				})
 			} else {
-				params.set(`${filter.attribute}_${filter.type}`, filter.value.toString())
+				params = params.append(`${filter.attribute}_${filter.type}`, filter.value.toString())
 			}
 		})
 		return params

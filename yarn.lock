@@ -1700,6 +1700,13 @@
     replace-in-file "^6.2.0"
     tslib "^2.2.0"
 
+"@ngneat/until-destroy@8.1.4":
+  version "8.1.4"
+  resolved "https://registry.yarnpkg.com/@ngneat/until-destroy/-/until-destroy-8.1.4.tgz#00be5396f4c1417987d09aff227c15031f5473a8"
+  integrity sha512-Bk+jS0ZyCKvW2wLJPMJ8jr6lhYlDVVbE2/WbQ5L3eBcwmem82649o6s7G68tDNA+5UeHtfW7fbpK4Bhj8r+B9g==
+  dependencies:
+    tslib "^2.2.0"
+
 "@ngtools/webpack@12.2.10":
   version "12.2.10"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-12.2.10.tgz#38d4a5ee9cc39012e9ba2f987f6c1c07b132b19e"

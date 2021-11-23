@@ -26,6 +26,8 @@
     "@ngneat/overview": "^2.0.2",
     "@ngneat/transloco": "^3.0.6",
     "@nrwl/angular": "12.10.0",
+    "@types/google-libphonenumber": "^7.4.23",
+    "google-libphonenumber": "^3.2.25",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

@@ -5,6 +5,7 @@ import { catchError, finalize, startWith, take, tap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import { FilterModel } from '../../models/filter.model'
+import { StrapiFilterTypesEnum } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 
 export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])
@@ -102,4 +103,10 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	updateFilters(newFilters: FilterModel[]) {
 		this.filters$.next(newFilters)
 	}
+    
+    search(searchText: string) {
+        let newFilters = this.filters$.value.filter(filter => filter.type !== StrapiFilterTypesEnum.SEARCH)
+        newFilters.push({attribute: '', type: StrapiFilterTypesEnum.SEARCH, value: searchText.toLowerCase()})
+        this.updateFilters(newFilters)
+    }
 }

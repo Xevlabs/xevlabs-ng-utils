@@ -1,0 +1,10 @@
+<div class="full-width search-bar-container">
+    <mat-form-field class="padding-small-bottom" appearance="outline">
+        <mat-label>{{ "COMMON.SEARCH" | transloco }}</mat-label>
+        <input matInput [formControl]="searchControl" />
+        <mat-icon matSuffix color="primary">search</mat-icon>
+        <mat-hint>{{ "COMMON.SEARCH_HINT" | transloco }}</mat-hint>
+        <mat-error *ngIf="searchControl?.errors?.minlength">
+            {{"ERRORS.TOO_SHORT" | transloco}}</mat-error>
+    </mat-form-field>
+</div>

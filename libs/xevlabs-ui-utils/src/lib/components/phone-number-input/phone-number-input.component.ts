@@ -85,6 +85,8 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
             if (valid && countryCode) {
                 this.selectedCountryPhone = countryCode;
                 this.phoneNumberControl.setValue(number, {emitEvent: false})
+            } else if (value.charAt(0) === '0') {
+                value = value.substring(1)
             }
             const internationalPhoneNumber = this.selectedCountryPhone + value
             this.onChange(internationalPhoneNumber)

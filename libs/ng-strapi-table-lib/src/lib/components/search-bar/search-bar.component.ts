@@ -2,7 +2,9 @@ import { Component, Input, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { StrapiDatasource } from "@xevlabs-ng-utils/xevlabs-strapi-table";
 import { debounceTime } from "rxjs/operators";
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
+@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-search-bar',
     templateUrl: './search-bar.component.html',
@@ -16,7 +18,10 @@ export class SearchBarComponent implements OnInit {
 
     ngOnInit(): void {
         this.searchControl = this.formBuilder.control('', Validators.minLength(3))
-        this.searchControl.valueChanges.pipe(debounceTime(500)).subscribe((value) => {
+        this.searchControl.valueChanges.pipe(
+            debounceTime(500),
+            untilDestroyed(this)
+        ).subscribe((value: string) => {
             if (value.length > 2 || value.length === 0) {
                 this.dataSource.search(value)
             }

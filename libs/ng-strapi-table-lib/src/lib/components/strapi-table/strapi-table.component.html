@@ -34,7 +34,10 @@
       </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns" ></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" 
+            [ngClass]="{ 'clickable-row': routeRedirect}"
+            [routerLink]="routeRedirect ? (routeRedirect | routeParser: row.id) : null"
+        ></mat-row>
   </mat-table>
   <mat-paginator class="full-width" [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
                  [pageSizeOptions]="pageSizeOptions"></mat-paginator>

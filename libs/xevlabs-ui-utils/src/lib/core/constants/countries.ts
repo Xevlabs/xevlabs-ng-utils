@@ -1,4 +1,5 @@
 export const countries = [
+    { name: "United States", code: "US", phone: 1 },
     { name: "Afghanistan", code: "AF", phone: 93 },
     { name: "Aland Islands", code: "AX", phone: 358 },
     { name: "Albania", code: "AL", phone: 355 },
@@ -237,7 +238,6 @@ export const countries = [
     { name: "Ukraine", code: "UA", phone: 380 },
     { name: "United Arab Emirates", code: "AE", phone: 971 },
     { name: "United Kingdom", code: "GB", phone: 44 },
-    { name: "United States", code: "US", phone: 1 },
     { name: "United States Minor Outlying Islands", code: "UM", phone: 1 },
     { name: "Uruguay", code: "UY", phone: 598 },
     { name: "Uzbekistan", code: "UZ", phone: 998 },

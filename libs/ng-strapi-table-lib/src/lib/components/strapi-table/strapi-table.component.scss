@@ -1,3 +1,12 @@
 .action-buttons-container {
   width: 100%;
 }
+
+.clickable-row {
+  cursor: pointer;
+  transition: opacity 0.1s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

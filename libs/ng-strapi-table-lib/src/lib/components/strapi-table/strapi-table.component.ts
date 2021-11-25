@@ -19,6 +19,7 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() pageSizeOptions: number[] = [10, 25, 50, 100];
   @Input() pageSize = 10;
   @Input() actionButtons! : ActionButtonModel[];
+  @Input() routeRedirect?: string;
 
   @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 

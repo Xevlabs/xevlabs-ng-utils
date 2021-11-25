@@ -8,6 +8,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TableLibOptionsModel } from './models/table-lib-options.model';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { RouteParserPipe } from './core/pipes/route-parser.pipe';
 
 @NgModule({
   imports: [
@@ -16,11 +18,13 @@ import { ReactiveFormsModule } from '@angular/forms';
     TranslocoModule,
     FlexLayoutModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   declarations: [
     StrapiTableComponent,
     SearchBarComponent,
-    ParseObjectKeyPipe
+    ParseObjectKeyPipe,
+    RouteParserPipe
   ],
   exports: [
     StrapiTableComponent,

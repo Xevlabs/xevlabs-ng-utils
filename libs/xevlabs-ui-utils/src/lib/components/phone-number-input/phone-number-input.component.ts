@@ -100,6 +100,11 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
       } else if (phoneNumber.charAt(0) === '0') {
         phoneNumber = phoneNumber.substring(1)
       }
+      if (!valid) {
+        this.phoneNumberControl.setErrors({invalid: true})
+      } else {
+        this.phoneNumberControl.setErrors(null)
+      }
       const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
       this.onChange(internationalPhoneNumber)
     }

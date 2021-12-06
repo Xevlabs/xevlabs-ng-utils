@@ -13,7 +13,7 @@
         <mat-label>{{label | transloco}}</mat-label>
         <mat-error *ngIf="phoneNumberControl?.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
-        <mat-error *ngIf="phoneNumberControl?.errors?.pattern">
+        <mat-error *ngIf="error">
             {{"ERRORS.FIELD_PATTERN" | transloco}}</mat-error>
         <mat-icon matSuffix>phone</mat-icon>
         <input type="text" matInput [formControl]="phoneNumberControl">

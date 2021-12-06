@@ -9,7 +9,6 @@ import {
 } from '@angular/forms'
 import { MatSelectChange } from '@angular/material/select'
 import { countries } from '../../core/constants/countries'
-import { phonePattern } from '../../core/custom-validators/patterns'
 import { PhoneNumberUtil } from 'google-libphonenumber'
 
 @Component({
@@ -54,6 +53,10 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         return this.countries.filter((country: any) => (country.phone) == this.selectedCountryPhone)[0]
     }
 
+    get error() {
+      return this.getCountryCode(this.phoneNumberControl.value).valid
+    }
+
     getCountryCode(internationalNumber: string): { countryCode: string, number: string, valid: boolean } {
         let phoneNumber;
         try {
@@ -77,25 +80,28 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
 
     }
 
-
     ngOnInit() {
-        this.phoneNumberControl = this.formBuilder.control('', [Validators.required, Validators.pattern(phonePattern())])
+        this.phoneNumberControl = this.formBuilder.control('', [Validators.required])
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
-            const { countryCode, number, valid } = this.getCountryCode(value)
-            if (valid && countryCode) {
-                this.selectedCountryPhone = countryCode;
-                this.phoneNumberControl.setValue(number, {emitEvent: false})
-            } else if (value.charAt(0) === '0') {
-                value = value.substring(1)
-            }
-            const internationalPhoneNumber = this.selectedCountryPhone + value
-            this.onChange(internationalPhoneNumber)
+            this.updatePhoneNumber(value)
         })
     }
 
     setCountryPhoneCode(selection: MatSelectChange) {
         this.selectedCountryPhone = selection.value.phone
-        localStorage.setItem('dialCode', this.selectedCountryPhone)
+        this.updatePhoneNumber(this.phoneNumberControl.value)
+    }
+
+    updatePhoneNumber(phoneNumber: string) {
+      const { countryCode, number, valid } = this.getCountryCode(phoneNumber)
+      if (valid && countryCode) {
+        this.selectedCountryPhone = countryCode;
+        this.phoneNumberControl.setValue(number, {emitEvent: false})
+      } else if (phoneNumber.charAt(0) === '0') {
+        phoneNumber = phoneNumber.substring(1)
+      }
+      const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
+      this.onChange(internationalPhoneNumber)
     }
 
     writeValue(value: string) {
@@ -107,7 +113,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     validate() {
-        return this.phoneNumberControl.invalid ? { invalid: true } : null
+        return this.error ? { invalid: true } : null
     }
 
 }

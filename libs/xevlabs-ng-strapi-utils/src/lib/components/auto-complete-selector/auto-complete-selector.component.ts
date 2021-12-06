@@ -12,6 +12,7 @@ import { Observable } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
+import { TranslocoService } from '@ngneat/transloco'
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
@@ -23,11 +24,11 @@ import { MatChipList } from '@angular/material/chips'
         useExisting: forwardRef(() => AutoCompleteSelectorComponent),
         multi: true,
     },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: AutoCompleteSelectorComponent,
-            multi: true,
-        },
+    {
+        provide: NG_VALIDATORS,
+        useExisting: AutoCompleteSelectorComponent,
+        multi: true,
+    },
         StrapiTableService,
     ],
 })
@@ -38,6 +39,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() prefix!: string
     @Input() searchByAttribute!: string
     @Input() submitEvent$!: Observable<void>
+    @Input() useAppLocale?: boolean
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
@@ -52,7 +54,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     constructor(
         private formBuilder: FormBuilder,
         private tableService: StrapiTableService,
-    ) {}
+        private translocoService: TranslocoService,
+    ) { }
 
     get searchQuery() {
         return this.autoCompleteForm.get('searchQuery')
@@ -71,15 +74,16 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     ngOnInit() {
+        const activeLang = this.useAppLocale ? this.translocoService.getActiveLang() : ''
         this.autoCompleteForm = this.formBuilder.group({
             item: ['', Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, activeLang)
             .subscribe((items: Record<string, unknown>[]) => {
-            this.filteredItemList = items
-            this.busy = false
-        })
+                this.filteredItemList = items
+                this.busy = false
+            })
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
@@ -91,9 +95,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                     return []
                 }))
                 .subscribe((filteredItemList: Record<string, unknown>[]) => {
-                this.filteredItemList = filteredItemList
-                this.busy = false
-            })
+                    this.filteredItemList = filteredItemList
+                    this.busy = false
+                })
         }
         this.autoCompleteForm.statusChanges.subscribe(status => {
             this.chipList.errorState = status === 'INVALID'

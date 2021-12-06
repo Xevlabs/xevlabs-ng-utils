@@ -25,8 +25,11 @@ export class StrapiTableService {
 	}
 
 	find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
-	        pageNumber = 0, pageSize = 3): Observable<T[]> {
+	        pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
 		let params = this.parseStrapiFilters(filters)
+        if (locale) {
+            params = params.append('_locale', locale)
+        }
 		params = params.appendAll({
 			_limit: pageSize.toString(),
 			_start: (pageSize * pageNumber).toString(),

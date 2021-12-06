@@ -9,7 +9,6 @@ import {
 } from '@angular/forms'
 import { MatSelectChange } from '@angular/material/select'
 import { countries } from '../../core/constants/countries'
-import { phonePattern } from '../../core/custom-validators/patterns'
 import { PhoneNumberUtil } from 'google-libphonenumber'
 
 @Component({
@@ -80,7 +79,6 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         }
 
     }
-
 
     ngOnInit() {
         this.phoneNumberControl = this.formBuilder.control('', [Validators.required])

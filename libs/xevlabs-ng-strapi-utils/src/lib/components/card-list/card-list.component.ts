@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FilterModel } from '@xevlabs-ng-utils/xevlabs-strapi-table';
 import { take } from 'rxjs/operators';
 import { ListService } from '../../core/services/list/list.service';
 
@@ -13,6 +14,7 @@ export class CardListComponent implements OnInit {
     busy = true
     @Input() template!: TemplateRef<any>
     @Input() collectionPath!: string
+    @Input() filters: FilterModel[] = []
     itemList: any[] = []
     itemListCount!: number
     pageIndex = 0

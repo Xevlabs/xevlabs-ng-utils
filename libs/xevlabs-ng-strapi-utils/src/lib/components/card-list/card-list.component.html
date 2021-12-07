@@ -1,0 +1,12 @@
+<mat-progress-bar class="modal-loader" mode="indeterminate" *ngIf="busy"></mat-progress-bar>
+<div class="content padding-large-horizontal" fxLayout="column"
+    fxLayoutGap=".5rem">
+    <ng-container *ngFor="let item of itemList">
+        <ng-container *ngTemplateOutlet="template; context:{entity: item}"></ng-container>
+    </ng-container>
+    <p *ngIf="busy">{{'COMMON.LOADING' | transloco}}</p>
+    <p *ngIf="!busy && !itemList?.length">{{'COMMON.EMPTY' | transloco}}</p>
+    <button mat-button (click)="loadItems(pageIndex)" *ngIf="!busy && !loadedAll">
+        <span class="bold">{{'COMMON.LOAD_MORE' | transloco}}</span>
+    </button>
+</div>

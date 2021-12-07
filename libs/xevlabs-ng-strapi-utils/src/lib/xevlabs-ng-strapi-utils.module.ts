@@ -5,6 +5,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from './material/material.module';
+import { CardListComponent } from './components/card-list/card-list.component';
 
 @NgModule({
     imports: [
@@ -15,10 +16,12 @@ import { MaterialModule } from './material/material.module';
         TranslocoModule
     ],
     declarations: [
-        AutoCompleteSelectorComponent
+        AutoCompleteSelectorComponent,
+        CardListComponent,
     ],
     exports: [
-        AutoCompleteSelectorComponent
+        AutoCompleteSelectorComponent,
+        CardListComponent,
     ]
 })
 export class XevlabsNgStrapiUtilsModule { }

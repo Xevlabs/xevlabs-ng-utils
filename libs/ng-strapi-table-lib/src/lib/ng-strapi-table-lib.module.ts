@@ -24,11 +24,12 @@ import { RouteParserPipe } from './core/pipes/route-parser.pipe';
     StrapiTableComponent,
     SearchBarComponent,
     ParseObjectKeyPipe,
-    RouteParserPipe
+    RouteParserPipe,
   ],
   exports: [
     StrapiTableComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    RouteParserPipe,
   ]
 })
 export class NgStrapiTableLibModule {

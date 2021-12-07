@@ -30,7 +30,7 @@ export class CardListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.listService.count(this.collectionPath).pipe(
+        this.listService.count(this.collectionPath, this.filters).pipe(
             untilDestroyed(this)
         ).subscribe((connectionLogCount: number) => {
             this.itemListCount = connectionLogCount
@@ -41,7 +41,7 @@ export class CardListComponent implements OnInit {
     loadItems(pageIndex = 0): void {
         this.busy = true
         this.pageIndex += 1
-        this.listService.loadPage(pageIndex, this.collectionPath)
+        this.listService.loadPage(pageIndex, this.collectionPath, this.filters)
             .pipe(
                 take(1),
                 untilDestroyed(this)

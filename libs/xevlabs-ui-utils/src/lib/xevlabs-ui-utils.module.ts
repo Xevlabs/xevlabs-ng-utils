@@ -8,7 +8,8 @@ import { ConfirmationDirective } from './core/directives/confirmation.directive'
 import { FormControlPipe } from './core/pipes/form-control/form-control.pipe'
 import { ReactiveFormsModule } from '@angular/forms'
 import { FlagEmojiPipe } from './core/pipes/flag-emoji/flag-emoji.pipe'
-import { PhoneNumberInputComponent } from './components/phone-number-input/phone-number-input.component'
+import { PhoneNumberInputComponent } from './components/phone-number-input/phone-number-input.component';
+import { CommentControlComponent } from './components/comment-control/comment-control.component'
 
 @NgModule({
     imports: [
@@ -23,13 +24,15 @@ import { PhoneNumberInputComponent } from './components/phone-number-input/phone
         ConfirmationDirective,
         FormControlPipe,
         PhoneNumberInputComponent,
-        FlagEmojiPipe
+        FlagEmojiPipe,
+        CommentControlComponent,
     ],
     exports: [
         ConfirmationDirective,
         FormControlPipe,
         PhoneNumberInputComponent,
-        FlagEmojiPipe
+        FlagEmojiPipe,
+        CommentControlComponent,
     ]
 })
 export class XevlabsUiUtilsModule {

@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
         MatInputModule,
         MatFormFieldModule,
         MatSelectModule,
+        MatProgressSpinnerModule,
     ],
     exports: [
         MatButtonModule,
@@ -24,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
         MatInputModule,
         MatFormFieldModule,
         MatSelectModule,
+        MatProgressSpinnerModule,
     ],
 })
 export class MaterialModule {

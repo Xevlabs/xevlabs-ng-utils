@@ -1,0 +1,12 @@
+<mat-form-field class="full-width no-padding-bottom no-hint" appearance="outline">
+    <mat-label>{{ 'COMMENT' | transloco}}</mat-label>
+    <mat-error *ngIf="commentControl?.invalid">
+        {{"ERRORS.REQUIRED_FIELD" | transloco}}
+    </mat-error>
+    <textarea [disabled]="busy" (keydown.enter)="submit()" cdkTextareaAutosize cdkAutosizeMinRows="3" matInput
+        [formControl]="commentControl"></textarea>
+    <button matSuffix mat-icon-button [disabled]="busy" (click)="submit()" type="submit" color="primary">
+        <mat-icon *ngIf="!busy">send</mat-icon>
+        <mat-spinner color="primary" *ngIf="busy" class="margin-small" diameter="28"></mat-spinner>
+    </button>
+</mat-form-field>

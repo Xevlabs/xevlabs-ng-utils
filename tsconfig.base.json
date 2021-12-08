@@ -18,7 +18,7 @@
       "@xevlabs-ng-utils/xevlabs-ng-strapi-utils": [
         "libs/xevlabs-ng-strapi-utils/src/index.ts"
       ],
-      "@xevlabs-ng-utils/xevlabs-snackbar": [
+      "@xevlabs-ng-utils/ng-snackbar": [
         "libs/xevlabs-snackbar/src/index.ts"
       ],
       "@xevlabs-ng-utils/xevlabs-strapi-error-handling": [

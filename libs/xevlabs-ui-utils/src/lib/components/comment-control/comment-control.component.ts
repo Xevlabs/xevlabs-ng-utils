@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SnackBarService, SnackBarTypeEnum } from '@xevlabs-ng-utils/xevlabs-snackbar'
+import { SnackBarService, SnackBarTypeEnum } from '@xevlabs-ng-utils/ng-snackbar'
 
 @UntilDestroy()
 @Component({

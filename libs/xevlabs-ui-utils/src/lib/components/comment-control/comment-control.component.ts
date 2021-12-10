@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SnackBarService, SnackBarTypeEnum } from '@xevlabs-ng-utils/ng-snackbar'
 
 @UntilDestroy()
 @Component({
@@ -12,11 +11,6 @@ import { SnackBarService, SnackBarTypeEnum } from '@xevlabs-ng-utils/ng-snackbar
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => CommentControlComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: CommentControlComponent,
             multi: true,
         },
     ],
@@ -31,8 +25,7 @@ export class CommentControlComponent implements OnInit, AfterViewInit {
     onTouched!: () => void
 
     constructor(
-        private formBuilder: FormBuilder,
-        private snackbarService: SnackBarService,
+        private formBuilder: FormBuilder
     ) { }
 
     registerOnChange(fn: (comment: string) => void): void {
@@ -48,7 +41,7 @@ export class CommentControlComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this.commentControl = this.formBuilder.control('', Validators.required)
+        this.commentControl = this.formBuilder.control('')
     }
 
     ngAfterViewInit() {
@@ -57,16 +50,8 @@ export class CommentControlComponent implements OnInit, AfterViewInit {
         })
     }
 
-    validate() {
-        return this.commentControl.invalid ? { invalid: true } : null
-    }
-
     submit(): boolean {
-        if (this.commentControl.valid) {
-            this.submitEvent.emit(this.commentControl.value)
-        } else {
-            this.snackbarService.showSnackBar(SnackBarTypeEnum.ERROR, 'ERRORS.INVALID_FORM')
-        }
+        this.submitEvent.emit(this.commentControl.value)
         return false
     }
 

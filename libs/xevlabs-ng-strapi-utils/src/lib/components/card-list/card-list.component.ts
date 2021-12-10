@@ -17,6 +17,7 @@ export class CardListComponent implements OnInit {
     @Input() collectionPath!: string
     @Input() filters: FilterModel[] = []
     @Input() refreshList$?: Observable<void>
+    @Input() noDataMessage?: string
     itemList: any[] = []
     itemListCount!: number
     pageIndex = 0

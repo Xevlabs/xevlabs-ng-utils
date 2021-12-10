@@ -5,7 +5,7 @@
         <ng-container *ngTemplateOutlet="template; context:{entity: item}"></ng-container>
     </ng-container>
     <p *ngIf="busy">{{'COMMON.LOADING' | transloco}}</p>
-    <p *ngIf="!busy && !itemList?.length">{{'COMMON.EMPTY' | transloco}}</p>
+    <p *ngIf="!busy && !itemList?.length">{{noDataMessage | transloco}}</p>
     <button mat-button (click)="loadItems(pageIndex)" *ngIf="!busy && !loadedAll">
         <span class="bold">{{'COMMON.LOAD_MORE' | transloco}}</span>
     </button>

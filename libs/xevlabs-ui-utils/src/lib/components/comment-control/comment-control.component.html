@@ -1,8 +1,5 @@
 <mat-form-field class="full-width no-padding-bottom no-hint" appearance="outline">
     <mat-label>{{ 'COMMENT' | transloco}}</mat-label>
-    <mat-error *ngIf="commentControl?.invalid">
-        {{"ERRORS.REQUIRED_FIELD" | transloco}}
-    </mat-error>
     <textarea [disabled]="busy" (keydown.enter)="submit()" cdkTextareaAutosize cdkAutosizeMinRows="3" matInput
         [formControl]="commentControl"></textarea>
     <button matSuffix mat-icon-button [disabled]="busy" (click)="submit()" type="submit" color="primary">

@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core'
+import {Component, forwardRef, Input, OnInit} from '@angular/core'
 import {
     ControlValueAccessor,
     FormBuilder,
@@ -7,9 +7,9 @@ import {
     NG_VALUE_ACCESSOR,
     Validators,
 } from '@angular/forms'
-import { MatSelectChange } from '@angular/material/select'
-import { countries } from '../../core/constants/countries'
-import { PhoneNumberUtil } from 'google-libphonenumber'
+import {MatSelectChange} from '@angular/material/select'
+import {countries} from '../../core/constants/countries'
+import {PhoneNumberUtil} from 'google-libphonenumber'
 
 @Component({
     selector: 'xevlabs-ng-utils-phone-number-input',
@@ -54,16 +54,20 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     get error() {
-      return this.getCountryCode(this.phoneNumberControl.value).valid
+        return !(this.getCountryCode(this.phoneNumberControl.value).valid || this.getCountryCode(this.selectedCountryPhone + this.phoneNumberControl.value).valid)
     }
 
     getCountryCode(internationalNumber: string): { countryCode: string, number: string, valid: boolean } {
         let phoneNumber;
         try {
-            phoneNumber = this.phoneUtil.parseAndKeepRawInput(internationalNumber[0] === '+' ? internationalNumber : `+${internationalNumber}`)
+            let parsedIntNumber = internationalNumber;
+            if (parsedIntNumber[0] === "0") {
+                parsedIntNumber = parsedIntNumber.substring(1)
+            }
+            phoneNumber = this.phoneUtil.parseAndKeepRawInput(parsedIntNumber[0] === '+' ? parsedIntNumber : `+${parsedIntNumber}`)
             const countryCode = phoneNumber.getCountryCode()
             const nationalNumber = phoneNumber.getNationalNumber()
-            const nationalNumberString = nationalNumber ? nationalNumber.toString() : ''
+            const nationalNumberString = nationalNumber ? nationalNumber.toString() : '';
             const validNumber = phoneNumber.hasNationalNumber() && nationalNumberString.length > 8
             return {
                 countryCode: countryCode ? countryCode.toString() : '',
@@ -93,32 +97,33 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     updatePhoneNumber(phoneNumber: string) {
-      const { countryCode, number, valid } = this.getCountryCode(phoneNumber)
-      if (valid && countryCode) {
-        this.selectedCountryPhone = countryCode;
-        this.phoneNumberControl.setValue(number, {emitEvent: false})
-      } else if (phoneNumber.charAt(0) === '0') {
-        phoneNumber = phoneNumber.substring(1)
-      }
-      if (!valid) {
-        this.phoneNumberControl.setErrors({invalid: true})
-      } else {
-        this.phoneNumberControl.setErrors(null)
-      }
-      const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
-      this.onChange(internationalPhoneNumber)
+        const {countryCode, number, valid} = this.getCountryCode(phoneNumber)
+        const intNumber = this.getCountryCode(this.selectedCountryPhone + phoneNumber)
+        if (valid && countryCode) {
+            this.selectedCountryPhone = countryCode;
+            this.phoneNumberControl.setValue(number, {emitEvent: false})
+        } else if (phoneNumber.charAt(0) === '0') {
+            phoneNumber = phoneNumber.substring(1)
+        }
+        if (!valid && !intNumber.valid) {
+            this.phoneNumberControl.setErrors({invalid: true})
+        } else {
+            this.phoneNumberControl.setErrors(null)
+        }
+        const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
+        this.onChange(internationalPhoneNumber)
     }
 
     writeValue(value: string) {
         if (value) {
-            const { countryCode, number } = this.getCountryCode(value)
+            const {countryCode, number} = this.getCountryCode(value)
             this.selectedCountryPhone = countryCode
             this.phoneNumberControl.setValue(number, {emitEvent: false})
         }
     }
 
     validate() {
-        return this.error ? { invalid: true } : null
+        return this.error ? {invalid: true} : null
     }
 
 }

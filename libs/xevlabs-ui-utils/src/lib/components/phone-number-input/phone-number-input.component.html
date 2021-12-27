@@ -6,10 +6,10 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field class="full-width white" fxFlex=10 appearance="outline">
+    <mat-form-field class="full-width " fxFlex=10 appearance="outline">
         <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
     </mat-form-field>
-    <mat-form-field class="full-width white" appearance="outline">
+    <mat-form-field class="full-width" appearance="outline">
         <mat-label>{{label | transloco}}</mat-label>
         <mat-error *ngIf="phoneNumberControl?.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>

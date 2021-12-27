@@ -40,6 +40,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() searchByAttribute!: string
     @Input() submitEvent$!: Observable<void>
     @Input() useAppLocale?: boolean
+    activeLang?: string
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
@@ -74,12 +75,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     ngOnInit() {
-        const activeLang = this.useAppLocale ? this.translocoService.getActiveLang() : ''
+        this.activeLang = this.useAppLocale ? this.translocoService.getActiveLang() : ''
         this.autoCompleteForm = this.formBuilder.group({
             item: ['', Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, activeLang)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
             .subscribe((items: Record<string, unknown>[]) => {
                 this.filteredItemList = items
                 this.busy = false
@@ -133,7 +134,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
-            this.tableService.find(this.collectionName, [filter]).subscribe((item: unknown[]) => {
+            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang).subscribe((item: unknown[]) => {
                 this.item?.setValue(item[0])
                 this.searchQuery?.setValue('')
                 this.updateInput(this.autoCompleteForm.value)

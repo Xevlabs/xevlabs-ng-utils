@@ -1,5 +1,6 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core'
 import {
+    AbstractControl,
     ControlValueAccessor,
     FormBuilder,
     FormControl,
@@ -50,15 +51,21 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     get selectedCountry() {
-        return this.countries.filter((country: any) => (country.phone) == this.selectedCountryPhone)[0]
+        return this.countries.filter((country: any) => (country.phone)==this.selectedCountryPhone)[0]
     }
 
     get error() {
-        return !(this.getCountryCode(this.phoneNumberControl.value).valid || this.getCountryCode(this.selectedCountryPhone + this.phoneNumberControl.value).valid)
+        return !(this.getCountryCode(this.phoneNumberControl?.value).valid || this.getCountryCode(this.selectedCountryPhone + this.phoneNumberControl?.value).valid)
+   }
+
+    phoneValidator(e: PhoneNumberInputComponent) {
+        return (control: AbstractControl) => {
+            return e.error ? { invalid: true }:null
+        }
     }
 
     getCountryCode(internationalNumber: string): { countryCode: string, number: string, valid: boolean } {
-        let phoneNumber;
+        let phoneNumber
         try {
             let parsedIntNumber = internationalNumber;
             if (parsedIntNumber[0] === "0") {
@@ -70,22 +77,22 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
             const nationalNumberString = nationalNumber ? nationalNumber.toString() : '';
             const validNumber = phoneNumber.hasNationalNumber() && nationalNumberString.length > 8
             return {
-                countryCode: countryCode ? countryCode.toString() : '',
+                countryCode: countryCode ? countryCode.toString():'',
                 number: nationalNumberString,
-                valid: validNumber
+                valid: validNumber,
             }
         } catch (e) {
             return {
                 countryCode: '',
                 number: '',
-                valid: false
+                valid: false,
             }
         }
 
     }
 
     ngOnInit() {
-        this.phoneNumberControl = this.formBuilder.control('', [Validators.required])
+        this.phoneNumberControl = this.formBuilder.control('', [Validators.required, this.phoneValidator(this)])
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
             this.updatePhoneNumber(value)
         })
@@ -118,7 +125,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         if (value) {
             const {countryCode, number} = this.getCountryCode(value)
             this.selectedCountryPhone = countryCode
-            this.phoneNumberControl.setValue(number, {emitEvent: false})
+            this.phoneNumberControl.setValue(number, { emitEvent: false })
         }
     }
 

@@ -154,7 +154,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             type: StrapiFilterTypesEnum.CONTAINS,
             value: searchQuery?.toLowerCase(),
         }
-        return this.tableService.find<T>(this.collectionName, [...this.filters, filter])
+        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], 'asc', 'id', 0, -1, this.activeLang)
     }
 
 }

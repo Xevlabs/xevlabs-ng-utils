@@ -2,7 +2,7 @@
   <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
   <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
     <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
-      <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''">{{ column.translationKey | transloco}}</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''" [disabled]="!column.sortable">{{ column.translationKey | transloco}}</mat-header-cell>
       <mat-cell *matCellDef="let entity">
         <ng-container [ngSwitch]="column.type">
           <span class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.DATE">

@@ -20,6 +20,8 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() pageSize = 10;
   @Input() actionButtons! : ActionButtonModel[];
   @Input() routeRedirect?: string;
+  @Input() sortProperty?: string;
+  @Input() sortDirection: 'desc' | 'asc' = 'asc'
 
   @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 
@@ -35,6 +37,9 @@ export class StrapiTableComponent implements AfterViewInit {
     }
     if (!this.columnsDefinition) {
       throw new Error('Missing columns definition. Did you pass it to the component ?')
+    }
+    if (this.sortProperty) {
+        this.sort.sort({id:this.sortProperty , start: this.sortDirection, disableClear: false})
     }
     this.dataSource.initTable(this.paginator, this.sort, this.filters)
   }

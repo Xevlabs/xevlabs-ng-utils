@@ -10,6 +10,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouteParserPipe } from './core/pipes/route-parser.pipe';
+import { QueryParamsParserPipe } from './core/pipes/query-params-parser.pipe';
 
 @NgModule({
   imports: [
@@ -25,11 +26,13 @@ import { RouteParserPipe } from './core/pipes/route-parser.pipe';
     SearchBarComponent,
     ParseObjectKeyPipe,
     RouteParserPipe,
+    QueryParamsParserPipe,
   ],
   exports: [
     StrapiTableComponent,
     SearchBarComponent,
     RouteParserPipe,
+    QueryParamsParserPipe,
   ]
 })
 export class NgStrapiTableLibModule {

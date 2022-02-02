@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { StrapiDatasource } from '../../core/datasource/strapi.datasource';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortable } from '@angular/material/sort';
 import { FilterModel } from '../../models/filter.model';
 import { ColumnDefinitionModel } from '../../models/column-defintion.model';
 import { ColumnTypesEnum } from '../../models/columnTypesEnum';
@@ -20,8 +20,7 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() pageSize = 10;
   @Input() actionButtons! : ActionButtonModel[];
   @Input() routeRedirect?: string;
-  @Input() sortProperty?: string;
-  @Input() sortDirection: 'desc' | 'asc' = 'asc'
+  @Input() defaultSort?: MatSortable;
 
   @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 
@@ -38,8 +37,8 @@ export class StrapiTableComponent implements AfterViewInit {
     if (!this.columnsDefinition) {
       throw new Error('Missing columns definition. Did you pass it to the component ?')
     }
-    if (this.sortProperty) {
-        this.sort.sort({id:this.sortProperty , start: this.sortDirection, disableClear: false})
+    if (this.defaultSort) {
+        this.sort.sort(this.defaultSort)
     }
     this.dataSource.initTable(this.paginator, this.sort, this.filters)
   }

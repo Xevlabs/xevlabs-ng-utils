@@ -21,6 +21,7 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() actionButtons! : ActionButtonModel[];
   @Input() routeRedirect?: string;
   @Input() defaultSort?: MatSortable;
+  @Input() queryParamProperties?: string[];
 
   @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 

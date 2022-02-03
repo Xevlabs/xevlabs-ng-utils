@@ -35,7 +35,11 @@
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <ng-container *ngIf="routeRedirect">
-        <a *matRowDef="let row; columns: displayedColumns" [routerLink]="routeRedirect | routeParser: row">
+        <a 
+            *matRowDef="let row; columns: displayedColumns"
+            [routerLink]="routeRedirect | routeParser: row"
+            [queryParams]="queryParamProperties ? (queryParamProperties | queryParamsParser: row) : {}"
+        >
             <mat-row class="clickable-row"></mat-row>
         </a>
     </ng-container>

@@ -20,6 +20,7 @@ export class StrapiTableComponent implements AfterViewInit {
   @Input() pageSize = 10;
   @Input() actionButtons! : ActionButtonModel[];
   @Input() routeRedirect?: string;
+  @Input() queryParamProperties?: string[];
 
   @Output() actionToggled = new EventEmitter<{ type: string, entity: any }>()
 

@@ -8,7 +8,6 @@
           <span
               class="full-width text-overflow-ellipsis"
               *ngSwitchCase="columnTypesEnum.DATE"
-              fxFlexAlign="center stretch"
               fxLayout="row wrap"
               fxLayoutGap="0.2rem"
               matTooltip="{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : entity[column.key]}}"

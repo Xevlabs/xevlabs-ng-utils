@@ -40,6 +40,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() searchByAttribute!: string
     @Input() submitEvent$!: Observable<void>
     @Input() useAppLocale?: boolean
+    @Input() disabled?: boolean
     activeLang?: string
 
     itemList: Record<string, unknown>[] = []

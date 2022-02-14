@@ -32,6 +32,7 @@ import {PhoneNumberUtil} from 'google-libphonenumber'
 export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
 
     @Input() label!: string
+    @Input() disabled!: boolean
     countries = countries
     phoneNumberControl!: FormControl
     selectedCountryPhone: string = countries[0].phone.toString()
@@ -96,6 +97,8 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
             this.updatePhoneNumber(value)
         })
+        if (this.disabled)
+            this.phoneNumberControl.disable({emitEvent: false})
     }
 
     setCountryPhoneCode(selection: MatSelectChange) {

@@ -1,4 +1,5 @@
-import { StrapiFilterTypesEnum } from "@xevlabs-ng-utils/xevlabs-strapi-table";
+import { StrapiFilterTypesEnum } from "./strapi-filter-types.enum";
+
 
 export interface OperatorModel {
   type: string,

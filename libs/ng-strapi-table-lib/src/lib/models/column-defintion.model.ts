@@ -8,6 +8,7 @@ export interface ColumnDefinitionModel {
   hidden?: boolean,
   displayedProp?: string,
   type: ColumnTypesEnum,
-  template?: TemplateRef<any>
+  template?: TemplateRef<any>,
+  attributes?: string[]
 }
 

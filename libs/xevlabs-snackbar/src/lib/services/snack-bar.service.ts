@@ -11,12 +11,14 @@ export class SnackBarService {
   constructor(private toast: HotToastService, private transloco: TranslocoService) {
   }
 
-  showSnackBar(type: SnackBarTypeEnum, titleKey: string, messageKey?: string) {
+  showSnackBar(type: SnackBarTypeEnum, titleKey: string, messageKeys?: string[]) {
     let HtmlContent = `
           <h4 class='bold no-margin'>${this.transloco.translate(titleKey)}</h4>
         `;
-    if (messageKey) {
-      HtmlContent += `<p class='no-margin-bottom'>${this.transloco.translate(titleKey)}</p>`;
+    if (messageKeys) {
+        messageKeys.forEach((messageKey) => {
+            HtmlContent += `<p class='no-margin-bottom'>${this.transloco.translate(messageKey)}</p>`;
+        })
     }
     switch (type) {
       case SnackBarTypeEnum.SUCCESS:

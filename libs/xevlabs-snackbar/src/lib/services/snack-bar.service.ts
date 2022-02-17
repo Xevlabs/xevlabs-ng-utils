@@ -16,7 +16,7 @@ export class SnackBarService {
           <h4 class='bold no-margin'>${this.transloco.translate(titleKey)}</h4>
         `;
     if (messageKey) {
-      HtmlContent += `<p class='no-margin-bottom'>${this.transloco.translate(titleKey)}</p>`;
+      HtmlContent += `<p class='no-margin-bottom'>${this.transloco.translate(messageKey)}</p>`;
     }
     switch (type) {
       case SnackBarTypeEnum.SUCCESS:

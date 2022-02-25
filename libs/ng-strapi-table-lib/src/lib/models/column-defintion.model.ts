@@ -10,6 +10,7 @@ export interface ColumnDefinitionModel {
   displayedProp?: string,
   type: ColumnTypesEnum,
   template?: TemplateRef<any>,
+  tooltip?: string,
   operators?: OperatorModel[],
   attributes?: string[]
 }

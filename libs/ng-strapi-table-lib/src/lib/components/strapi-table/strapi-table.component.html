@@ -20,7 +20,7 @@
               <ng-container *ngTemplateOutlet="column.template; context:{entity: entity}"></ng-container>
             </ng-container>
           </ng-container>
-          <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.tooltip===column.key? entity[column.tooltip]: column.tooltip): null">
+          <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.customTooltip? column.customTooltip : entity[column.key]): null">
             {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
           </span>
         </ng-container>

@@ -4,9 +4,8 @@ import {
     EventEmitter,
     forwardRef,
     Input,
-    OnChanges,
     OnInit,
-    Output, SimpleChanges,
+    Output,
     ViewChild
 } from '@angular/core'
 import {

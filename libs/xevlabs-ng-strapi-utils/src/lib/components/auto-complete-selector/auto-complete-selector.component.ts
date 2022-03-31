@@ -123,7 +123,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
-        console.log(form)
         this.onChange(form ? { id: form?.item.id as number } : null)
         this.selectedValueChange.next(form?.item)
         this.onTouched()
@@ -146,7 +145,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
     }
 
-    writeValue(controls?: any): void {
+    writeValue(controls?: unknown): void {
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }

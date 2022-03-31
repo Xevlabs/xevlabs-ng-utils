@@ -1,4 +1,14 @@
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core'
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    forwardRef,
+    Input,
+    OnChanges,
+    OnInit,
+    Output, SimpleChanges,
+    ViewChild
+} from '@angular/core'
 import {
     ControlValueAccessor,
     FormBuilder,
@@ -8,12 +18,14 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import { Observable } from 'rxjs'
+import {Observable, takeUntil} from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 
+@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',
@@ -40,7 +52,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() searchByAttribute!: string
     @Input() submitEvent$!: Observable<void>
     @Input() useAppLocale?: boolean
-    @Input() disabled?: boolean
+    @Input() disabled?: boolean = false;
+    @Output() selectedValueChange = new EventEmitter<any>()
     activeLang?: string
 
     itemList: Record<string, unknown>[] = []
@@ -110,7 +123,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
+        console.log(form)
         this.onChange(form ? { id: form?.item.id as number } : null)
+        this.selectedValueChange.next(form?.item)
         this.onTouched()
     }
 
@@ -131,7 +146,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
     }
 
-    writeValue(controls?: unknown): void {
+    writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
@@ -142,6 +157,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 this.searchQuery?.disable()
                 this.busy = false
             })
+        } else if (this.chipList) {
+            this.remove()
         }
     }
 

@@ -144,10 +144,10 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
     }
 
-    writeValue(controls?: unknown): void {
+    writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
-            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
+            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang).subscribe((item: unknown[]) => {
                 this.item?.setValue(item[0])
                 this.searchQuery?.setValue('')
@@ -168,7 +168,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         const filter = {
             attribute: this.searchByAttribute,
             type: StrapiFilterTypesEnum.CONTAINS,
-            value: searchQuery?.toLowerCase(),
+            value: searchQuery,
         }
         return this.tableService.find<T>(this.collectionName, [...this.filters, filter], 'asc', 'id', 0, -1, this.activeLang)
     }

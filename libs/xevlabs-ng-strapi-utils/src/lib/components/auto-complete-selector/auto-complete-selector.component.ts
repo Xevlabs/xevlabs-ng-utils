@@ -50,7 +50,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() prefix!: string
     @Input() searchByAttribute!: string
     @Input() submitEvent$!: Observable<void>
-    @Input() useAppLocale?: boolean
     @Input() disabled?: boolean = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
@@ -89,7 +88,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     ngOnInit() {
-        this.activeLang = this.useAppLocale ? this.translocoService.getActiveLang() : this.customLocale
+        this.customLocale ? this.customLocale : this.translocoService.getActiveLang()
         this.autoCompleteForm = this.formBuilder.group({
             item: ['', Validators.required],
             searchQuery: '',

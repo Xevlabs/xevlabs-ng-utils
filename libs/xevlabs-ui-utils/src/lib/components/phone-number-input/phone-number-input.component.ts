@@ -11,7 +11,10 @@ import {
 import {MatSelectChange} from '@angular/material/select'
 import {countries} from '../../core/constants/countries'
 import {PhoneNumberUtil} from 'google-libphonenumber'
+import { Observable } from 'rxjs'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
+@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-phone-number-input',
     templateUrl: './phone-number-input.component.html',
@@ -33,6 +36,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
 
     @Input() label!: string
     @Input() disabled!: boolean
+    @Input() submitEvent$ = new Observable<void>()
     countries = countries
     phoneNumberControl!: FormControl
     selectedCountryPhone: string = countries[0].phone.toString()
@@ -99,6 +103,9 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         })
         if (this.disabled)
             this.phoneNumberControl.disable({emitEvent: false})
+        this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
+            this.phoneNumberControl.markAsTouched()
+        })
     }
 
     setCountryPhoneCode(selection: MatSelectChange) {

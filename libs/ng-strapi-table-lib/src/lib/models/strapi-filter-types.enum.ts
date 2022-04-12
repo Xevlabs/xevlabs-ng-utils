@@ -10,4 +10,5 @@ export enum StrapiFilterTypesEnum {
   CONTAINS = '$containsi',
   NOT_CONTAINS = '$ncontainsi',
   NULL = '$null',
+  SEARCH = 'q'
 }

@@ -26,33 +26,41 @@ export class StrapiTableService {
 	}
 
 	find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
-	        pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
-		let params = this.parseStrapiFilters(filters)
+            pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
+        let params = new HttpParams()
         if (locale) {
             params = params.append('_locale', locale)
         }
-		params = params.appendAll({
-			_limit: pageSize.toString(),
-			_start: (pageSize * pageNumber).toString(),
-			_sort: `${sortField}:${sortOrder.toUpperCase()
-			}`,
-		})
-		return this.http.get<T[]>(`${this.baseUrl}/${collectionName}`, {
-			params,
-		})
-	}
+        params = params.appendAll({
+            _limit: pageSize.toString(),
+            _start: (pageSize * pageNumber).toString(),
+            _sort: `${sortField}:${sortOrder.toUpperCase()}`,
+        })
+        let query = this.parseStrapiFilters(filters)
+        return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((items: any) => {
+            return items.length ? items : items.data.map((item: any) => { return { id: item.id, ...item.attributes } })
+        }))
+    }
 
-	parseStrapiFilters(filters: FilterModel[]): HttpParams {
-		let params = new HttpParams()
-		filters.forEach(filter => {
-			if (Array.isArray(filter.value)) {
-				filter.value.forEach(filterValue => {
-					params = params.append(`${filter.attribute}_${filter.type}`, filterValue.toString())
-				})
-			} else {
-				params = params.append(`${filter.attribute}_${filter.type}`, filter.value.toString())
-			}
-		})
-		return params
-	}
+    parseStrapiFilters(rawFilters: FilterModel[]): string {
+        let queryFilters: any = {
+            filters: {
+                $and: [],
+            },
+        }
+        rawFilters.map(filter => {
+            var key = filter.attribute
+            var type = filter.type
+            queryFilters.filters.$and.push({
+                [key]: {
+                    [type]: filter.value
+                }
+            })
+        })
+        const query = qs.stringify(queryFilters,
+            {
+                encodeValuesOnly: true
+            })
+        return query
+    }
 }

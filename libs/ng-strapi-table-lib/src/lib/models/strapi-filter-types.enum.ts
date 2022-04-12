@@ -7,8 +7,7 @@ export enum StrapiFilterTypesEnum {
   GREATER_THAN_AND_EQUAL_TO = '$gte',
   IN = '$in',
   NOT_IN = '$nin',
-  CONTAINS = '$contains',
-  NOT_CONTAINS = '$ncontains',
+  CONTAINS = '$containsi',
+  NOT_CONTAINS = '$ncontainsi',
   NULL = '$null',
-  SEARCH = '$q'
 }

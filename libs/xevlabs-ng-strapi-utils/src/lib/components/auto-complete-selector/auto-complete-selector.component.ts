@@ -148,7 +148,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
-            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang).subscribe((item: unknown[]) => {
+            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, 'all').subscribe((item: unknown[]) => {
                 this.item?.setValue(item[0])
                 this.searchQuery?.setValue('')
                 this.updateInput(this.autoCompleteForm.value)

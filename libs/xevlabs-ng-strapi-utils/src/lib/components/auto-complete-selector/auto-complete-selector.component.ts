@@ -17,12 +17,12 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import {Observable, takeUntil} from 'rxjs'
+import { Observable } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
-import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
+import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
 @UntilDestroy()
 @Component({
@@ -53,6 +53,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() disabled?: boolean = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
+    @Input() chipNumber = 1
     activeLang?: string
 
     itemList: Record<string, unknown>[] = []
@@ -60,8 +61,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     busy = true
     autoCompleteForm!: FormGroup
 
-    onChange!: (_: { id: number } | null) => void
-    onTouched!: () => void
+    onChange = (_: { id: number }[] | null) => { }
+    onTouched = () => { }
 
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
     @ViewChild('chipList', { static: false }) chipList!: MatChipList
@@ -75,22 +76,22 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         return this.autoCompleteForm.get('searchQuery')
     }
 
-    get item() {
-        return this.autoCompleteForm.get('item')
+    get items() {
+        return this.autoCompleteForm.get('items')
     }
 
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn
     }
 
-    registerOnChange(fn: (_: { id: number } | null) => void): void {
+    registerOnChange(fn: (_: { id: number }[] | null) => void): void {
         this.onChange = fn
     }
 
     ngOnInit() {
         this.customLocale ? this.customLocale : this.translocoService.getActiveLang()
         this.autoCompleteForm = this.formBuilder.group({
-            item: ['', Validators.required],
+            items: [[], Validators.required],
             searchQuery: '',
         })
         this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
@@ -107,7 +108,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                         return this.search<Record<string, unknown>>(searchTerm)
                     }
                     return []
-                }))
+                }),
+                untilDestroyed(this))
                 .subscribe((filteredItemList: Record<string, unknown>[]) => {
                     this.filteredItemList = filteredItemList
                     this.busy = false
@@ -116,47 +118,58 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         this.autoCompleteForm.statusChanges.subscribe(status => {
             this.chipList.errorState = status === 'INVALID'
         })
-        this.submitEvent$.subscribe(() => {
+        this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
             this.searchQuery?.setValue(null)
         })
     }
 
-    updateInput(form: { item: { id: number }, searchQuery: string } | null) {
-        this.onChange(form ? { id: form?.item.id as number } : null)
-        this.selectedValueChange.next(form?.item)
+    updateInput(form: { items: { id: number }[], searchQuery: string } | null) {
+        this.onChange(form ? form.items : null)
+        this.selectedValueChange.next(form?.items)
         this.onTouched()
     }
 
-    remove() {
-        this.item?.setValue(null)
+    remove(id: number) {
+        const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
+        this.items?.setValue(filteredList)
         this.updateInput(null)
-        this.searchQuery?.enable()
+        this.handleSearchQueryState()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
         if (event.option.value !== '') {
-            this.item?.setValue(event.option.value)
+            const newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            this.items?.setValue(newChipList)
             this.searchQuery?.setValue(null)
             this.refInput.nativeElement.value = ''
-            this.chipList.errorState = !this.item?.value.uid
+            this.chipList.errorState = !this.items?.value.uid
             this.updateInput(this.autoCompleteForm.value)
-            this.searchQuery?.disable()
+            this.handleSearchQueryState()
         }
+    }
+
+    handleSearchQueryState() {
+        if (this.items?.value.length >= this.chipNumber) {
+            this.searchQuery?.disable()
+            return
+        }
+        this.searchQuery?.enable()
     }
 
     writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
-            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang).subscribe((item: unknown[]) => {
-                this.item?.setValue(item[0])
-                this.searchQuery?.setValue('')
-                this.updateInput(this.autoCompleteForm.value)
-                this.searchQuery?.disable()
-                this.busy = false
-            })
+            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
+                .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {
+                    this.items?.setValue(item[0])
+                    this.searchQuery?.setValue('')
+                    this.updateInput(this.autoCompleteForm.value)
+                    this.searchQuery?.disable()
+                    this.busy = false
+                })
         } else if (this.chipList) {
-            this.remove()
+            this.updateInput(null)
         }
     }
 

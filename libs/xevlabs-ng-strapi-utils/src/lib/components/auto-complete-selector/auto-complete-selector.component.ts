@@ -81,10 +81,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         return this.autoCompleteForm.get('items')
     }
 
-    get itemValues() {
-        return this.autoCompleteForm.get('items')?.value.length ? this.autoCompleteForm.get('items')?.value : [this.autoCompleteForm.get('items')?.value]
-    }
-
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn
     }
@@ -144,15 +140,24 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     remove(id: number) {
-        const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
-        this.items?.setValue(filteredList)
+        if (this.items?.value.length) {
+            const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
+            this.items?.setValue(filteredList)
+        } else {
+            this.items?.setValue(null)
+        }
         this.updateInput(null)
         this.handleSearchQueryState()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
         if (event.option.value !== '') {
-            const newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            let newChipList
+            if (this.items!.value?.length) {
+                newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            } else {
+                newChipList = [event.option.value]
+            }
             this.items?.setValue(newChipList)
             this.searchQuery?.setValue(null)
             this.refInput.nativeElement.value = ''
@@ -163,7 +168,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     handleSearchQueryState() {
-        if (this.items?.value.length >= this.chipNumber) {
+        if (this.items?.value?.length >= this.chipNumber) {
             this.searchQuery?.disable()
             return
         }

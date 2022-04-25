@@ -2,14 +2,23 @@
     <mat-form-field class="chip-list full-width" appearance="outline">
         <mat-label>{{ prefix }}</mat-label>
         <mat-error *ngIf="items!.errors?.required">
-            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
-         >
+            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
         <mat-chip-list #chipList>
-            <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of itemValues" (removed)="remove(item.id)"
-                class="capitalize">
-                {{ item[searchByAttribute] }}
-                <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
-            </mat-chip>
+            <div *ngIf="items!.value?.length">
+                <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of items!.value"
+                    (removed)="remove(item.id)" class="capitalize">
+                    {{ item[searchByAttribute] }}
+                    <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
+                </mat-chip>
+            </div>
+            <div *ngIf="!items!.value?.length && items!.value">
+                <mat-chip selected [removable]="!disabled" color="primary"
+                    (removed)="remove(items!.value.id)" class="capitalize">
+                    {{ items!.value[searchByAttribute] }}
+                    <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
+                </mat-chip>
+            </div>
+
             <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
                 [matChipInputFor]="chipList">
 
@@ -19,7 +28,7 @@
         <mat-option disabled *ngIf="busy">
             <mat-spinner diameter="35"></mat-spinner>
         </mat-option>
-        <div *ngIf="!busy" >
+        <div *ngIf="!busy">
             <mat-option *ngFor="let option of filteredItemList" [value]="option">
                 {{ option[searchByAttribute] }}
             </mat-option>

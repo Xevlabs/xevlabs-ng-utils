@@ -5,7 +5,7 @@
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
          >
         <mat-chip-list #chipList>
-            <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of items!.value" (removed)="remove(item.id)"
+            <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of itemValues" (removed)="remove(item.id)"
                 class="capitalize">
                 {{ item[searchByAttribute] }}
                 <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>

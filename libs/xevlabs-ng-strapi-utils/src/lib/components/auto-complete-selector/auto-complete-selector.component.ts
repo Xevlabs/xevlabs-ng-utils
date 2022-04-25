@@ -169,12 +169,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
-            let filter: FilterModel
-            if (this.chipNumber > 1) {
-                filter = { attribute: 'id', type: StrapiFilterTypesEnum.IN, value: controls.map((control: any) => control.id) }
-            } else {
-                filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
-            }
+            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.itemListSubscription?.unsubscribe()
             this.itemListSubscription = this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {

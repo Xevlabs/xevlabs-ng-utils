@@ -17,7 +17,7 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
@@ -54,6 +54,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     @Input() chipNumber = 1
+    itemListSubscription!: Subscription
     activeLang?: string
 
     itemList: Record<string, unknown>[] = []
@@ -61,7 +62,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     busy = true
     autoCompleteForm!: FormGroup
 
-    onChange = (_: { id: number }[] | null) => { }
+    onChange = (_: { id: number }[] | { id: number } | null) => { }
     onTouched = () => { }
 
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
@@ -84,7 +85,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         this.onTouched = fn
     }
 
-    registerOnChange(fn: (_: { id: number }[] | null) => void): void {
+    registerOnChange(fn: (_: { id: number }[] | { id: number } | null) => void): void {
         this.onChange = fn
     }
 
@@ -94,11 +95,14 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             items: [[], Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+        this.itemListSubscription?.unsubscribe()
+        this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+            .pipe(untilDestroyed(this))
             .subscribe((items: Record<string, unknown>[]) => {
                 this.filteredItemList = items
                 this.busy = false
             })
+
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
@@ -124,8 +128,14 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     updateInput(form: { items: { id: number }[], searchQuery: string } | null) {
-        this.onChange(form ? form.items : null)
-        this.selectedValueChange.next(form?.items)
+        if (this.chipNumber > 1) {
+            this.onChange(form ? form.items : null)
+            this.selectedValueChange.next(form?.items)
+        }
+        if (this.chipNumber == 1) {
+            this.onChange(form ? form.items[0] : null)
+            this.selectedValueChange.next(form?.items[0])
+        }
         this.onTouched()
     }
 
@@ -160,9 +170,15 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
-            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription?.unsubscribe()
+            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {
-                    this.items?.setValue(item[0])
+                    if (this.chipNumber > 1) {
+                        this.items?.setValue(item.splice(0, this.chipNumber))
+                    }
+                    if (this.chipNumber == 1) {
+                        this.items?.setValue(item[0])
+                    }
                     this.searchQuery?.setValue('')
                     this.updateInput(this.autoCompleteForm.value)
                     this.searchQuery?.disable()

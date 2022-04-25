@@ -140,15 +140,24 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     remove(id: number) {
-        const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
-        this.items?.setValue(filteredList)
+        if (this.items?.value.length) {
+            const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
+            this.items?.setValue(filteredList)
+        } else {
+            this.items?.setValue(null)
+        }
         this.updateInput(null)
         this.handleSearchQueryState()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
         if (event.option.value !== '') {
-            const newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            let newChipList
+            if (this.items!.value?.length) {
+                newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            } else {
+                newChipList = [event.option.value]
+            }
             this.items?.setValue(newChipList)
             this.searchQuery?.setValue(null)
             this.refInput.nativeElement.value = ''
@@ -159,7 +168,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     handleSearchQueryState() {
-        if (this.items?.value.length >= this.chipNumber) {
+        if (this.items?.value?.length >= this.chipNumber) {
             this.searchQuery?.disable()
             return
         }
@@ -169,7 +178,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
-            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
+            let filter: FilterModel
+            if (this.chipNumber > 1) {
+                filter = { attribute: 'id', type: StrapiFilterTypesEnum.IN, value: controls.map((control: any) => control.id) }
+            } else {
+                filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
+            }
             this.itemListSubscription?.unsubscribe()
             this.itemListSubscription = this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {

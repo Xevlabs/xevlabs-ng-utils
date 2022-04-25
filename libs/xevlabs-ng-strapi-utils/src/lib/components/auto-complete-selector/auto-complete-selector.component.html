@@ -1,13 +1,13 @@
 <form [formGroup]="autoCompleteForm">
     <mat-form-field class="chip-list full-width" appearance="outline">
         <mat-label>{{ prefix }}</mat-label>
-        <mat-error *ngIf="item!.errors?.required">
+        <mat-error *ngIf="items!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
          >
         <mat-chip-list #chipList>
-            <mat-chip selected [removable]="!disabled" color="primary" *ngIf="item!.value?.id" (removed)="remove()"
+            <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of items!.value" (removed)="remove(item.id)"
                 class="capitalize">
-                {{ item!.value[searchByAttribute] }}
+                {{ item[searchByAttribute] }}
                 <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
             </mat-chip>
             <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"

@@ -81,6 +81,10 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         return this.autoCompleteForm.get('items')
     }
 
+    get itemValues() {
+        return Array.isArray(this.items!.value) ? this.items!.value : [this.items!.value].filter(item => item)
+    }
+
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn
     }

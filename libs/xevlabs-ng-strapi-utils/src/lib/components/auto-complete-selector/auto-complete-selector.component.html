@@ -4,21 +4,13 @@
         <mat-error *ngIf="items!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
         <mat-chip-list #chipList>
-            <div *ngIf="items!.value?.length">
-                <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of items!.value"
+            <div>
+                <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of itemValues"
                     (removed)="remove(item.id)" class="capitalize">
                     {{ item[searchByAttribute] }}
                     <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
                 </mat-chip>
             </div>
-            <div *ngIf="!items!.value?.length && items!.value">
-                <mat-chip selected [removable]="!disabled" color="primary"
-                    (removed)="remove(items!.value.id)" class="capitalize">
-                    {{ items!.value[searchByAttribute] }}
-                    <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
-                </mat-chip>
-            </div>
-
             <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
                 [matChipInputFor]="chipList">
 

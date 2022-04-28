@@ -1,5 +1,5 @@
 <form [formGroup]="autoCompleteForm">
-    <mat-form-field class="chip-list full-width" appearance="outline">
+    <mat-form-field class="chip-list full-width field-light-grey-background" appearance="outline">
         <mat-label>{{ prefix }}</mat-label>
         <mat-error *ngIf="item!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error

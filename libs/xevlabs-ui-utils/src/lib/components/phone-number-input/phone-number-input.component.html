@@ -1,4 +1,4 @@
-<form fxLayout="row" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
+<form fxLayout.gt-md="row" fxLayout.lt-md="column" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
     <mat-form-field class="full-width white field-primary-color-border" appearance="outline" fxFlex=25>
         <mat-select [disabled]="disabled" (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
             <mat-option *ngFor="let country of countries" [value]="country">
@@ -6,17 +6,17 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    
-    <mat-form-field class="full-width field-light-grey-background no-padding" appearance="outline" floatLabel="never">
-        <mat-form-field class="full-width field-primary-color-border prefix" fxFlex=20 appearance="outline">
+    <div class="full-width">
+        <mat-form-field class="field-primary-color-border prefix" appearance="outline">
             <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
         </mat-form-field>
-        <mat-label>{{label | transloco}}</mat-label>
-        <mat-error *ngIf="phoneNumberControl?.errors?.required">
-            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
-        <mat-error *ngIf="phoneNumberControl?.errors?.invalid">
-            {{"ERRORS.FIELD_PATTERN" | transloco}}</mat-error>
-        <mat-icon matSuffix>phone</mat-icon>
-        <input type="text" matInput [formControl]="phoneNumberControl">
-    </mat-form-field>
+        <mat-form-field class="full-width field-light-grey-background text-padding" appearance="outline"> 
+                <input type="text" matInput [formControl]="phoneNumberControl" [placeholder]="label | transloco">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="phoneNumberControl?.errors?.required">
+                {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
+            <mat-error *ngIf="phoneNumberControl?.errors?.invalid">
+                {{"ERRORS.FIELD_PATTERN" | transloco}}</mat-error>   
+        </mat-form-field>
+    </div> 
 </form>

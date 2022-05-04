@@ -1,8 +1,9 @@
-<form fxLayout.gt-md="row" fxLayout.lt-md="column" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
+<form fxLayout="row" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
     <mat-form-field class="full-width white field-primary-color-border" appearance="outline" fxFlex=25>
         <mat-select [disabled]="disabled" (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
+            <mat-select-trigger *ngIf="isMobile"> {{ (selectedCountry.code | flagEmoji) }} </mat-select-trigger>
             <mat-option *ngFor="let country of countries" [value]="country">
-                {{ country.name + ' - ' + (country.code | flagEmoji) }}
+                {{ (country.code | flagEmoji) }} {{ ' - ' + country.name }} 
             </mat-option>
         </mat-select>
     </mat-form-field>
@@ -10,7 +11,7 @@
         <mat-form-field class="field-primary-color-border prefix" appearance="outline">
             <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
         </mat-form-field>
-        <mat-form-field class="full-width field-light-grey-background text-padding" appearance="outline"> 
+        <mat-form-field class="full-width field-light-grey-background phone-field" appearance="outline"> 
                 <input type="text" matInput [formControl]="phoneNumberControl" [placeholder]="label | transloco">
             <mat-icon matSuffix>phone</mat-icon>
             <mat-error *ngIf="phoneNumberControl?.errors?.required">

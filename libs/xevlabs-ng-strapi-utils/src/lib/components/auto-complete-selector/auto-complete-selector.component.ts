@@ -17,12 +17,12 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import {Observable, takeUntil} from 'rxjs'
+import { Observable } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
-import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
+import { UntilDestroy } from "@ngneat/until-destroy";
 
 @UntilDestroy()
 @Component({
@@ -54,6 +54,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     activeLang?: string
+    selectedItem = false
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
@@ -123,6 +124,14 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
 
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
         this.onChange(form ? { id: form?.item.id as number } : null)
+        if (form?.item) {
+            this.selectedItem = true
+            this.refInput.nativeElement.placeholder = ''
+        }
+        else {
+            this.selectedItem = false
+            this.refInput.nativeElement.placeholder = this.prefix
+        }
         this.selectedValueChange.next(form?.item)
         this.onTouched()
     }
@@ -154,6 +163,10 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 this.updateInput(this.autoCompleteForm.value)
                 this.searchQuery?.disable()
                 this.busy = false
+                if (item.length) {
+                    this.selectedItem = true
+                    this.refInput.nativeElement.placeholder = ''
+                }
             })
         } else if (this.chipList) {
             this.remove()

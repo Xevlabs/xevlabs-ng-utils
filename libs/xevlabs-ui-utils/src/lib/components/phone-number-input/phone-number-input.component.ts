@@ -98,14 +98,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     ngOnInit() { 
-        const defaultCountry = this.countries.find(country => country.code === this.defaultCountryCode) 
-        if (defaultCountry) {
-            if (this.countries.indexOf(defaultCountry) !== 0) {
-                this.countries.splice(this.countries.indexOf(defaultCountry), 1)
-                this.countries.unshift(defaultCountry)
-                this.selectedCountryPhone = this.countries[0].phone.toString()
-            }
-        }  
+        this.setDefaultCountry()
         this.phoneNumberControl = this.formBuilder.control('', [Validators.required, this.phoneValidator(this)])
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
             this.updatePhoneNumber(value)
@@ -138,6 +131,17 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         }
         const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
         this.onChange(internationalPhoneNumber)
+    }
+
+    setDefaultCountry() {
+        const defaultCountry = this.countries.find(country => country.code === this.defaultCountryCode) 
+        if (defaultCountry) {
+            if (this.countries.indexOf(defaultCountry) !== 0) {
+                this.countries.splice(this.countries.indexOf(defaultCountry), 1)
+                this.countries.unshift(defaultCountry)
+                this.selectedCountryPhone = this.countries[0].phone.toString()
+            }
+        }  
     }
 
     writeValue(value: string) {

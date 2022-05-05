@@ -37,6 +37,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     @Input() label!: string
     @Input() disabled!: boolean
     @Input() submitEvent$ = new Observable<void>()
+    @Input() defaultCountryCode = 'FR'
     countries = countries
     phoneNumberControl!: FormControl
     selectedCountryPhone: string = countries[0].phone.toString()
@@ -97,7 +98,15 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
 
     }
 
-    ngOnInit() {
+    ngOnInit() { 
+        const defaultCountry = this.countries.find(country => country.code === this.defaultCountryCode) 
+        if (defaultCountry) {
+            if (this.countries.indexOf(defaultCountry) !== 0) {
+                this.countries.splice(this.countries.indexOf(defaultCountry), 1)
+                this.countries.unshift(defaultCountry)
+                this.selectedCountryPhone = this.countries[0].phone.toString()
+            }
+        }  
         this.phoneNumberControl = this.formBuilder.control('', [Validators.required, this.phoneValidator(this)])
         this.phoneNumberControl.valueChanges.subscribe((value: string) => {
             this.updatePhoneNumber(value)

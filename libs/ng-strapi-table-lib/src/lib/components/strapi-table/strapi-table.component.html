@@ -46,6 +46,7 @@
             *matRowDef="let row; columns: displayedColumns"
             [routerLink]="routeRedirect | routeParser: row"
             [queryParams]="queryParamProperties ? (queryParamProperties | queryParamsParser: row) : {}"
+            [queryParamsHandling]="'merge'"
         >
             <mat-row class="clickable-row"></mat-row>
         </a>

@@ -22,9 +22,7 @@ import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
-import { UntilDestroy } from "@ngneat/until-destroy";
 
-@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',
@@ -54,7 +52,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     activeLang?: string
-    selectedItem = false
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
@@ -125,11 +122,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
         this.onChange(form ? { id: form?.item.id as number } : null)
         if (form?.item) {
-            this.selectedItem = true
             this.refInput.nativeElement.placeholder = ''
         }
         else {
-            this.selectedItem = false
             this.refInput.nativeElement.placeholder = this.prefix
         }
         this.selectedValueChange.next(form?.item)
@@ -157,14 +152,13 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (controls) {
             this.busy = true
             const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
-            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, 'all').subscribe((item: unknown[]) => {
+            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang).subscribe((item: unknown[]) => {
                 this.item?.setValue(item[0])
                 this.searchQuery?.setValue('')
                 this.updateInput(this.autoCompleteForm.value)
                 this.searchQuery?.disable()
                 this.busy = false
                 if (item.length) {
-                    this.selectedItem = true
                     this.refInput.nativeElement.placeholder = ''
                 }
             })

@@ -1,5 +1,5 @@
 <form [formGroup]="autoCompleteForm">
-    <mat-form-field class="chip-list full-width field-light-grey-background fixed-height" [ngClass]="selectedItem?'no-border':''" appearance="outline">
+    <mat-form-field class="chip-list full-width field-light-grey-background fixed-height" [ngClass]="item?.value ?'no-border':''" appearance="outline">
         <mat-error *ngIf="item!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
          >
@@ -10,7 +10,7 @@
                 <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
             </mat-chip>
             <input  #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
-                [matChipInputFor]="chipList" [placeholder]="selectedItem ? '' : prefix">
+                [matChipInputFor]="chipList" [placeholder]="item?.value ? '' : prefix">
 
         </mat-chip-list>
     </mat-form-field>

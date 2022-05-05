@@ -17,14 +17,12 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import {Observable, takeUntil} from 'rxjs'
+import { Observable } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
-import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 
-@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',
@@ -93,7 +91,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             item: ['', Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, 'all')
             .subscribe((items: Record<string, unknown>[]) => {
                 this.filteredItemList = items
                 this.busy = false
@@ -123,6 +121,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
 
     updateInput(form: { item: { id: number }, searchQuery: string } | null) {
         this.onChange(form ? { id: form?.item.id as number } : null)
+        if (form?.item) {
+            this.refInput.nativeElement.placeholder = ''
+        }
+        else {
+            this.refInput.nativeElement.placeholder = this.prefix
+        }
         this.selectedValueChange.next(form?.item)
         this.onTouched()
     }
@@ -154,6 +158,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 this.updateInput(this.autoCompleteForm.value)
                 this.searchQuery?.disable()
                 this.busy = false
+                if (item.length) {
+                    this.refInput.nativeElement.placeholder = ''
+                }
             })
         } else if (this.chipList) {
             this.remove()

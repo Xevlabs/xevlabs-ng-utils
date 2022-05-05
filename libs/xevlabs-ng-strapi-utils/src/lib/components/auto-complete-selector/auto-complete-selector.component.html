@@ -1,17 +1,16 @@
 <form [formGroup]="autoCompleteForm">
-    <mat-form-field class="chip-list full-width" appearance="outline">
-        <mat-label>{{ prefix }}</mat-label>
+    <mat-form-field class="chip-list full-width field-light-grey-background fixed-height" [ngClass]="item?.value ?'no-border':''" appearance="outline">
         <mat-error *ngIf="item!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
          >
         <mat-chip-list #chipList>
-            <mat-chip selected [removable]="!disabled" color="primary" *ngIf="item!.value?.id" (removed)="remove()"
+        <mat-chip selected [removable]="!disabled" color="primary" *ngIf="item!.value?.id" (removed)="remove()"
                 class="capitalize">
                 {{ item!.value[searchByAttribute] }}
                 <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
-                [matChipInputFor]="chipList">
+            <input  #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
+                [matChipInputFor]="chipList" [placeholder]="item?.value ? '' : prefix">
 
         </mat-chip-list>
     </mat-form-field>

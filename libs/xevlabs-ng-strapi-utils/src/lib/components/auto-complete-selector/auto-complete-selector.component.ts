@@ -91,7 +91,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             item: ['', Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, 'all')
             .subscribe((items: Record<string, unknown>[]) => {
                 this.filteredItemList = items
                 this.busy = false

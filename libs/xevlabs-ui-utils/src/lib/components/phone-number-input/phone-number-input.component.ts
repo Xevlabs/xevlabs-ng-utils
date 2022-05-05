@@ -41,7 +41,6 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     countries = countries
     phoneNumberControl!: FormControl
     selectedCountryPhone: string = countries[0].phone.toString()
-    isMobile = false
 
     onChange!: (value: string) => void
     onTouched!: () => void
@@ -116,7 +115,6 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
             this.phoneNumberControl.markAsTouched()
         })
-        if (window.screen.width <= 599) this.isMobile = true;
     }
 
     setCountryPhoneCode(selection: MatSelectChange) {

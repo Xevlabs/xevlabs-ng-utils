@@ -59,7 +59,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
-    busy = true
+    busy!: boolean
     autoCompleteForm!: FormGroup
 
     onChange = (_: { id: number }[] | { id: number } | null) => { }
@@ -100,18 +100,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             searchQuery: '',
         })
         this.itemListSubscription?.unsubscribe()
-        this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
-            .pipe(untilDestroyed(this))
-            .subscribe((items: Record<string, unknown>[]) => {
-                this.filteredItemList = items
-                this.busy = false
-            })
 
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string') {
+                    if (typeof searchTerm === 'string' && searchTerm?.length > 2) {
                         this.busy = true
                         return this.search<Record<string, unknown>>(searchTerm)
                     }

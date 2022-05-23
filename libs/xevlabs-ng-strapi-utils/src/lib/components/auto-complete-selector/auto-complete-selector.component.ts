@@ -54,6 +54,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     @Input() chipNumber = 1
+    @Input() initList = true
     itemListSubscription!: Subscription
     activeLang?: string
 
@@ -100,12 +101,19 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             searchQuery: '',
         })
         this.itemListSubscription?.unsubscribe()
-
+        if (this.initList) {
+            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+                .pipe(untilDestroyed(this))
+                .subscribe((items: Record<string, unknown>[]) => {
+                    this.filteredItemList = items
+                    this.busy = false
+                })
+        }
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string' && searchTerm?.length > 2) {
+                    if (typeof searchTerm === 'string' && (searchTerm?.length > 2 || this.initList)) {
                         this.busy = true
                         return this.search<Record<string, unknown>>(searchTerm)
                     }

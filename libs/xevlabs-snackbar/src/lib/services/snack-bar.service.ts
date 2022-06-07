@@ -13,10 +13,10 @@ export class SnackBarService {
 
   showSnackBar(type: SnackBarTypeEnum, titleKey: string, messageKey?: string) {
     let HtmlContent = `
-          <h4 class='bold no-margin'>${this.transloco.translate(titleKey)}</h4>
+          <h4 class='bold no-margin small-text white'>${this.transloco.translate(titleKey)}</h4>
         `;
     if (messageKey) {
-      HtmlContent += `<p class='no-margin-bottom'>${this.transloco.translate(messageKey)}</p>`;
+      HtmlContent += `<p class='no-margin-bottom small-text white'>${this.transloco.translate(messageKey)}</p>`;
     }
     switch (type) {
       case SnackBarTypeEnum.SUCCESS:

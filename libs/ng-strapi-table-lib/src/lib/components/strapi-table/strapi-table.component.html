@@ -1,4 +1,4 @@
-<div class="strapi-table-container full-width full-height" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
+<div class="strapi-table-container full-width" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
   <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
   <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
     <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
@@ -54,8 +54,7 @@
     <ng-container *ngIf="!routeRedirect">
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </ng-container>
-
   </mat-table>
-  <mat-paginator class="full-width" [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
-                 [pageSizeOptions]="pageSizeOptions"></mat-paginator>
 </div>
+<mat-paginator [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
+[pageSizeOptions]="pageSizeOptions"></mat-paginator>

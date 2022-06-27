@@ -1,61 +1,62 @@
 <div class="strapi-table-container full-width full-height" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
   <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
-  <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
-    <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
-      <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''" [disabled]="!column.sortable" class="padding-small-right">{{ column.translationKey | transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let entity" class="padding-small-right">
-        <ng-container [ngSwitch]="column.type">
-          <span
-              class="full-width text-overflow-ellipsis"
-              *ngSwitchCase="columnTypesEnum.DATE"
-              fxLayout="row wrap"
-              fxLayoutGap="0.2rem"
-              matTooltip="{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : entity[column.key]}}"
-          >
-              <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortDate') : entity[column.key]}}</span>
-              <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortTime') : entity[column.key]}}</span>
-          </span>
-          <ng-container class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.TEMPLATE">
-            <ng-container *ngIf="column.template">
-              <ng-container *ngTemplateOutlet="column.template; context:{entity: entity}"></ng-container>
+  <div class="mat-table-container full-width full-height">
+    <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
+        <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">
+          <mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''" [disabled]="!column.sortable" class="padding-small-right">{{ column.translationKey | transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let entity" class="padding-small-right">
+            <ng-container [ngSwitch]="column.type">
+              <span
+                  class="full-width text-overflow-ellipsis"
+                  *ngSwitchCase="columnTypesEnum.DATE"
+                  fxLayout="row wrap"
+                  fxLayoutGap="0.2rem"
+                  matTooltip="{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : entity[column.key]}}"
+              >
+                  <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortDate') : entity[column.key]}}</span>
+                  <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortTime') : entity[column.key]}}</span>
+              </span>
+              <ng-container class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.TEMPLATE">
+                <ng-container *ngIf="column.template">
+                  <ng-container *ngTemplateOutlet="column.template; context:{entity: entity}"></ng-container>
+                </ng-container>
+              </ng-container>
+              <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.customTooltip? column.customTooltip : entity[column.key]): null">
+                {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
+              </span>
             </ng-container>
-          </ng-container>
-          <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.customTooltip? column.customTooltip : entity[column.key]): null">
-            {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
-          </span>
+          </mat-cell>
         </ng-container>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="actionButtons">
-      <mat-header-cell *matHeaderCellDef fxLayout="row" fxLayoutAlign="end center" class="action-buttons-container padding-small-right">{{ 'COMMON.ACTION_BUTTONS' | transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let entity" class="padding-small-right">
-        <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center" class="action-buttons-container">
-          <ng-container *ngFor="let action of actionButtons">
-            <button [color]="action.color" *ngIf="!action.conditionField || (entity[action.conditionField] === action.conditionValue)" mat-mini-fab (click)="handleActionButtonTrigger(action, entity)" [matTooltip]="action.tooltipKey | transloco">
-              <div fxLayout="row" fxLayoutAlign="center center">
-                <mat-icon>{{action.icon}}</mat-icon>
-              </div>
-            </button>
-          </ng-container>
-        </div>
-      </mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <ng-container *ngIf="routeRedirect">
-        <a
-            *matRowDef="let row; columns: displayedColumns"
-            [routerLink]="routeRedirect | routeParser: row"
-            [queryParams]="queryParamProperties ? (queryParamProperties | queryParamsParser: row) : {}"
-            [queryParamsHandling]="'merge'"
-        >
-            <mat-row class="clickable-row"></mat-row>
-        </a>
-    </ng-container>
-    <ng-container *ngIf="!routeRedirect">
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-    </ng-container>
-
-  </mat-table>
+        <ng-container matColumnDef="actionButtons">
+          <mat-header-cell *matHeaderCellDef fxLayout="row" fxLayoutAlign="end center" class="action-buttons-container padding-small-right">{{ 'COMMON.ACTION_BUTTONS' | transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let entity" class="padding-small-right">
+            <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center" class="action-buttons-container">
+              <ng-container *ngFor="let action of actionButtons">
+                <button [color]="action.color" *ngIf="!action.conditionField || (entity[action.conditionField] === action.conditionValue)" mat-mini-fab (click)="handleActionButtonTrigger(action, entity)" [matTooltip]="action.tooltipKey | transloco">
+                  <div fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon>{{action.icon}}</mat-icon>
+                  </div>
+                </button>
+              </ng-container>
+            </div>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <ng-container *ngIf="routeRedirect">
+            <a
+                *matRowDef="let row; columns: displayedColumns"
+                [routerLink]="routeRedirect | routeParser: row"
+                [queryParams]="queryParamProperties ? (queryParamProperties | queryParamsParser: row) : {}"
+                [queryParamsHandling]="'merge'"
+            >
+                <mat-row class="clickable-row"></mat-row>
+            </a>
+        </ng-container>
+        <ng-container *ngIf="!routeRedirect">
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </ng-container>
+      </mat-table>
+  </div>
   <mat-paginator class="full-width" [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
                  [pageSizeOptions]="pageSizeOptions"></mat-paginator>
 </div>

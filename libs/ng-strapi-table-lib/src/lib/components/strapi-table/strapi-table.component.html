@@ -1,5 +1,5 @@
 <div class="strapi-table-container full-width full-height" fixedLayout="true"fxLayout="column" fxLayoutAlign="stretch start">
-  <mat-progress-bar class="full-width" mode="indeterminate" color="accent" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
+  <mat-progress-bar class="full-width" mode="indeterminate" color="primary" *ngIf="dataSource.loading$ | async"></mat-progress-bar>
   <div class="mat-table-container full-width full-height">
     <mat-table [ngClass]="{loading: (dataSource.loading$ | async)}" fxFlex="1 1 auto" mat-table class="strapi-table full-width" [dataSource]="dataSource" matSort matSortDirection="asc" matSortDisableClear>
         <ng-container [matColumnDef]="column.key" *ngFor="let column of columnsDefinition">

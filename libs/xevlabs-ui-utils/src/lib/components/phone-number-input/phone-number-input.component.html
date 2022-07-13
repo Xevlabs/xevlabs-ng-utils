@@ -1,5 +1,5 @@
 <form fxLayout="row" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
-    <mat-form-field class="full-width white field-primary-color-border" appearance="outline" fxFlex=25>
+    <mat-form-field class="full-width white field-primary-color-border country-flag-select" appearance="outline" fxFlex=25>
         <mat-select [disabled]="disabled" (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
             <mat-select-trigger> {{ (selectedCountry.code | flagEmoji) }} <span fxHide.lt-sm>{{ ' - ' + selectedCountry.name }} </span> </mat-select-trigger>
             <mat-option *ngFor="let country of countries" [value]="country">

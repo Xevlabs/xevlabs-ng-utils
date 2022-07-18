@@ -11,7 +11,7 @@
         <mat-form-field class="field-primary-color-border prefix" appearance="outline">
             <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
         </mat-form-field>
-        <mat-form-field class="full-width field-light-grey-background phone-field" appearance="outline"> 
+        <mat-form-field class="full-width field-light-grey-background phone-field remove-top-suffix" appearance="outline"> 
                 <input type="text" matInput [formControl]="phoneNumberControl" [placeholder]="label | transloco">
             <mat-icon matSuffix>phone</mat-icon>
             <mat-error *ngIf="phoneNumberControl?.errors?.required">

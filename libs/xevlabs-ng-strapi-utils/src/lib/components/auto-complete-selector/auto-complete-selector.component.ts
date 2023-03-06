@@ -55,6 +55,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() customLocale?: string
     @Input() chipNumber = 1
     @Input() initList = true
+    @Input() matAutoCompleteClasses = ''
     itemListSubscription!: Subscription
     activeLang?: string
 

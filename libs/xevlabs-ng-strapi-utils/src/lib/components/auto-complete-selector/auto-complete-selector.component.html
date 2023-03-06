@@ -16,7 +16,7 @@
 
         </mat-chip-list>
     </mat-form-field>
-    <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)">
+    <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)" [class]='matAutoCompleteClasses'>
         <mat-option disabled *ngIf="busy">
             <mat-spinner diameter="35"></mat-spinner>
         </mat-option>

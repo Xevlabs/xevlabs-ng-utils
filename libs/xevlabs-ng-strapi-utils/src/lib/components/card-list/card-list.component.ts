@@ -38,6 +38,7 @@ export class CardListComponent implements OnInit {
     }
 
     initializeList(): void {
+        this.busy = true
         this.listService.count(this.collectionPath, this.filters).pipe(
             untilDestroyed(this)
         ).subscribe((connectionLogCount: number) => {

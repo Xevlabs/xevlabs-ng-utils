@@ -13,7 +13,6 @@
             </div>
             <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
                 [matChipInputFor]="chipList">
-
         </mat-chip-list>
     </mat-form-field>
     <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)" [class]='matAutoCompleteClasses'>

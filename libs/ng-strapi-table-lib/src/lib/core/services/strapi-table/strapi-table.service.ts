@@ -6,24 +6,24 @@ import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
 
 @Injectable({
-	providedIn: null,
+    providedIn: null,
 })
 export class StrapiTableService {
-	private baseUrl: string
+    private baseUrl: string
 
-	constructor(private http: HttpClient,
-	            @Inject('StrapiTableLibOptions') private readonly options: TableLibOptionsModel,
-	) {
-		if (!options || !options.baseUrl) {
-			throw new Error('Error: No base url provided. Provide one by using the forRoot method of the lib')
-		}
-		this.baseUrl = options.baseUrl
-	}
+    constructor(private http: HttpClient,
+                @Inject('StrapiTableLibOptions') private readonly options: TableLibOptionsModel,
+    ) {
+        if (!options || !options.baseUrl) {
+            throw new Error('Error: No base url provided. Provide one by using the forRoot method of the lib')
+        }
+        this.baseUrl = options.baseUrl
+    }
 
-	count(collectionName: string, filters: FilterModel[]) {
-		const params = this.parseStrapiFilters(filters)
-		return this.http.get<number>(`${this.baseUrl}/${collectionName}/count?${params.toString()}`)
-	}
+    count(collectionName: string, filters: FilterModel[]) {
+        const params = this.parseStrapiFilters(filters)
+        return this.http.get<number>(`${this.baseUrl}/${collectionName}/count?${params.toString()}`)
+    }
 
 	find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
             pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {

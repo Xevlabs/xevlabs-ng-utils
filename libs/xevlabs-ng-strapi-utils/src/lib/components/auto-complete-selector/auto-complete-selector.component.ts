@@ -24,7 +24,6 @@ import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
-@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',

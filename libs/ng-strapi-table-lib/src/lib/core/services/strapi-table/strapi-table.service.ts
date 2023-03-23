@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { map, Observable } from 'rxjs'
 import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
+import * as qs from 'qs'
 
 @Injectable({
     providedIn: null,
@@ -24,37 +25,42 @@ export class StrapiTableService {
         return this.http.get<number>(`${this.baseUrl}/${collectionName}/count?${params.toString()}`)
     }
 
-    find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
+	find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
             pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
-        let params = this.parseStrapiFilters(filters)
+        let params = new HttpParams()
         if (locale) {
             params = params.append('_locale', locale)
         }
         params = params.appendAll({
             _limit: pageSize.toString(),
             _start: (pageSize * pageNumber).toString(),
-            _sort: `${sortField}:${sortOrder.toUpperCase()
-            }`,
+            _sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
-        return this.http.get<{ data: T[] }>(`${this.baseUrl}/${collectionName}`, {
-            params,
-        })
-            .pipe(map(({data}: { data: T[] }) => {
-                return data
-            }))
+        let query = this.parseStrapiFilters(filters)
+        return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((items: any) => {
+            return items.length ? items : items.data.map((item: any) => { return { id: item.id, ...item.attributes } })
+        }))
     }
 
-    parseStrapiFilters(filters: FilterModel[]): HttpParams {
-        let params = new HttpParams()
-        filters.forEach(filter => {
-            if (Array.isArray(filter.value)) {
-                filter.value.forEach(filterValue => {
-                    params = params.append(`${filter.attribute}_${filter.type}`, filterValue.toString())
-                })
-            } else {
-                params = params.append(`${filter.attribute}_${filter.type}`, filter.value.toString())
-            }
+    parseStrapiFilters(rawFilters: FilterModel[]): string {
+        let queryFilters: any = {
+            filters: {
+                $and: [],
+            },
+        }
+        rawFilters.map(filter => {
+            var key = filter.attribute
+            var type = filter.type
+            queryFilters.filters.$and.push({
+                [key]: {
+                    [type]: filter.value
+                }
+            })
         })
-        return params
+        const query = qs.stringify(queryFilters,
+            {
+                encodeValuesOnly: true
+            })
+        return query
     }
 }

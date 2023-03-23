@@ -17,11 +17,12 @@ import {
     Validators,
 } from '@angular/forms'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipList } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
+import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
@@ -51,15 +52,19 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() disabled?: boolean = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
+    @Input() chipNumber = 1
+    @Input() initList = true
+    @Input() matAutoCompleteClasses = ''
+    itemListSubscription!: Subscription
     activeLang?: string
 
     itemList: Record<string, unknown>[] = []
     filteredItemList: Record<string, unknown>[] = []
-    busy = true
+    busy!: boolean
     autoCompleteForm!: FormGroup
 
-    onChange!: (_: { id: number } | null) => void
-    onTouched!: () => void
+    onChange = (_: { id: number }[] | { id: number } | null) => { }
+    onTouched = () => { }
 
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
     @ViewChild('chipList', { static: false }) chipList!: MatChipList
@@ -73,39 +78,48 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         return this.autoCompleteForm.get('searchQuery')
     }
 
-    get item() {
-        return this.autoCompleteForm.get('item')
+    get items() {
+        return this.autoCompleteForm.get('items')
+    }
+
+    get itemValues() {
+        return Array.isArray(this.items!.value) ? this.items!.value : [this.items!.value].filter(item => item)
     }
 
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn
     }
 
-    registerOnChange(fn: (_: { id: number } | null) => void): void {
+    registerOnChange(fn: (_: { id: number }[] | { id: number } | null) => void): void {
         this.onChange = fn
     }
 
     ngOnInit() {
         this.customLocale ? this.customLocale : this.translocoService.getActiveLang()
         this.autoCompleteForm = this.formBuilder.group({
-            item: ['', Validators.required],
+            items: [[], Validators.required],
             searchQuery: '',
         })
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
-            .subscribe((items: Record<string, unknown>[]) => {
-                this.filteredItemList = items
-                this.busy = false
-            })
+        this.itemListSubscription?.unsubscribe()
+        if (this.initList) {
+            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+                .pipe(untilDestroyed(this))
+                .subscribe((items: Record<string, unknown>[]) => {
+                    this.filteredItemList = items
+                    this.busy = false
+                })
+        }
         if (this.searchQuery) {
             this.searchQuery.valueChanges.pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string') {
+                    if (typeof searchTerm === 'string' && (searchTerm?.length > 2 || this.initList)) {
                         this.busy = true
                         return this.search<Record<string, unknown>>(searchTerm)
                     }
                     return []
-                }))
+                }),
+                untilDestroyed(this))
                 .subscribe((filteredItemList: Record<string, unknown>[]) => {
                     this.filteredItemList = filteredItemList
                     this.busy = false
@@ -114,56 +128,84 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         this.autoCompleteForm.statusChanges.subscribe(status => {
             this.chipList.errorState = status === 'INVALID'
         })
-        this.submitEvent$.subscribe(() => {
+        this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
             this.searchQuery?.setValue(null)
         })
     }
 
-    updateInput(form: { item: { id: number }, searchQuery: string } | null) {
-        this.onChange(form ? { id: form?.item.id as number } : null)
-        if (form?.item) {
-            this.refInput.nativeElement.placeholder = ''
+    updateInput(form: { items: { id: number }[], searchQuery: string } | null) {
+        if (this.chipNumber > 1) {
+            this.onChange(form ? form.items : null)
+            this.selectedValueChange.next(form?.items)
         }
-        else {
-            this.refInput.nativeElement.placeholder = this.prefix
+        if (this.chipNumber == 1) {
+            this.onChange(form ? form.items[0] : null)
+            this.selectedValueChange.next(form?.items[0])
         }
-        this.selectedValueChange.next(form?.item)
         this.onTouched()
     }
 
-    remove() {
-        this.item?.setValue(null)
+    remove(id: number) {
+        if (this.items?.value.length) {
+            const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id)
+            this.items?.setValue(filteredList)
+        } else {
+            this.items?.setValue(null)
+        }
         this.updateInput(null)
-        this.searchQuery?.enable()
+        this.handleSearchQueryState()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
         if (event.option.value !== '') {
-            this.item?.setValue(event.option.value)
+            let newChipList
+            if (this.items!.value?.length) {
+                newChipList = this.items?.value.filter((item: { id: number }) => item.id !== event.option.value.id).concat(event.option.value)
+            } else {
+                newChipList = [event.option.value]
+            }
+            this.items?.setValue(newChipList)
             this.searchQuery?.setValue(null)
             this.refInput.nativeElement.value = ''
-            this.chipList.errorState = !this.item?.value.uid
+            this.chipList.errorState = !this.items?.value.uid
             this.updateInput(this.autoCompleteForm.value)
-            this.searchQuery?.disable()
+            this.handleSearchQueryState()
         }
     }
 
-    writeValue(controls?: unknown): void {
+    handleSearchQueryState() {
+        if (this.items?.value?.length >= this.chipNumber) {
+            this.searchQuery?.disable()
+            return
+        }
+        this.searchQuery?.enable()
+    }
+
+    writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
-            const filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls }
-            this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, 'all').subscribe((item: unknown[]) => {
-                this.item?.setValue(item[0])
-                this.searchQuery?.setValue('')
-                this.updateInput(this.autoCompleteForm.value)
-                this.searchQuery?.disable()
-                this.busy = false
-                if (item.length) {
-                    this.refInput.nativeElement.placeholder = ''
-                }
-            })
+            let filter: FilterModel
+            if (this.chipNumber > 1) {
+                filter = { attribute: 'id', type: StrapiFilterTypesEnum.IN, value: controls.map((control: any) => control.id) }
+            } else {
+                filter = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
+            }
+            this.itemListSubscription?.unsubscribe()
+            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
+                .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {
+                    if (this.chipNumber > 1) {
+                        this.items?.setValue(item.splice(0, this.chipNumber))
+                    }
+                    if (this.chipNumber == 1) {
+                        this.items?.setValue(item[0])
+                    }
+                    this.searchQuery?.setValue('')
+                    this.updateInput(this.autoCompleteForm.value)
+                    this.searchQuery?.disable()
+                    this.busy = false
+                })
         } else if (this.chipList) {
-            this.remove()
+            this.updateInput(null)
         }
     }
 
@@ -175,7 +217,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         const filter = {
             attribute: this.searchByAttribute,
             type: StrapiFilterTypesEnum.CONTAINS,
-            value: searchQuery?.toLowerCase(),
+            value: searchQuery,
         }
         return this.tableService.find<T>(this.collectionName, [...this.filters, filter], 'asc', 'id', 0, -1, this.activeLang)
     }

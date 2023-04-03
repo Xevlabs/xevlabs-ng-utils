@@ -3,17 +3,17 @@
         <mat-label>{{ prefix }}</mat-label>
         <mat-error *ngIf="items!.errors?.required">
             {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
-        <mat-chip-list #chipList>
+            <mat-chip-grid #chipList>
             <div>
-                <mat-chip selected [removable]="!disabled" color="primary" *ngFor="let item of itemValues"
+                <mat-chip-row selected [removable]="!disabled" color="primary" *ngFor="let item of itemValues"
                     (removed)="remove(item.id)" class="capitalize">
                     {{ item[searchByAttribute] }}
                     <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
-                </mat-chip>
+                </mat-chip-row>
             </div>
             <input #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
                 [matChipInputFor]="chipList">
-        </mat-chip-list>
+        </mat-chip-grid>
     </mat-form-field>
     <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)" [class]='matAutoCompleteClasses'>
         <mat-option disabled *ngIf="busy">

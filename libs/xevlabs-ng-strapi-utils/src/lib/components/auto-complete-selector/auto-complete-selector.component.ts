@@ -20,10 +20,11 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
 import { Observable, Subscription } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
 import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
-import { MatChipList } from '@angular/material/chips'
+import { MatChipGrid } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
+@UntilDestroy()
 @Component({
     selector: 'xevlabs-ng-utils-auto-complete-selector',
     templateUrl: './auto-complete-selector.component.html',
@@ -55,6 +56,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() chipNumber = 1
     @Input() initList = true
     @Input() matAutoCompleteClasses = ''
+    @Input() required = true
     itemListSubscription!: Subscription
     activeLang?: string
 
@@ -67,7 +69,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     onTouched = () => { }
 
     @ViewChild('refInput', { static: true }) refInput!: ElementRef<HTMLInputElement>
-    @ViewChild('chipList', { static: false }) chipList!: MatChipList
+    @ViewChild('chipList', { static: false }) chipList!: MatChipGrid
     constructor(
         private formBuilder: FormBuilder,
         private tableService: StrapiTableService,
@@ -97,9 +99,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     ngOnInit() {
         this.customLocale ? this.customLocale : this.translocoService.getActiveLang()
         this.autoCompleteForm = this.formBuilder.group({
-            items: [[], Validators.required],
+            items: [[]],
             searchQuery: '',
         })
+        if (this.required) {
+            this.autoCompleteForm.get('items')?.addValidators(Validators.required)
+        }
         this.itemListSubscription?.unsubscribe()
         if (this.initList) {
             this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
@@ -201,7 +206,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                     }
                     this.searchQuery?.setValue('')
                     this.updateInput(this.autoCompleteForm.value)
-                    this.searchQuery?.disable()
+                    if (this.items?.value.length >= this.chipNumber) {
+                        this.searchQuery?.disable()
+                    }
                     this.busy = false
                 })
         } else if (this.chipList) {

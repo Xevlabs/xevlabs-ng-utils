@@ -147,7 +147,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             this.onChange(form ? form.items[0] : null)
             this.selectedValueChange.next(form?.items[0])
         }
-        this.onTouched()
     }
 
     remove(id: number) {
@@ -159,6 +158,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
         this.updateInput(null)
         this.handleSearchQueryState()
+        this.onTouched()
     }
 
     add(event: MatAutocompleteSelectedEvent): void {
@@ -175,6 +175,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             this.chipList.errorState = !this.items?.value.uid
             this.updateInput(this.autoCompleteForm.value)
             this.handleSearchQueryState()
+            this.onTouched()
         }
     }
 

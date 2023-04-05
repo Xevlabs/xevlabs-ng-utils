@@ -156,7 +156,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         } else {
             this.items?.setValue(null)
         }
-        this.updateInput(null)
+        this.updateInput(this.autoCompleteForm.value)
         this.handleSearchQueryState()
         this.onTouched()
     }
@@ -201,14 +201,11 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                         this.items?.setValue(item[0])
                     }
                     this.searchQuery?.setValue('')
-                    this.updateInput(this.autoCompleteForm.value)
                     if (this.items?.value.length >= this.chipNumber) {
                         this.searchQuery?.disable()
                     }
                     this.busy = false
                 })
-        } else if (this.chipList) {
-            this.updateInput(null)
         }
     }
 

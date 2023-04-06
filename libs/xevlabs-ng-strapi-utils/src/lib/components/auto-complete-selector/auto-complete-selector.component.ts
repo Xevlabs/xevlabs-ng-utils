@@ -49,7 +49,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() collectionName!: string
     @Input() prefix!: string
     @Input() searchByAttribute!: string
-    @Input() submitEvent$!: Observable<void>
+    @Input() submitEvent$?: Observable<void>
     @Input() disabled?: boolean = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
@@ -133,9 +133,11 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         this.autoCompleteForm.statusChanges.subscribe(status => {
             this.chipList.errorState = status === 'INVALID'
         })
-        this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
-            this.searchQuery?.setValue(null)
-        })
+        if (this.submitEvent$) {
+            this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
+                this.searchQuery?.setValue(null)
+            })
+        }
     }
 
     updateInput(form: { items: { id: number }[], searchQuery: string } | null) {

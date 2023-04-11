@@ -50,7 +50,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() prefix!: string
     @Input() searchByAttribute!: string
     @Input() submitEvent$?: Observable<void>
-    @Input() disabled?: boolean = false;
+    @Input() disabled = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     @Input() chipNumber = 1

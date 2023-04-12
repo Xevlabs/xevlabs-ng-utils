@@ -37,7 +37,7 @@ export class StrapiTableService {
             _sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
         let query = this.parseStrapiFilters(filters)
-        return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((items: any) => {
+        return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?populate=*${query}`, { params }).pipe(map((items: any) => {
             return items.length ? items : items.data.map((item: any) => { return { id: item.id, ...item.attributes } })
         }))
     }

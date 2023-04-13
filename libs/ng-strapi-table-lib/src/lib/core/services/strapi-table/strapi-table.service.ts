@@ -25,11 +25,15 @@ export class StrapiTableService {
         return this.http.get<number>(`${this.baseUrl}/${collectionName}/count?${params.toString()}`)
     }
 
-	find<T>(collectionName: string, filters: FilterModel[], sortOrder = 'asc', sortField = 'id',
+	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[], sortOrder = 'asc', sortField = 'id',
             pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('_locale', locale)
+        }
+        if (populate) {
+            const populates = ([] as string[]).concat(populate);
+            populates.forEach(param => params = params.append('populate', param));
         }
         params = params.appendAll({
             _limit: pageSize.toString(),

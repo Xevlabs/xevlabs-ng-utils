@@ -32,7 +32,7 @@ export class StrapiTableService {
             params = params.append('_locale', locale)
         }
         if (populate) {
-            const populates = Array.isArray(populate) ? populate : [populate];
+            const populates = ([] as string[]).concat(populate);
             populates.forEach(param => params = params.append('populate', param));
         }
         params = params.appendAll({

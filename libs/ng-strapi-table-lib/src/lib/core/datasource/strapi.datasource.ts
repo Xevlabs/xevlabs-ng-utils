@@ -11,6 +11,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])
 	private loadingSubject = new BehaviorSubject<boolean>(true)
 	private filters$ = new BehaviorSubject<FilterModel[]>([])
+    private populate : string | string[] = "*"
 
 	private paginator!: MatPaginator
 	private sort!: MatSort
@@ -38,6 +39,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	reload() {
 		this.loadEntities(
 			this.filters$.value,
+			this.populate,
 			this.sort.direction,
 			this.sort.active,
 			this.paginator.pageIndex,
@@ -56,11 +58,11 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		})
 	}
 
-	loadEntities(filters: FilterModel[] = [],
+	loadEntities(filters: FilterModel[] = [],populate?:string | string[],
 	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
 		this.loadingSubject.next(true)
 		this.countEntities(filters)
-		this.tableService.find<T>(this.collectionName, filters, [], sortDirection, sortField, pageIndex, pageSize).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, sortDirection, sortField, pageIndex, pageSize).pipe(
 				take(1),
 				catchError(() => of([])),
 				finalize(() => this.loadingSubject.next(false)),
@@ -68,9 +70,10 @@ export class StrapiDatasource<T> implements DataSource<T> {
 			.subscribe(data => this.entitySubject.next(data))
 	}
 
-	initTable(paginator: MatPaginator, sort: MatSort, baseFilters: FilterModel[] = []) {
+	initTable(paginator: MatPaginator, sort: MatSort, baseFilters: FilterModel[] = [], populate: string | string[] = this.populate) {
 		this.paginator = paginator
 		this.sort = sort
+        this.populate = populate
 		this.filters$.next(baseFilters)
 		this.initData()
 	}
@@ -92,6 +95,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 			this.filters$]).subscribe(([pageEvent, sortEvent, filters]) => {
 			this.loadEntities(
 				filters,
+				this.populate,
 				sortEvent.direction,
 				sortEvent.active,
 				this.paginator.pageIndex,

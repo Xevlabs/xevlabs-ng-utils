@@ -60,7 +60,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
 		this.loadingSubject.next(true)
 		this.countEntities(filters)
-		this.tableService.find<T>(this.collectionName, filters, sortDirection, sortField, pageIndex, pageSize).pipe(
+		this.tableService.find<T>(this.collectionName, filters, [], sortDirection, sortField, pageIndex, pageSize).pipe(
 				take(1),
 				catchError(() => of([])),
 				finalize(() => this.loadingSubject.next(false)),
@@ -103,7 +103,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	updateFilters(newFilters: FilterModel[]) {
 		this.filters$.next(newFilters)
 	}
-    
+
     search(searchText: string) {
         const newFilters = this.filters$.value.filter(filter => filter.type !== StrapiFilterTypesEnum.SEARCH)
         newFilters.push({attribute: '', type: StrapiFilterTypesEnum.SEARCH, value: searchText.toLowerCase()})

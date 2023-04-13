@@ -107,7 +107,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
         this.itemListSubscription?.unsubscribe()
         if (this.initList) {
-            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, 'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, [],'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this))
                 .subscribe((items: Record<string, unknown>[]) => {
                     this.filteredItemList = items
@@ -194,7 +194,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             this.busy = true
             const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.itemListSubscription?.unsubscribe()
-            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], 'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], [],'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {
                     if (this.chipNumber > 1) {
                         this.items?.setValue(item.splice(0, this.chipNumber))
@@ -221,7 +221,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             type: StrapiFilterTypesEnum.CONTAINS,
             value: searchQuery,
         }
-        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], 'asc', 'id', 0, -1, this.activeLang)
+        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], [],'asc', 'id', 0, -1, this.activeLang)
     }
 
 }

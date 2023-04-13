@@ -51,7 +51,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() prefix!: string
     @Input() searchByAttribute!: string
     @Input() submitEvent$?: Observable<void>
-    @Input() disabled?: boolean = false;
+    @Input() disabled = false;
     @Output() selectedValueChange = new EventEmitter<any>()
     @Input() customLocale?: string
     @Input() chipNumber = 1
@@ -193,6 +193,10 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     writeValue(controls?: any): void {
         if (controls) {
             this.busy = true
+            if (Array.isArray(controls) && controls.length === 0) {
+                this.busy = false
+                return
+            }
             const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.itemListSubscription?.unsubscribe()
             this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate,'asc', 'id', 0, -1, this.activeLang)

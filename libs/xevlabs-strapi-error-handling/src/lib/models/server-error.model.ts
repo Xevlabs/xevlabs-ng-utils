@@ -1,9 +1,8 @@
 export interface ServerErrorModel {
-  statusCode: number,
-  error: string,
-  message: string,
-  data: {
-    key: string;
-    message: string;
+  status: number,
+  name?: string, 
+  message: string, 
+  details?: {
+    key: string
   }
 }

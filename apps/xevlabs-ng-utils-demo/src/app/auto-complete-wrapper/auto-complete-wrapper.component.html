@@ -1,0 +1,7 @@
+<form [formGroup]="autoCompleteForm" class="auto-complete-container">
+    <p>Autocomplete component test</p>
+    <xevlabs-ng-utils-auto-complete-selector formControlName="selectedId" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'value'"
+        [collectionName]="'translations'">
+    </xevlabs-ng-utils-auto-complete-selector>
+    <p>Selected object id : {{selectedId?.value}}</p>
+</form>

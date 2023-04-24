@@ -1,6 +1,56 @@
 {
   "version": 1,
   "projects": {
+    "ng-strapi-table-lib": {
+      "projectType": "library",
+      "root": "libs/ng-strapi-table-lib",
+      "sourceRoot": "libs/ng-strapi-table-lib/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ng-strapi-table-lib"],
+          "options": {
+            "jestConfig": "libs/ng-strapi-table-lib/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/ng-strapi-table-lib/src/**/*.ts",
+              "libs/ng-strapi-table-lib/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "xevlabs-ng-strapi-utils": {
+      "projectType": "library",
+      "root": "libs/xevlabs-ng-strapi-utils",
+      "sourceRoot": "libs/xevlabs-ng-strapi-utils/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-ng-strapi-utils"],
+          "options": {
+            "jestConfig": "libs/xevlabs-ng-strapi-utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-ng-strapi-utils/src/**/*.ts",
+              "libs/xevlabs-ng-strapi-utils/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "xevlabs-ng-utils-demo": {
       "projectType": "application",
       "root": "apps/xevlabs-ng-utils-demo",
@@ -166,6 +216,31 @@
             "lintFilePatterns": [
               "libs/xevlabs-strapi-error-handling/src/**/*.ts",
               "libs/xevlabs-strapi-error-handling/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "xevlabs-ui-utils": {
+      "projectType": "library",
+      "root": "libs/xevlabs-ui-utils",
+      "sourceRoot": "libs/xevlabs-ui-utils/src",
+      "prefix": "xevlabs-ng-utils",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/xevlabs-ui-utils"],
+          "options": {
+            "jestConfig": "libs/xevlabs-ui-utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/xevlabs-ui-utils/src/**/*.ts",
+              "libs/xevlabs-ui-utils/src/**/*.html"
             ]
           }
         }

@@ -1,25 +1,45 @@
 <form [formGroup]="autoCompleteForm">
-    <mat-form-field class="chip-list full-width field-light-grey-background fixed-height" [ngClass]="item?.value ?'no-border':''" appearance="outline">
-        <mat-error *ngIf="item!.errors?.required">
-            {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error
-         >
-        <mat-chip-list #chipList>
-        <mat-chip selected [removable]="!disabled" color="primary" *ngIf="item!.value?.id" (removed)="remove()"
-                class="capitalize">
-                {{ item!.value[searchByAttribute] }}
-                <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <input  #refInput formControlName="searchQuery" [matAutocomplete]="autocomplete"
-                [matChipInputFor]="chipList" [placeholder]="item?.value ? '' : prefix">
-
-        </mat-chip-list>
+    <mat-form-field class="chip-list full-width" appearance="outline">
+        <mat-label>{{ prefix }}</mat-label>
+        <mat-error *ngIf="items!.errors?.required">
+            {{ 'ERRORS.REQUIRED_FIELD' | transloco }}</mat-error
+        >
+        <mat-chip-grid #chipList>
+            <div>
+                <mat-chip-row
+                    selected
+                    [removable]="!disabled"
+                    color="primary"
+                    *ngFor="let item of itemValues"
+                    (removed)="remove(item.id)"
+                    class="capitalize"
+                >
+                    {{ item[searchByAttribute] }}
+                    <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
+                </mat-chip-row>
+            </div>
+            <input
+                #refInput
+                formControlName="searchQuery"
+                [matAutocomplete]="autocomplete"
+                [matChipInputFor]="chipList"
+                [disabled]="disabled"
+            />
+        </mat-chip-grid>
     </mat-form-field>
-    <mat-autocomplete #autocomplete='matAutocomplete' (optionSelected)="add($event)">
+    <mat-autocomplete
+        #autocomplete="matAutocomplete"
+        (optionSelected)="add($event)"
+        [class]="matAutoCompleteClasses"
+    >
         <mat-option disabled *ngIf="busy">
             <mat-spinner diameter="35"></mat-spinner>
         </mat-option>
-        <div *ngIf="!busy" >
-            <mat-option *ngFor="let option of filteredItemList" [value]="option">
+        <div *ngIf="!busy">
+            <mat-option
+                *ngFor="let option of filteredItemList"
+                [value]="option"
+            >
                 {{ option[searchByAttribute] }}
             </mat-option>
         </div>

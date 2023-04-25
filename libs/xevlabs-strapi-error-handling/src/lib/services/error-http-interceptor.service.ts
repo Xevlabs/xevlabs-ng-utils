@@ -21,12 +21,11 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
       map((result) => {
         return result
       }),
-      catchError((error: any) => {
-        if (error.statusCode) {
-          return this.handleError(error)
-        } else {
-          return throwError(error)
+      catchError((error: HttpErrorResponse) => {
+        if (error.status && error.error?.error) {
+            return this.handleError(error.error.error)
         }
+        return throwError(error)
       }),
     )
   }

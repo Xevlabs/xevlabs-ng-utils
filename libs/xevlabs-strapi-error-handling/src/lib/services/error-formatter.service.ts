@@ -15,28 +15,29 @@ export class ErrorFormatterService {
 
   formatServerError(error: ServerErrorModel): Observable<HandledErrorModel> {
     let handledError$: Observable<HandledErrorModel> = of();
-    if (!error || !(error.data)) {
-      handledError$ = this.handleErrorWithNoData(error);
+    if (!error || !(error.details)) {
+      handledError$ = this.handleErrorWithNoDetails(error);
     }
-    if (error && error.data && error.data.key) {
-      const translatedKey$ = this.translateService.selectTranslate(error.data.key.toUpperCase());
+    if (error && error.details && error.details.key) {
+      const key = error.details.key
+      const translatedKey$ = this.translateService.selectTranslate(error.details.key.toUpperCase());
       handledError$ = translatedKey$.pipe(switchMap((translatedErrorMessage: string) => {
-        if (translatedErrorMessage === error.data.key.toUpperCase()) {
+        if (translatedErrorMessage === key.toUpperCase()) {
           return this.handleErrorWithNoTranslation(error);
         } else {
-          return of({ code: error.statusCode, translatedMessage: translatedErrorMessage });
+          return of({ code: error.status, translatedMessage: translatedErrorMessage });
         }
       }));
     }
     return handledError$;
   }
 
-  private handleErrorWithNoData(error: ServerErrorModel): Observable<HandledErrorModel> {
+  private handleErrorWithNoDetails(error: ServerErrorModel): Observable<HandledErrorModel> {
     if (error && error.message && error.message.length) {
-      return of({ code: error.statusCode, translatedMessage: error.message });
+      return of({ code: error.status, translatedMessage: error.message });
     } else {
       return this.handleErrorWithNoKeyAndMessage().pipe(take(1), map((errorMessage: string) => ({
-          code: error.statusCode,
+          code: error.status,
           translatedMessage: errorMessage
         })
       ));
@@ -48,6 +49,6 @@ export class ErrorFormatterService {
   }
 
   private handleErrorWithNoTranslation(error: ServerErrorModel): Observable<HandledErrorModel> {
-    return of({ code: error.statusCode, translatedMessage: error.data.message })
+    return of({ code: error.status, translatedMessage: error.message })
   }
 }

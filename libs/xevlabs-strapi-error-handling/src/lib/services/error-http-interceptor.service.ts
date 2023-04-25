@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http'
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs'
 import { catchError, map, take } from 'rxjs/operators'
 import { ServerErrorModel } from '../models/server-error.model'
@@ -22,8 +22,8 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
         return result
       }),
       catchError((error: any) => {
-        if (error.statusCode) {
-          return this.handleError(error)
+        if (error.status) {
+          return this.handleError(error.error.error)
         } else {
           return throwError(error)
         }

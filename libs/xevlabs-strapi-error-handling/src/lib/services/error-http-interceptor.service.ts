@@ -23,9 +23,9 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status && error.error?.error) {
-            return this.handleError(error.error.error)
+          this.handleError(error.error.error)
         }
-        return throwError(error)
+        throw new Error(error.message)
       }),
     )
   }
@@ -36,6 +36,6 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
       id: 'httpError',
       dismissible: true,
     }))
-    return throwError(this.errorFormatterService.formatServerError(error))
+    throw new Error(error.message)
   }
 }

@@ -9,6 +9,8 @@ The XevlabsNgUtils library features the following sub-packages:
 * xevlabs-strapi-error-handling
 * xevlabs-ui-utils
 
+# NG Strapi Table Lib
+
 ## How to use XevlabsNgUtils' Strapi Table Component
 Strapi Table Component offers a template for generating a table with pagination and sorting features. It receives data from a Strapi-based API and uses Material Design components as well as Angular's Flex Layout module to display the table. It offers column templates and customizable action buttons that trigger events when clicked. It also supports row selection and navigation to a detail page. 
 In this section we will go over the necessary steps to integrate this component in our Angular project and we will present the different options this component can take.
@@ -257,8 +259,7 @@ Here's an example:
 The default value for `pageSize` is 10 and `pageSizeOptions` is [10, 25, 50, 100].
 ## Strapi Table Service
 This service is responsible for handling HTTP requests related to Strapi-based data. It is mainly designed to provide data for the table component and it offers the following methods:
-- find: takes a collectionName string, an array of FilterModel objects, and optional parameters for pagination and sorting, and returns an observable that emits an array of type T containing the collection items that match the specified filters.
-- count: takes a collectionName string and an array of FilterModel objects and returns the number of items in the collection that match the specified filters.
+- find: takes a collectionName string, an array of FilterModel objects, and optional parameters for pagination and sorting, and returns an observable that emits an Object that has a `data` attribute presenting an array of type T containing the collection items that match the specified filters and a `total` attribute presenting the total number of items matching the specified filters.
 - parseStrapiFilters: takes an array of FilterModel objects and returns a string representing the filters in the Strapi query format.
 
 ## Setting up the Demo App
@@ -300,40 +301,16 @@ To run the demo app, you need to set up the Strapi backend first. Follow these s
             | nested_collections | Relation with *NestedCollection*  | belongs to many |
         - In Advanced Settings uncheck *Draft & publish* box and check *Internationalization* box.
 6. Head to the Content Manager tab and create new User(s), new nestedCollection(s) and new Test entries that use the created Users and nestedCollections.
-7. Add new *getCount* method to the Test API controller (path: my-project > src > api > test > controllers > test.js):
-    ```
-    async getCount (ctx) {
-            var { query } = ctx.request
-            return strapi.query('api::test.test').count({ filters: query.filters });
-    }
-    ```
 
-8. Add the following routes to Test API routes (path: my-project > src > api > test > routes > test.js): 
-    ```
-    routes: [
-        {
-            method: 'GET',
-            path: '/tests',
-            handler: 'test.find',
-            config: {},
-        },
-        {
-            method: 'GET',
-            path: '/tests/count/view',
-            handler: 'test.getCount',
-            config: {},
-        }
-    ]
-    ```
-9. In the Admin Panel, head to Settings > USERS & PERMISSIONS PLUGIN > Roles, select Public Role and enable the following routes: 
-    - Test API: find, getCount
+7. In the Admin Panel, head to Settings > USERS & PERMISSIONS PLUGIN > Roles, select Public Role and enable the following routes: 
+    - Test API: find
     - Nested-collection API: find
     - Users-permissions > User: find
-10. Navigate to the library's directory:
+8. Navigate to the library's directory:
     ```
     cd libs\xevlabs-ng-utils
     ```
-11. Finally, launch the library's demo app with the following command: 
+9. Finally, launch the library's demo app with the following command: 
     ```
     nx serve xevlabs-ng-utils-demo
     ```

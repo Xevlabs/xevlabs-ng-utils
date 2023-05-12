@@ -33,24 +33,26 @@ In this section we will go over the necessary steps to integrate this component 
 
 ### Datasource
 The `datasource` is responsible for providing the data to the table and handling sorting and pagination events.
+
 2. In your component, inject the StrapiTableService and define the table's datasource as follows:
+
     ```
-    import { StrapiDatasource, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table';
-    ...
-    
-    @Component({
-        ...
-        providers: [StrapiTableService]
-    })
-    export class ExampleComponent {
-      public dataSource: StrapiDatasource<CollectionModel>
-    
-      constructor(
-        private tableService: StrapiTableService
-      ) {
-        this.dataSource = new StrapiDatasource<CollectionModel>(this.tableService, 'collection-name');
-        }
-    }
+      import { StrapiDatasource, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table';
+      ...
+      
+      @Component({
+          ...
+          providers: [StrapiTableService]
+      })
+      export class ExampleComponent {
+        public dataSource: StrapiDatasource<CollectionModel>
+      
+        constructor(
+          private tableService: StrapiTableService
+        ) {
+          this.dataSource = new StrapiDatasource<CollectionModel>(this.tableService, 'collection-name');
+          }
+      }
     ```
     `StrapiDatasource` is a custom class used to provide the data to be displayed in the table component. It integrates with the Strapi backend using the StrapiTableService. 
     
@@ -261,7 +263,7 @@ This service is responsible for handling HTTP requests related to Strapi-based d
 
 ## Setting up the Demo App
 The library's Demo App features the main functionalities offered by the table component as well as the table service. 
-To run the demo app, you need to set up the Strapi backend first. Strapi is an open-source headless CMS that provides an administration panel for creating and managing content. Follow these steps to set up the Strapi backend:
+To run the demo app, you need to set up the Strapi backend first. Follow these steps to set up the Strapi backend:
 
 1. Create a new Strapi project by running the following command:
     ```

@@ -22,23 +22,23 @@ export class StrapiTableService {
 
     count(collectionName: string, filters: FilterModel[]) {
         const params = this.parseStrapiFilters(filters)
-        return this.http.get<number>(`${this.baseUrl}/${collectionName}/count?${params.toString()}`)
+        return this.http.get<number>(`${this.baseUrl}/${collectionName}/count/view?${params.toString()}`)
     }
 
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[], sortOrder = 'asc', sortField = 'id',
             pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
         let params = new HttpParams()
         if (locale) {
-            params = params.append('_locale', locale)
+            params = params.append('locale', locale)
         }
         if (populate) {
             const populates = ([] as string[]).concat(populate);
             populates.forEach(param => params = params.append('populate', param));
         }
         params = params.appendAll({
-            _limit: pageSize.toString(),
-            _start: (pageSize * pageNumber).toString(),
-            _sort: `${sortField}:${sortOrder.toUpperCase()}`,
+            'pagination[limit]': pageSize.toString(),
+            'pagination[start]': (pageSize * pageNumber).toString(),
+            sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
         let query = this.parseStrapiFilters(filters)
         return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((items: any) => {

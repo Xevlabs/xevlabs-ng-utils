@@ -19,7 +19,7 @@ import {
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'
 import { Observable, Subscription } from 'rxjs'
 import { debounceTime, switchMap } from 'rxjs/operators'
-import { FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
+import { CollectionResponse, FilterModel, StrapiFilterTypesEnum, StrapiTableService } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 import { MatChipGrid } from '@angular/material/chips'
 import { TranslocoService } from '@ngneat/transloco'
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
@@ -110,8 +110,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (this.initList) {
             this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate,'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this))
-                .subscribe((items: Record<string, unknown>[]) => {
-                    this.filteredItemList = items
+                .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
+                    this.filteredItemList = items.data
                     this.busy = false
                 })
         }
@@ -126,8 +126,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                     return []
                 }),
                 untilDestroyed(this))
-                .subscribe((filteredItemList: Record<string, unknown>[]) => {
-                    this.filteredItemList = filteredItemList
+                .subscribe((filteredItemList: CollectionResponse<Record<string, unknown>>) => {
+                    this.filteredItemList = filteredItemList.data
                     this.busy = false
                 })
         }
@@ -200,12 +200,12 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.itemListSubscription?.unsubscribe()
             this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate,'asc', 'id', 0, -1, this.activeLang)
-                .pipe(untilDestroyed(this)).subscribe((item: unknown[]) => {
+                .pipe(untilDestroyed(this)).subscribe((response) => {
                     if (this.chipNumber > 1) {
-                        this.items?.setValue(item.splice(0, this.chipNumber))
+                        this.items?.setValue(response.data.splice(0, this.chipNumber))
                     }
                     if (this.chipNumber == 1) {
-                        this.items?.setValue(item[0])
+                        this.items?.setValue(response.data[0])
                     }
                     this.searchQuery?.setValue('')
                     if (this.items?.value.length >= this.chipNumber) {
@@ -220,7 +220,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         return (this.chipList && this.chipList.errorState)
     }
 
-    search<T>(searchQuery: string): Observable<T[]> {
+    search<T>(searchQuery: string): Observable<CollectionResponse<T>> {
         const filter = {
             attribute: this.searchByAttribute,
             type: StrapiFilterTypesEnum.CONTAINS,

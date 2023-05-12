@@ -39,12 +39,7 @@ export class CardListComponent implements OnInit {
 
     initializeList(): void {
         this.busy = true
-        this.listService.count(this.collectionPath, this.filters).pipe(
-            untilDestroyed(this)
-        ).subscribe((connectionLogCount: number) => {
-            this.itemListCount = connectionLogCount
-            this.loadItems(0)
-        })
+        this.loadItems(0)
     }
 
     loadItems(pageIndex = 0): void {
@@ -54,8 +49,9 @@ export class CardListComponent implements OnInit {
             .pipe(
                 take(1),
                 untilDestroyed(this)
-            ).subscribe((itemList) => {
-                this.itemList = this.itemList.concat(itemList)
+            ).subscribe((response) => {
+                this.itemList = this.itemList.concat(response.data)
+                this.itemListCount = response.total
                 this.busy = false
             })
     }

@@ -10,7 +10,7 @@
     </div>
     <xevlabs-ng-utils-strapi-table
         [actionButtons]="actionButtons"
-        (actionToggled)="displaySelectedTranslation($event)"
+        (actionToggled)="setSelectedItem($event)"
         [dataSource]="dataSource"
         [columnsDefinition]="columnsDefinition"
     ></xevlabs-ng-utils-strapi-table>

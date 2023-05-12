@@ -53,22 +53,22 @@ export class AppComponent implements OnInit, AfterContentChecked {
 
   toggleLocale() {
     this.toggledLocale = !this.toggledLocale
-    this.getTranslationsByLocale()
+    this.getItemsByLocale()
   }
 
-  displaySelectedTranslation(selectedElement: any) {
+  setSelectedItem(selectedElement: any) {
     this.actionType = selectedElement.type
     const filter: FilterModel = {
       type: StrapiFilterTypesEnum.EQUAL,
       value: selectedElement.entity.id,
       attribute: 'id'
     }
-    this.getTranslationsByLocale([filter])
+    this.getItemsByLocale([filter])
   }
 
-  getTranslationsByLocale(filters: FilterModel[] = []) {
-    this.tableService.find('tests', filters, ['*'], 'ASC', 'key', 0, 10, this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((translations) => {
-      this.selectedObjectByLocale = translations
+  getItemsByLocale(filters: FilterModel[] = []) {
+    this.tableService.find('tests', filters, ['*'], 'ASC', 'key', 0, 10, this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
+      this.selectedObjectByLocale = res.data
     })
   }
 

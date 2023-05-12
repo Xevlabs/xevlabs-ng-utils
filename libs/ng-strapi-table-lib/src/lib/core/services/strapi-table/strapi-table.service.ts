@@ -4,6 +4,9 @@ import { map, Observable } from 'rxjs'
 import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
+import { CollectionResponse } from '../../../models'
+import { StrapiFindModel } from '../../../models/strapi-find.model'
+import { StrapiBaseResponseDataModel } from '../../../models/strapi-base-response-data.model'
 
 @Injectable({
     providedIn: null,
@@ -20,13 +23,8 @@ export class StrapiTableService {
         this.baseUrl = options.baseUrl
     }
 
-    count(collectionName: string, filters: FilterModel[]) {
-        const params = this.parseStrapiFilters(filters)
-        return this.http.get<number>(`${this.baseUrl}/${collectionName}/count/view?${params.toString()}`)
-    }
-
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[], sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 3, locale?: string): Observable<T[]> {
+            pageNumber = 0, pageSize = 3, locale?: string): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -40,21 +38,23 @@ export class StrapiTableService {
             'pagination[start]': (pageSize * pageNumber).toString(),
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
-        let query = this.parseStrapiFilters(filters)
-        return this.http.get<T[]>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((items: any) => {
-            return items.length ? items : items.data.map((item: any) => { return { id: item.id, ...item.attributes } })
+        const query = this.parseStrapiFilters(filters)
+        return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
+            const total = response.meta.pagination.total;
+            const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
+            return { data, total }
         }))
     }
 
     parseStrapiFilters(rawFilters: FilterModel[]): string {
-        let queryFilters: any = {
+        const queryFilters: any = {
             filters: {
                 $and: [],
             },
         }
         rawFilters.map(filter => {
-            var key = filter.attribute
-            var type = filter.type
+            const key = filter.attribute
+            const type = filter.type
             queryFilters.filters.$and.push({
                 [key]: {
                     [type]: filter.value

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
@@ -7,21 +7,17 @@ import { environment } from '../../environments/environment';
     templateUrl: './auto-complete-wrapper.component.html',
     styleUrls: ['./auto-complete-wrapper.component.scss']
 })
-export class AutoCompleteWrapperComponent implements OnInit {
+export class AutoCompleteWrapperComponent {
     public path = environment.baseUrl
     autoCompleteForm: FormGroup;
 
     constructor(private formBuilder: FormBuilder) { 
         this.autoCompleteForm = this.formBuilder.group({
-            selectedId: ''
+            selectedItem: ''
         });
     }
     
-    get selectedId() {
-        return this.autoCompleteForm.get('selectedId')
+    get selectedItem() {
+        return this.autoCompleteForm.get('selectedItem')
     }
-
-    ngOnInit(): void {
-    }
-
 }

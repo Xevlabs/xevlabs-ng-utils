@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { map, Observable } from 'rxjs'
+import { Observable } from 'rxjs'
 import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
 import { CollectionResponse } from '../../../models'
 import { StrapiFindModel } from '../../../models/strapi-find.model'
 import { StrapiBaseResponseDataModel } from '../../../models/strapi-base-response-data.model'
+import { map } from 'rxjs/operators'
 
 @Injectable({
     providedIn: null,

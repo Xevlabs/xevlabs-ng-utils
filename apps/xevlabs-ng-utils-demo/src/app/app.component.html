@@ -13,13 +13,18 @@
         (actionToggled)="setSelectedItem($event)"
         [dataSource]="dataSource"
         [columnsDefinition]="columnsDefinition"
+        [pageSize]="5"
+        [pageSizeOptions]="[5,10,100]"
     ></xevlabs-ng-utils-strapi-table>
     <ng-template #nestedTextField let-entity="entity">
-        {{
-            entity.nested_collections?.data?.length && entity.nested_collections.data[0].attributes?.nestedTextField
-                ? entity.nested_collections.data[0].attributes.nestedTextField
-                : '--'
-        }}
+        <div *ngIf="entity.nested_collections?.data?.length">
+            <div *ngFor="let nestedField of entity.nested_collections.data">
+                <span>{{ nestedField.attributes.nestedTextField }};</span>
+            </div>
+        </div>
+        <div *ngIf="!entity.nested_collections?.data?.length">
+            <span>--</span>
+        </div>
     </ng-template>
     <ng-template #username let-entity="entity">
         {{

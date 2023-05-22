@@ -1,13 +1,47 @@
 <main>
-  <xevlabs-ng-utils-auto-complete-wrapper></xevlabs-ng-utils-auto-complete-wrapper>
-  <hr>
-  <p>Table service test</p>
-  <div class="buttons-container">
-    <button (click)="addFilter()"> Add filter </button>
-    <button (click)="removeFilter()"> Remove filter </button>
-  </div>
-  <p>
-    {{ filters | json }}
-  </p>
-  <xevlabs-ng-utils-strapi-table [actionButtons]="actionButtons" [dataSource]="dataSource" [columnsDefinition]="columnsDefinition"></xevlabs-ng-utils-strapi-table>
+    <xevlabs-ng-utils-auto-complete-wrapper></xevlabs-ng-utils-auto-complete-wrapper>
+    <hr />
+    <h2>Table service test</h2>
+    <div class="buttons-container">
+      Filter by {{ 'TEXT_FIELD' | transloco }}:
+    <input [formControl]="filterControl"/>
+        <button (click)="addFilter()">Add filter</button>
+        <button (click)="removeFilter()">Remove filter</button>
+    </div>
+    <xevlabs-ng-utils-strapi-table
+        [actionButtons]="actionButtons"
+        (actionToggled)="setSelectedItem($event)"
+        [dataSource]="dataSource"
+        [columnsDefinition]="columnsDefinition"
+        [pageSize]="5"
+        [pageSizeOptions]="[5,10,100]"
+    ></xevlabs-ng-utils-strapi-table>
+    <ng-template #nestedTextField let-entity="entity">
+        <div *ngIf="entity.nested_collections?.data?.length">
+            <div *ngFor="let nestedField of entity.nested_collections.data">
+                <span>{{ nestedField.attributes.nestedTextField }};</span>
+            </div>
+        </div>
+        <div *ngIf="!entity.nested_collections?.data?.length">
+            <span>--</span>
+        </div>
+    </ng-template>
+    <ng-template #username let-entity="entity">
+        {{
+            entity.user?.data?.attributes?.username
+                ? entity.user.data.attributes.username
+                : '--'
+        }}
+    </ng-template>
+    <div *ngIf="actionType">
+        <h2>Action Toggled Type:</h2>
+        <p>{{ actionType }}</p>
+        <h2>
+            Selected Test Object in `{{ toggledLocale ? 'en' : 'fr' }}` locale:
+            <button (click)="toggleLocale()">
+                Switch to {{ toggledLocale ? 'fr' : 'en' }}
+            </button>
+        </h2>
+        <p>{{ selectedObjectByLocale | json }}</p>
+    </div>
 </main>

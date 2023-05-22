@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslocoRootModule } from './transloco/transloco-root.module';
 import { XevlabsStrapiErrorHandlingModule } from '@xevlabs-ng-utils/xevlabs-strapi-error-handling';
 import { XevlabsNgStrapiUtilsModule } from '@xevlabs-ng-utils/xevlabs-ng-strapi-utils';
-import { NgStrapiTableLibModule } from '@xevlabs-ng-utils/ng-strapi-table-lib';
+import { NgStrapiTableLibModule } from '@xevlabs-ng-utils/xevlabs-strapi-table';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { environment } from '../environments/environment';
 import { AutoCompleteWrapperComponent } from './auto-complete-wrapper/auto-complete-wrapper.component';

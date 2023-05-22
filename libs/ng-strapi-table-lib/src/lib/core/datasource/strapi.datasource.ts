@@ -5,7 +5,7 @@ import { catchError, finalize, startWith, take, tap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import { FilterModel } from '../../models/filter.model'
-import { StrapiFilterTypesEnum } from '@xevlabs-ng-utils/xevlabs-strapi-table'
+import { CollectionResponse, StrapiFilterTypesEnum } from '@xevlabs-ng-utils/xevlabs-strapi-table'
 
 export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])
@@ -52,22 +52,18 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadingSubject.complete()
 	}
 
-	private countEntities(filters: FilterModel[]) {
-		this.tableService.count(this.collectionName, filters).pipe(take(1)).subscribe(count => {
-			this.numberOfEntity$.next(count)
-		})
-	}
-
 	loadEntities(filters: FilterModel[] = [],populate?:string | string[],
 	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
 		this.loadingSubject.next(true)
-		this.countEntities(filters)
 		this.tableService.find<T>(this.collectionName, filters, populate, sortDirection, sortField, pageIndex, pageSize).pipe(
 				take(1),
-				catchError(() => of([])),
+				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
 			)
-			.subscribe(data => this.entitySubject.next(data))
+			.subscribe(res => { 
+				this.entitySubject.next(res.data)
+				this.numberOfEntity$.next(res.total)
+			})
 	}
 
 	initTable(paginator: MatPaginator, sort: MatSort, baseFilters: FilterModel[] = [], populate: string | string[] = this.populate) {

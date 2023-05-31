@@ -9,7 +9,7 @@ export class ListService {
 
     constructor(private tableService: StrapiTableService) { }
 
-    loadPage<T = any>(pageIndex = 0, collectionPath: string, filters: FilterModel[], populate?: string | string []): Observable<CollectionResponse<T>> {
-        return this.tableService.find<T>(collectionPath, filters, populate,'desc', 'created_at', pageIndex, 5)
+    loadPage<T = any>(pageIndex = 0, collectionPath: string, filters: FilterModel[], populate?: string | string [], publication?: boolean): Observable<CollectionResponse<T>> {
+        return this.tableService.find<T>(collectionPath, filters, populate, publication,'desc', 'created_at', pageIndex, 5)
     }
 }

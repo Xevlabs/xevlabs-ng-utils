@@ -47,6 +47,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     @Input() path!: string
     @Input() filters: FilterModel[] = []
     @Input() populate?: string | string [] = "*"
+    @Input() publication?: boolean = false
     @Input() collectionName!: string
     @Input() prefix!: string
     @Input() searchByAttribute!: string
@@ -108,7 +109,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
         this.itemListSubscription?.unsubscribe()
         if (this.initList) {
-            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate,'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.publication,'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this))
                 .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
                     this.filteredItemList = items.data
@@ -199,7 +200,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             }
             const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : controls }
             this.itemListSubscription?.unsubscribe()
-            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate,'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate, this.publication,'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((response) => {
                     if (this.chipNumber > 1) {
                         this.items?.setValue(response.data.splice(0, this.chipNumber))
@@ -226,7 +227,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             type: StrapiFilterTypesEnum.CONTAINS,
             value: searchQuery,
         }
-        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], this.populate,'asc', 'id', 0, -1, this.activeLang)
+        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], this.populate, this.publication,'asc', 'id', 0, -1, this.activeLang)
     }
 
 }

@@ -216,6 +216,16 @@ public filters: FilterModel[] = [
         },
     ]
 ```
+### Draft/publish system)
+If we want to show all the draft objects from database we can pass a `showDrafts` property to the table component should be a boolean.
+The main values to define for the `showDrafts` are the following:
+* true : if we want to retrieve the published and the unpublished objects from database
+* false : if we want to retrieve only the published objects from database
+
+Here's an example of use :
+```
+this.tableService.find<ShopModel>('shops', [], 'openinghours', showDrafts:true)
+```
 
 ### Default Sort
 `defaultSort` defines the default sorting settings for the table. The `defaultSort` property takes the type `MatSortable` and it has the following fields:

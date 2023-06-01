@@ -12,7 +12,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	private loadingSubject = new BehaviorSubject<boolean>(true)
 	private filters$ = new BehaviorSubject<FilterModel[]>([])
     private populate : string | string[] = "*"
-    private publication : boolean = false
+    private showDrafts : boolean = false
 
     private paginator!: MatPaginator
 	private sort!: MatSort
@@ -41,7 +41,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadEntities(
 			this.filters$.value,
 			this.populate,
-			this.publication,
+			this.showDrafts,
 			this.sort.direction,
 			this.sort.active,
 			this.paginator.pageIndex,
@@ -54,10 +54,10 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadingSubject.complete()
 	}
 
-	loadEntities(filters: FilterModel[] = [],populate?:string | string[], publication?:boolean,
+	loadEntities(filters: FilterModel[] = [],populate?:string | string[], showDrafts?:boolean,
 	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
 		this.loadingSubject.next(true)
-		this.tableService.find<T>(this.collectionName, filters, populate, publication ,sortDirection, sortField, pageIndex, pageSize).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize).pipe(
 				take(1),
 				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
@@ -94,7 +94,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 			this.loadEntities(
 				filters,
 				this.populate,
-				this.publication,
+				this.showDrafts,
 				sortEvent.direction,
 				sortEvent.active,
 				this.paginator.pageIndex,

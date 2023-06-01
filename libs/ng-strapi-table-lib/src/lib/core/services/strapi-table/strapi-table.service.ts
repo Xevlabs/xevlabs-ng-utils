@@ -24,7 +24,7 @@ export class StrapiTableService {
         this.baseUrl = options.baseUrl
     }
 
-	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],publication = false, sortOrder = 'asc', sortField = 'id',
+	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
             pageNumber = 0, pageSize = 25, locale?: string): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
@@ -34,7 +34,7 @@ export class StrapiTableService {
             const populates = ([] as string[]).concat(populate);
             populates.forEach(param => params = params.append('populate', param));
         }
-        if (publication) {
+        if (showDrafts) {
             params = params.append('publicationState', 'preview')
         }
         params = params.appendAll({

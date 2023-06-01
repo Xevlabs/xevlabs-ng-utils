@@ -12,8 +12,9 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	private loadingSubject = new BehaviorSubject<boolean>(true)
 	private filters$ = new BehaviorSubject<FilterModel[]>([])
     private populate : string | string[] = "*"
+    private showDrafts : boolean = false
 
-	private paginator!: MatPaginator
+    private paginator!: MatPaginator
 	private sort!: MatSort
 
 	public numberOfEntity$ = new BehaviorSubject<number>(0)
@@ -40,6 +41,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadEntities(
 			this.filters$.value,
 			this.populate,
+			this.showDrafts,
 			this.sort.direction,
 			this.sort.active,
 			this.paginator.pageIndex,
@@ -52,15 +54,15 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadingSubject.complete()
 	}
 
-	loadEntities(filters: FilterModel[] = [],populate?:string | string[],
+	loadEntities(filters: FilterModel[] = [],populate?:string | string[], showDrafts?:boolean,
 	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
 		this.loadingSubject.next(true)
-		this.tableService.find<T>(this.collectionName, filters, populate, sortDirection, sortField, pageIndex, pageSize).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize).pipe(
 				take(1),
 				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
 			)
-			.subscribe(res => { 
+			.subscribe(res => {
 				this.entitySubject.next(res.data)
 				this.numberOfEntity$.next(res.total)
 			})
@@ -92,6 +94,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 			this.loadEntities(
 				filters,
 				this.populate,
+				this.showDrafts,
 				sortEvent.direction,
 				sortEvent.active,
 				this.paginator.pageIndex,

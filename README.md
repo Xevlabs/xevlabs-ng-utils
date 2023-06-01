@@ -221,10 +221,11 @@ If we want to show all the draft objects from database we can pass a `showDrafts
 The main values to define for the `showDrafts` are the following:
 * true : if we want to retrieve the published and the unpublished objects from database
 * false : if we want to retrieve only the published objects from database
+- we need to pass the showDrafts boolean in the 4th argument of tableService.find() function
 
 Here's an example of use :
 ```
-this.tableService.find<ShopModel>('shops', [], 'openinghours', showDrafts:true)
+this.tableService.find<ShopModel>('shops', [], 'openinghours', true)
 ```
 
 ### Default Sort

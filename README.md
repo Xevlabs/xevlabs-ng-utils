@@ -216,8 +216,8 @@ public filters: FilterModel[] = [
         },
     ]
 ```
-### Draft/publish system)
-If we want to show all the draft objects from database we can pass a `showDrafts` property to the table component should be a boolean.
+### Draft/publish system
+If we want to show all the draft objects from database we can pass a `showDrafts` property to the table component and it should be a boolean.
 The main values to define for the `showDrafts` are the following:
 * true : if we want to retrieve the published and the unpublished objects from database
 * false : if we want to retrieve only the published objects from database

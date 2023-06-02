@@ -192,7 +192,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     }
 
     writeValue(controls?: any): void {
-        console.log("this is controls value => ",controls)
         if (controls) {
             this.busy = true
             if (Array.isArray(controls) && controls.length === 0) {

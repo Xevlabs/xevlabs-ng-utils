@@ -269,6 +269,26 @@ Here's an example:
 ></xevlabs-ng-utils-strapi-table>
 ```
 The default value for `pageSize` is 10 and `pageSizeOptions` is [10, 25, 50, 100].
+
+## How to use XevlabsNgUtils' Search Bar Component
+XevlabsNgUtils also provides a search bar component that allows users to search within the table's data. This tool enables querying through all the fields in the table and retrieving the data that matches the input submitted by the user. It's important to note that this search functionality doesn't apply to nested fields.
+
+The search bar functionality has a minimum requirement of at least 3 characters entered by the user before initiating the search. Once the minimum character threshold is met, the search bar will dynamically filter the table based on the user's input.
+
+To incorporate this feature, follow these steps:
+
+1. Place the following code snippet in your DOM:
+
+  ```
+  <xevlabs-ng-utils-search-bar
+    [dataSource]="dataSource"
+  ></xevlabs-ng-utils-search-bar>
+  ```
+
+2. Ensure that you set the dataSource option to correspond with the datasource assigned to the Strapi table component.
+
+By following these steps, you can integrate and utilize the search bar component effectively alongside the table component.
+
 ## Strapi Table Service
 This service is responsible for handling HTTP requests related to Strapi-based data. It is mainly designed to provide data for the table component and it offers the following methods:
 - find: takes a collectionName string, an array of FilterModel objects, and optional parameters for pagination and sorting, and returns an observable that emits an Object that has a `data` attribute presenting an array of type T containing the collection items that match the specified filters and a `total` attribute presenting the total number of items matching the specified filters.

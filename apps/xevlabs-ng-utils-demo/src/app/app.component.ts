@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   getItemsByLocale(filters: FilterModel[] = []) {
-    this.tableService.find('tests', filters, ['*'], 'ASC', 'key', 0, 10, this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
+    this.tableService.find('tests', filters, ['*'], false, 'ASC', 'key', 0, 10, this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
       this.selectedObjectByLocale = res.data
     })
   }

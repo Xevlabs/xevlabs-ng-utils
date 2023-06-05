@@ -4,8 +4,7 @@ import { StrapiTableService } from '../services/strapi-table/strapi-table.servic
 import { catchError, finalize, startWith, take, tap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
-import { FilterModel } from '../../models/filter.model'
-import { CollectionResponse } from '../../models'
+import { CollectionResponse, FilterModel } from '../../models'
 
 export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])

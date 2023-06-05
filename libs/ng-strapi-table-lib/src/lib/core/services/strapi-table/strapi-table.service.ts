@@ -25,7 +25,7 @@ export class StrapiTableService {
     }
 
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 25, locale?: string): Observable<CollectionResponse<T>> {
+            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -36,6 +36,9 @@ export class StrapiTableService {
         }
         if (showDrafts) {
             params = params.append('publicationState', 'preview')
+        }
+        if (search) {
+            params = params.append('_q', search)
         }
         params = params.appendAll({
             'pagination[limit]': pageSize.toString(),

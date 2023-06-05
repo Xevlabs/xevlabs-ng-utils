@@ -4,15 +4,14 @@ import { StrapiTableService } from '../services/strapi-table/strapi-table.servic
 import { catchError, finalize, startWith, take, tap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
-import { FilterModel } from '../../models/filter.model'
-import { CollectionResponse, StrapiFilterTypesEnum } from '@xevlabs-ng-utils/xevlabs-strapi-table'
+import { CollectionResponse, FilterModel } from '../../models'
 
 export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])
 	private loadingSubject = new BehaviorSubject<boolean>(true)
 	private filters$ = new BehaviorSubject<FilterModel[]>([])
     private populate : string | string[] = "*"
-    private showDrafts : boolean = false
+    private showDrafts = false
 
     private paginator!: MatPaginator
 	private sort!: MatSort
@@ -54,10 +53,10 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.loadingSubject.complete()
 	}
 
-	loadEntities(filters: FilterModel[] = [],populate?:string | string[], showDrafts?:boolean,
-	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3) {
+	loadEntities(filters: FilterModel[] = [], populate?: string | string[], showDrafts?: boolean,
+	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string) {
 		this.loadingSubject.next(true)
-		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize, search).pipe(
 				take(1),
 				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
@@ -108,8 +107,15 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	}
 
     search(searchText: string) {
-        const newFilters = this.filters$.value.filter(filter => filter.type !== StrapiFilterTypesEnum.SEARCH)
-        newFilters.push({attribute: '', type: StrapiFilterTypesEnum.SEARCH, value: searchText.toLowerCase()})
-        this.updateFilters(newFilters)
+        this.loadEntities(
+			this.filters$.value,
+			this.populate,
+			this.showDrafts,
+			this.sort.direction,
+			this.sort.active,
+			this.paginator.pageIndex,
+			this.paginator.pageSize,
+			searchText
+		)
     }
 }

@@ -9,6 +9,5 @@ export enum StrapiFilterTypesEnum {
   NOT_IN = '$nin',
   CONTAINS = '$containsi',
   NOT_CONTAINS = '$ncontainsi',
-  NULL = '$null',
-  SEARCH = 'q'
+  NULL = '$null'
 }

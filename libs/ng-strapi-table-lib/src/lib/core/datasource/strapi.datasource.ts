@@ -106,6 +106,19 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		this.filters$.next(newFilters)
 	}
 
+    updateShowDrafts(showDrafts: boolean) {
+        this.showDrafts = showDrafts;
+        this.loadEntities(
+            this.filters$.value,
+            this.populate,
+            this.showDrafts,
+            this.sort.direction,
+            this.sort.active,
+            this.paginator.pageIndex,
+            this.paginator.pageSize
+        )
+    }
+
     search(searchText: string) {
         this.loadEntities(
 			this.filters$.value,

@@ -320,7 +320,7 @@ To run the demo app, you need to set up the Strapi backend first. Follow these s
             | Name | Type |
             | ---- | ---- |
             | nestedTextField | Text |
-         - In Advanced Settings uncheck *Draft & publish* box. 
+         - In Advanced Settings make sure you check *Draft & publish* box. 
          
     - Second collection:
         - Display name: test
@@ -331,7 +331,7 @@ To run the demo app, you need to set up the Strapi backend first. Follow these s
             | numberField | Number |
             | user | Relation with *User (from: users-permissions)* | has and belongs to one |
             | nested_collections | Relation with *NestedCollection*  | belongs to many |
-        - In Advanced Settings uncheck *Draft & publish* box and check *Internationalization* box.
+        - In Advanced Settings make sure to check *Draft & publish* box and check *Internationalization* box.
 6. Head to the Content Manager tab and create new User(s), new nestedCollection(s) and new Test entries that use the created Users and nestedCollections.
 
 7. In the Admin Panel, head to Settings > USERS & PERMISSIONS PLUGIN > Roles, select Public Role and enable the following routes: 

@@ -7,8 +7,7 @@
     <input [formControl]="filterControl"/>
         <button (click)="addFilter()">Add filter</button>
         <button (click)="removeFilter()">Remove filter</button>
-        <button *ngIf="!isDraftObject" (click)="getDraftsAndPublished()">{{ 'SHOW_DRAFTS' | transloco }}</button>
-        <button *ngIf="isDraftObject" (click)="getDraftsAndPublished()">{{ 'HIDE_DRAFTS' | transloco }}</button>
+        <button (click)="getDraftsAndPublished()">{{ (isDraftObject ? 'HIDE_DRAFTS' : 'SHOW_DRAFTS') | transloco }}</button>
     </div>
     <xevlabs-ng-utils-search-bar
         [dataSource]="dataSource"

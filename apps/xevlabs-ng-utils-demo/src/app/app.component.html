@@ -7,7 +7,11 @@
     <input [formControl]="filterControl"/>
         <button (click)="addFilter()">Add filter</button>
         <button (click)="removeFilter()">Remove filter</button>
+        <button (click)="getDraftsAndPublished()">{{ (isDraftObject ? 'HIDE_DRAFTS' : 'SHOW_DRAFTS') | transloco }}</button>
     </div>
+    <xevlabs-ng-utils-search-bar
+        [dataSource]="dataSource"
+    ></xevlabs-ng-utils-search-bar>
     <xevlabs-ng-utils-strapi-table
         [actionButtons]="actionButtons"
         (actionToggled)="setSelectedItem($event)"

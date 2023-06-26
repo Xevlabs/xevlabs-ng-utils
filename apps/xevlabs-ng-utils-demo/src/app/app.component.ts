@@ -18,6 +18,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   toggledLocale = true
   locale = 'en'
   actionType?: string
+  isDraftObject = false
 
   public dataSource: StrapiDatasource<any>;
   public filters: FilterModel[] = [];
@@ -47,6 +48,14 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.dataSource.updateFilters(this.filters)
   }
 
+  getDraftsAndPublished() {
+    this.isDraftObject = !this.isDraftObject
+    this.dataSource.updateShowDrafts(this.isDraftObject)
+    this.tableService.find('tests', [], ['*'], this.isDraftObject,'ASC', 'key', 0, 10).pipe(untilDestroyed(this)).subscribe((res) => {
+      this.selectedObjectByLocale = res.data
+    })
+  }
+
   ngOnInit(): void {
     this.filterControl = this.fb.control('')
   }
@@ -67,7 +76,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   getItemsByLocale(filters: FilterModel[] = []) {
-    this.tableService.find('tests', filters, ['*'], 'ASC', 'key', 0, 10, this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
+    this.tableService.find('tests', filters, ['*'], this.isDraftObject, 'ASC', 'key', 0, 10, undefined ,this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
       this.selectedObjectByLocale = res.data
     })
   }

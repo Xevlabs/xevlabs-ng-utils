@@ -25,7 +25,7 @@ export class StrapiTableService {
     }
 
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 25, locale?: string): Observable<CollectionResponse<T>> {
+            pageNumber = 0, pageSize = 25, locale?: string, isAnyFilter = false): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -42,7 +42,7 @@ export class StrapiTableService {
             'pagination[start]': (pageSize * pageNumber).toString(),
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
-        const query = this.parseStrapiFilters(filters)
+        const query = this.parseStrapiFilters(filters, isAnyFilter)
         return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
             const total = response.meta.pagination.total;
             const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
@@ -50,21 +50,28 @@ export class StrapiTableService {
         }))
     }
 
-    parseStrapiFilters(rawFilters: FilterModel[]): string {
+    parseStrapiFilters(rawFilters: FilterModel[], isAnyFilter = false): string {
         const queryFilters: any = {
-            filters: {
-                $and: [],
-            },
+            filters: {}
+        };
+        
+        if (isAnyFilter) {
+            queryFilters.filters.$or = [];
+        } else {
+            queryFilters.filters.$and = [];
         }
-        rawFilters.map(filter => {
-            const key = filter.attribute
-            const type = filter.type
-            queryFilters.filters.$and.push({
-                [key]: {
-                    [type]: filter.value
-                }
-            })
-        })
+        
+        rawFilters.forEach(filter => {
+            const key = filter.attribute;
+            const type = filter.type;
+            const filterObject = { [key]: { [type]: filter.value } };
+        
+            if (isAnyFilter) {
+              queryFilters.filters.$or.push(filterObject);
+            } else {
+              queryFilters.filters.$and.push(filterObject);
+            }
+        });
         const query = qs.stringify(queryFilters,
             {
                 encodeValuesOnly: true

@@ -8,6 +8,7 @@ import { CollectionResponse } from '../../../models'
 import { StrapiFindModel } from '../../../models/strapi-find.model'
 import { StrapiBaseResponseDataModel } from '../../../models/strapi-base-response-data.model'
 import { map } from 'rxjs/operators'
+import { FilterTypeCombinationEnum } from '../../../enums'
 
 @Injectable({
     providedIn: null,
@@ -25,7 +26,7 @@ export class StrapiTableService {
     }
 
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<T>> {
+            pageNumber = 0, pageSize = 25, search?: string, locale?: string, filterTypeCombination: FilterTypeCombinationEnum = FilterTypeCombinationEnum.AND): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -45,7 +46,7 @@ export class StrapiTableService {
             'pagination[start]': (pageSize * pageNumber).toString(),
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
-        const query = this.parseStrapiFilters(filters)
+        const query = this.parseStrapiFilters(filters, filterTypeCombination)
         return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
             const total = response.meta.pagination.total;
             const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
@@ -53,21 +54,37 @@ export class StrapiTableService {
         }))
     }
 
-    parseStrapiFilters(rawFilters: FilterModel[]): string {
+    parseStrapiFilters(rawFilters: FilterModel[], filterTypeCombination: FilterTypeCombinationEnum = FilterTypeCombinationEnum.AND): string {
         const queryFilters: any = {
-            filters: {
-                $and: [],
-            },
+            filters: {}
+        };
+        switch (filterTypeCombination) {
+            case FilterTypeCombinationEnum.AND:
+                queryFilters.filters.$and = [];
+                break;
+            case FilterTypeCombinationEnum.OR:
+                queryFilters.filters.$or = [];
+                break;
+            default:
+                queryFilters.filters.$and = [];
         }
-        rawFilters.map(filter => {
-            const key = filter.attribute
-            const type = filter.type
-            queryFilters.filters.$and.push({
-                [key]: {
-                    [type]: filter.value
-                }
-            })
-        })
+        
+        rawFilters.forEach(filter => {
+            const key = filter.attribute;
+            const type = filter.type;
+            const filterObject = { [key]: { [type]: filter.value } };
+
+            switch (filterTypeCombination) {
+                case FilterTypeCombinationEnum.AND:
+                    queryFilters.filters.$and.push(filterObject);
+                    break;
+                case FilterTypeCombinationEnum.OR:
+                    queryFilters.filters.$or.push(filterObject);
+                    break;
+                default:
+                    queryFilters.filters.$and.push(filterObject);
+            }
+        });
         const query = qs.stringify(queryFilters,
             {
                 encodeValuesOnly: true

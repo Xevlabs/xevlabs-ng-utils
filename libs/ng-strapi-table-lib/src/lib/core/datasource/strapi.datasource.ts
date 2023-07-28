@@ -1,10 +1,11 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections'
+import { DataSource } from '@angular/cdk/collections'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { StrapiTableService } from '../services/strapi-table/strapi-table.service'
 import { catchError, finalize, startWith, take, tap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import { CollectionResponse, FilterModel } from '../../models'
+import { FilterTypeCombinationEnum } from '../../enums'
 
 export class StrapiDatasource<T> implements DataSource<T> {
 	private entitySubject = new BehaviorSubject<T[]>([])
@@ -12,6 +13,8 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	private filters$ = new BehaviorSubject<FilterModel[]>([])
     private populate : string | string[] = "*"
     private showDrafts = false
+	private locale?: string
+	private filterTypeCombination = FilterTypeCombinationEnum.AND
 
     private paginator!: MatPaginator
 	private sort!: MatSort
@@ -32,7 +35,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		}
 	}
 
-	connect(collectionViewer: CollectionViewer): Observable<T[]> {
+	connect(): Observable<T[]> {
 		return this.entitySubject.asObservable()
 	}
 
@@ -48,15 +51,16 @@ export class StrapiDatasource<T> implements DataSource<T> {
 		)
 	}
 
-	disconnect(collectionViewer: CollectionViewer): void {
+	disconnect(): void {
 		this.entitySubject.complete()
 		this.loadingSubject.complete()
 	}
 
 	loadEntities(filters: FilterModel[] = [], populate?: string | string[], showDrafts?: boolean,
-	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string) {
+	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string, locale?: string,
+				 filterTypeCombination?: FilterTypeCombinationEnum) {
 		this.loadingSubject.next(true)
-		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize, search).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize, search, locale, filterTypeCombination).pipe(
 				take(1),
 				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
@@ -98,11 +102,17 @@ export class StrapiDatasource<T> implements DataSource<T> {
 				sortEvent.active,
 				this.paginator.pageIndex,
 				this.paginator.pageSize,
+				undefined,
+				this.locale,
+				this.filterTypeCombination
 			)
 		})
 	}
 
-	updateFilters(newFilters: FilterModel[]) {
+	updateFilters(newFilters: FilterModel[], filterTypeCombination?: FilterTypeCombinationEnum) {
+		if (filterTypeCombination) {
+			this.filterTypeCombination = filterTypeCombination
+		}
 		this.filters$.next(newFilters)
 	}
 

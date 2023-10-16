@@ -66,6 +66,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     filteredItemList: Record<string, unknown>[] = []
     busy!: boolean
     autoCompleteForm!: FormGroup
+    isInit = false;
 
     onChange = (_: { id: number }[] | { id: number } | null) => { }
     onTouched = () => { }
@@ -81,9 +82,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     ngOnChanges(changes: SimpleChanges) {
         if (changes.required?.previousValue !== changes.required?.currentValue) {
             if (changes.required.currentValue) {
-                this.autoCompleteForm.get('items')?.addValidators(Validators.required);
+                this.autoCompleteForm?.get('items')?.addValidators(Validators.required);
             } else {
-                this.autoCompleteForm.get('items')?.removeValidators(Validators.required);
+                this.autoCompleteForm?.get('items')?.removeValidators(Validators.required);
             }
         }
     }

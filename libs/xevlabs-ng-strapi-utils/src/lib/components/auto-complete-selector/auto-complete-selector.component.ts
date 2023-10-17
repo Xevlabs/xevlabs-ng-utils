@@ -3,9 +3,11 @@ import {
     ElementRef,
     EventEmitter,
     forwardRef,
-    Input, OnChanges,
+    Input,
+    OnChanges,
     OnInit,
-    Output, SimpleChanges,
+    Output,
+    SimpleChanges,
     ViewChild
 } from '@angular/core';
 import {
@@ -66,7 +68,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     filteredItemList: Record<string, unknown>[] = []
     busy!: boolean
     autoCompleteForm!: FormGroup
-    isInit = false;
 
     onChange = (_: { id: number }[] | { id: number } | null) => { }
     onTouched = () => { }

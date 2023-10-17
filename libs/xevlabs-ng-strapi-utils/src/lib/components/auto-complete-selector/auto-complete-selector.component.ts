@@ -4,10 +4,12 @@ import {
     EventEmitter,
     forwardRef,
     Input,
+    OnChanges,
     OnInit,
     Output,
+    SimpleChanges,
     ViewChild
-} from '@angular/core'
+} from '@angular/core';
 import {
     ControlValueAccessor,
     FormBuilder,
@@ -43,7 +45,7 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
         StrapiTableService,
     ],
 })
-export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccessor {
+export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccessor, OnChanges {
     @Input() path!: string
     @Input() filters: FilterModel[] = []
     @Input() populate?: string | string [] = "*"
@@ -77,6 +79,16 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         private tableService: StrapiTableService,
         private translocoService: TranslocoService,
     ) { }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.required?.previousValue !== changes.required?.currentValue) {
+            if (changes.required.currentValue) {
+                this.autoCompleteForm?.get('items')?.addValidators(Validators.required);
+            } else {
+                this.autoCompleteForm?.get('items')?.removeValidators(Validators.required);
+            }
+        }
+    }
 
     get searchQuery() {
         return this.autoCompleteForm.get('searchQuery')

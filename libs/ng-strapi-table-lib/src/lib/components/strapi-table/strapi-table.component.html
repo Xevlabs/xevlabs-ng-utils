@@ -22,7 +22,7 @@
                 </ng-container>
               </ng-container>
               <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.customTooltip? column.customTooltip : entity[column.key]): null">
-                {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : entity[column.key]}}
+                {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp) : (entity[column.key] | transloco) }}
               </span>
             </ng-container>
           </mat-cell>

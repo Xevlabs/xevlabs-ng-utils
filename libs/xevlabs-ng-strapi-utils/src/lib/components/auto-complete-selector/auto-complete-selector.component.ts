@@ -210,8 +210,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 this.busy = false
                 return
             }
-            const idList: number[] = controls.map((control: {id: number} | number) => typeof control == "number"  ? control : control.id);
-            const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.EQUAL, value: controls?.id ? controls.id : idList }
+            const arrayedControls = Array.isArray(controls) ? controls : [controls]
+            const idList: number[] = arrayedControls.map((control: {id: number} | number) => typeof control == "number"  ? control : control.id);
+            const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.IN, value: idList }
             this.itemListSubscription?.unsubscribe()
             this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((response) => {

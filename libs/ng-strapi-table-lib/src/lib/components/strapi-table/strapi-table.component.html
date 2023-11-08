@@ -13,8 +13,8 @@
                   fxLayoutGap="0.2rem"
                   matTooltip="{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'short') : (entity[column.key] | date:'short')}}"
               >
-                  <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortDate') : entity[column.key] | date:'shortDate' }}</span>
-                  <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortTime') : entity[column.key] | date:'shortTime' }}</span>
+                  <span class="text-overflow-ellipsis nowrap">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortDate') : (entity[column.key] !== null ? (entity[column.key] | date:'shortDate') : (column.key | parseEmptyField : translateEmptyFields)) }}</span>
+                  <span class="text-overflow-ellipsis nowrap" *ngIf="entity[column.key]">{{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | date:'shortTime') : entity[column.key] | date:'shortTime' }}</span>
               </span>
               <ng-container class="full-width text-overflow-ellipsis nowrap" *ngSwitchCase="columnTypesEnum.TEMPLATE">
                 <ng-container *ngIf="column.template">
@@ -22,7 +22,7 @@
                 </ng-container>
               </ng-container>
               <span  class="full-width text-overflow-ellipsis nowrap" *ngSwitchDefault [matTooltip]="column.tooltip? (column.customTooltip? column.customTooltip : entity[column.key]): null">
-                {{column.displayedProp ? (entity | parseObjectKey:column.displayedProp | transloco) : (entity[column.key] | transloco) }}
+                {{ column.displayedProp ? (entity | parseObjectKey:column.displayedProp | transloco) : (entity[column.key] !== null ?  (entity[column.key] | transloco) : (column.key | parseEmptyField : translateEmptyFields)) }}
               </span>
             </ng-container>
           </mat-cell>

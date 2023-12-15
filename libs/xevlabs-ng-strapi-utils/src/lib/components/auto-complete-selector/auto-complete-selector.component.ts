@@ -160,8 +160,8 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             this.selectedValueChange.next(form?.items)
         }
         if (this.chipNumber == 1) {
-            this.onChange(form ? form.items[0] : null)
-            this.selectedValueChange.next(form?.items[0])
+            this.onChange(form && form.items ? form.items[0] : null)
+            this.selectedValueChange.next(form && form.items ? form.items[0] : null)
         }
     }
 

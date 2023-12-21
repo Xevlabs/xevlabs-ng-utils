@@ -137,11 +137,11 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
     updateInput(form: { items: { id: number }[], searchQuery: string } | null) {
         if (this.chipNumber > 1) {
             this.onChange(form ? form.items : null)
-            this.selectedValueChange.next(form?.items)
+            this.selectedValueChange.next(form ? form?.items : null)
         }
         if (this.chipNumber == 1) {
             this.onChange(form ? form.items[0] : null)
-            this.selectedValueChange.next(form?.items[0])
+            this.selectedValueChange.next(form ? form?.items[0] : null)
         }
         this.onTouched()
     }

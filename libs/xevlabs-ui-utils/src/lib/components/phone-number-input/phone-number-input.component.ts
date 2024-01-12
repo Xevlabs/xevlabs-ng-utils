@@ -131,8 +131,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
 
     updatePhoneNumber(phoneNumber: string) {
         if (!this.disableSelectCountry) {
-            const { countryCode, number, valid } =
-                this.getCountryCode(phoneNumber);
+            const { countryCode, number, valid } = this.getCountryCode(phoneNumber);
             const intNumber = this.getCountryCode(this.selectedCountryPhone + phoneNumber);
             if (valid && countryCode) {
                 this.selectedCountryPhone = countryCode;

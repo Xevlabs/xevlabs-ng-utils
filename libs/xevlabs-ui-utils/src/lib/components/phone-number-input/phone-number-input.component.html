@@ -1,13 +1,13 @@
-<form fxLayout="row" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
+<form fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap=".5rem" class="phone-number-input-wrapper">
     <mat-form-field class="full-width white field-primary-color-border country-flag-select" appearance="outline" fxFlex=25>
-        <mat-select [disabled]="disabled" (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
+        <mat-select [disabled]="disabled || disableSelectCountry" (selectionChange)="setCountryPhoneCode($event)" [value]="selectedCountry">
             <mat-select-trigger> {{ (selectedCountry.code | flagEmoji) }} <span fxHide.lt-sm>{{ ' - ' + selectedCountry.name }} </span> </mat-select-trigger>
             <mat-option *ngFor="let country of countries" [value]="country">
                 {{ (country.code | flagEmoji) }} {{ ' - ' + country.name }} 
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <div class="full-width">
+    <div fxLayout="row" fxLayoutGap=".5rem" class="full-width" fxFlex="75">
         <mat-form-field class="field-primary-color-border prefix" appearance="outline">
             <input type="text" class="white" [disabled]="true" matInput [value]="'+' + selectedCountryPhone">
         </mat-form-field>
@@ -16,7 +16,7 @@
             <mat-icon matSuffix>phone</mat-icon>
             <mat-error *ngIf="phoneNumberControl?.errors?.required">
                 {{"ERRORS.REQUIRED_FIELD" | transloco}}</mat-error>
-            <mat-error *ngIf="phoneNumberControl?.errors?.invalid">
+            <mat-error *ngIf="phoneNumberControl?.value && phoneNumberControl?.errors?.invalid">
                 {{"ERRORS.FIELD_PATTERN" | transloco}}</mat-error>   
         </mat-form-field>
     </div> 

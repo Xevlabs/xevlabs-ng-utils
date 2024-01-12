@@ -38,6 +38,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     @Input() disabled!: boolean
     @Input() submitEvent$ = new Observable<void>()
     @Input() defaultCountryCode = 'FR'
+    @Input() disableSelectCountry = false;
     countries = countries
     phoneNumberControl!: FormControl
     selectedCountryPhone: string = countries[0].phone.toString()
@@ -116,18 +117,20 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     updatePhoneNumber(phoneNumber: string) {
-        const {countryCode, number, valid} = this.getCountryCode(phoneNumber)
-        const intNumber = this.getCountryCode(this.selectedCountryPhone + phoneNumber)
-        if (valid && countryCode) {
-            this.selectedCountryPhone = countryCode;
-            this.phoneNumberControl.setValue(number, {emitEvent: false})
-        } else if (phoneNumber.charAt(0) === '0') {
-            phoneNumber = phoneNumber.substring(1)
-        }
-        if (!valid && !intNumber.valid) {
-            this.phoneNumberControl.setErrors({invalid: true})
-        } else {
-            this.phoneNumberControl.setErrors(null)
+        if (!this.disableSelectCountry) {
+            const {countryCode, number, valid} = this.getCountryCode(phoneNumber)
+            const intNumber = this.getCountryCode(this.selectedCountryPhone + phoneNumber)
+            if (valid && countryCode) {
+                this.selectedCountryPhone = countryCode;
+                this.phoneNumberControl.setValue(number, {emitEvent: false})
+            } else if (phoneNumber.charAt(0) === '0') {
+                phoneNumber = phoneNumber.substring(1)
+            }
+            if (!valid && !intNumber.valid) {
+                this.phoneNumberControl.setErrors({invalid: true})
+            } else {
+                this.phoneNumberControl.setErrors(null)
+            }
         }
         const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber
         this.onChange(internationalPhoneNumber)
@@ -155,5 +158,4 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     validate() {
         return this.error ? {invalid: true} : null
     }
-
 }

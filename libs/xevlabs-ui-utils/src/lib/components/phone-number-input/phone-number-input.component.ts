@@ -60,17 +60,13 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
     }
 
     get selectedCountry() {
-        return this.countries.filter(
-            (country: any) => country.phone == this.selectedCountryPhone
-        )[0];
+        return this.countries.filter((country: any) => country.phone == this.selectedCountryPhone)[0];
     }
 
     get error() {
         return !(
             this.getCountryCode(this.phoneNumberControl?.value).valid ||
-            this.getCountryCode(
-                this.selectedCountryPhone + this.phoneNumberControl?.value
-            ).valid
+            this.getCountryCode(this.selectedCountryPhone + this.phoneNumberControl?.value).valid
         );
     }
 
@@ -92,18 +88,12 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
                 parsedIntNumber = parsedIntNumber.substring(1);
             }
             phoneNumber = this.phoneUtil.parseAndKeepRawInput(
-                parsedIntNumber[0] === '+'
-                    ? parsedIntNumber
-                    : `+${parsedIntNumber}`
+                parsedIntNumber[0] === '+' ? parsedIntNumber : `+${parsedIntNumber}`
             );
             const countryCode = phoneNumber.getCountryCode();
             const nationalNumber = phoneNumber.getNationalNumber();
-            const nationalNumberString = nationalNumber
-                ? nationalNumber.toString()
-                : '';
-            const validNumber =
-                phoneNumber.hasNationalNumber() &&
-                nationalNumberString.length > 8;
+            const nationalNumberString = nationalNumber ? nationalNumber.toString() : '';
+            const validNumber = phoneNumber.hasNationalNumber() && nationalNumberString.length > 8;
             return {
                 countryCode: countryCode ? countryCode.toString() : '',
                 number: nationalNumberString,
@@ -143,9 +133,7 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
         if (!this.disableSelectCountry) {
             const { countryCode, number, valid } =
                 this.getCountryCode(phoneNumber);
-            const intNumber = this.getCountryCode(
-                this.selectedCountryPhone + phoneNumber
-            );
+            const intNumber = this.getCountryCode(this.selectedCountryPhone + phoneNumber);
             if (valid && countryCode) {
                 this.selectedCountryPhone = countryCode;
                 this.phoneNumberControl.setValue(number, { emitEvent: false });
@@ -158,21 +146,15 @@ export class PhoneNumberInputComponent implements OnInit, ControlValueAccessor {
                 this.phoneNumberControl.setErrors(null);
             }
         }
-        const internationalPhoneNumber =
-            this.selectedCountryPhone + phoneNumber;
+        const internationalPhoneNumber = this.selectedCountryPhone + phoneNumber;
         this.onChange(internationalPhoneNumber);
     }
 
     setDefaultCountry() {
-        const defaultCountry = this.countries.find(
-            (country) => country.code === this.defaultCountryCode
-        );
+        const defaultCountry = this.countries.find((country) => country.code === this.defaultCountryCode);
         if (defaultCountry) {
             if (this.countries.indexOf(defaultCountry) !== 0) {
-                this.countries.splice(
-                    this.countries.indexOf(defaultCountry),
-                    1
-                );
+                this.countries.splice(this.countries.indexOf(defaultCountry), 1);
                 this.countries.unshift(defaultCountry);
                 this.selectedCountryPhone = this.countries[0].phone.toString();
             }

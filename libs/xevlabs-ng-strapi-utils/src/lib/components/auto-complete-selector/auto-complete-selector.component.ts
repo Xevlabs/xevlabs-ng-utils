@@ -141,6 +141,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 untilDestroyed(this))
                 .subscribe((filteredItemList: CollectionResponse<Record<string, unknown>>) => {
                     this.filteredItemList = filteredItemList.data
+                    this.removeSelectedItemsFromFilteredItemList(this.items?.value)
                     this.busy = false
                 })
         }
@@ -158,6 +159,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (this.chipNumber > 1) {
             this.onChange(form ? form.items : null)
             this.selectedValueChange.next(form?.items)
+            if (form) {
+                this.removeSelectedItemsFromFilteredItemList(form.items)
+            }
         }
         if (this.chipNumber == 1) {
             this.onChange(form && form.items ? form.items[0] : null)
@@ -193,6 +197,10 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             this.handleSearchQueryState()
             this.onTouched()
         }
+    }
+
+    removeSelectedItemsFromFilteredItemList(items: { id: number }[]) {
+        this.filteredItemList = this.filteredItemList.filter((item) => !items.map((item) => item.id).includes(item['id'] as number))
     }
 
     handleSearchQueryState() {
@@ -243,5 +251,4 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
         return this.tableService.find<T>(this.collectionName, [...this.filters, filter], this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
     }
-
 }

@@ -6,7 +6,9 @@ import { FilterModel } from '../../models/filter.model';
 import { ColumnDefinitionModel } from '../../models/column-defintion.model';
 import { ColumnTypesEnum } from '../../models/columnTypesEnum';
 import { ActionButtonModel } from '../../models/action-button.model';
+import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
+@UntilDestroy()
 @Component({
   selector: 'xevlabs-ng-utils-strapi-table',
   templateUrl: './strapi-table.component.html',
@@ -43,7 +45,10 @@ export class StrapiTableComponent implements AfterViewInit {
         this.sort.sort(this.defaultSort)
     }
     this.dataSource.initTable(this.paginator, this.sort, this.filters)
-    this.dataSource.numberOfEntity$.subscribe(numberOfEntities => {
+    this.dataSource.numberOfEntity$
+        .asObservable()
+        .pipe(untilDestroyed(this))
+        .subscribe(numberOfEntities => {
         this.numberOfEntities = numberOfEntities
     })
   }

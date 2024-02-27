@@ -31,7 +31,7 @@ export class StrapiTableComponent implements AfterViewInit {
 
   public columnTypes = Object.values(ColumnTypesEnum)
   public columnTypesEnum = ColumnTypesEnum;
-
+  public numberOfEntities!: number;
   ngAfterViewInit() {
     if (!this.dataSource) {
       throw new Error('Missing dataSource. Did you pass it to the component ?')
@@ -43,6 +43,9 @@ export class StrapiTableComponent implements AfterViewInit {
         this.sort.sort(this.defaultSort)
     }
     this.dataSource.initTable(this.paginator, this.sort, this.filters)
+    this.dataSource.numberOfEntity$.subscribe(numberOfEntities => {
+        this.numberOfEntities = numberOfEntities
+    })
   }
 
   get displayedColumns() {

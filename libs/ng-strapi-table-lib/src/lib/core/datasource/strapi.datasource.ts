@@ -14,7 +14,6 @@ export class StrapiDatasource<T> implements DataSource<T> {
     private populate : string | string[] = "*"
     private showDrafts = false
 	private locale?: string
-	private filterTypeCombination = FilterTypeCombinationEnum.AND
 
     private paginator!: MatPaginator
 	private sort!: MatSort
@@ -57,10 +56,9 @@ export class StrapiDatasource<T> implements DataSource<T> {
 	}
 
 	loadEntities(filters: FilterModel[] = [], populate?: string | string[], showDrafts?: boolean,
-	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string, locale?: string,
-				 filterTypeCombination?: FilterTypeCombinationEnum) {
+	             sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string, locale?: string) {
 		this.loadingSubject.next(true)
-		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize, search, locale, filterTypeCombination).pipe(
+		this.tableService.find<T>(this.collectionName, filters, populate, showDrafts ,sortDirection, sortField, pageIndex, pageSize, search, locale).pipe(
 				take(1),
 				catchError(() => of({data: [], total: 0} as CollectionResponse<T>)),
 				finalize(() => this.loadingSubject.next(false)),
@@ -103,16 +101,12 @@ export class StrapiDatasource<T> implements DataSource<T> {
 				this.paginator.pageIndex,
 				this.paginator.pageSize,
 				undefined,
-				this.locale,
-				this.filterTypeCombination
+				this.locale
 			)
 		})
 	}
 
-	updateFilters(newFilters: FilterModel[], filterTypeCombination?: FilterTypeCombinationEnum) {
-		if (filterTypeCombination) {
-			this.filterTypeCombination = filterTypeCombination
-		}
+	updateFilters(newFilters: FilterModel[]) {
 		this.filters$.next(newFilters)
 	}
 

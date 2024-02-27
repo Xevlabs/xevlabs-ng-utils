@@ -128,6 +128,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
     }
 
     search (searchText: string) {
+        this.paginator.firstPage()
         this.searchValue$.next(searchText)
     }
 }

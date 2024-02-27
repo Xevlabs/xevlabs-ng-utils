@@ -26,7 +26,7 @@ export class StrapiTableService {
     }
 
 	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 25, search?: string, locale?: string, filterTypeCombination: FilterTypeCombinationEnum = FilterTypeCombinationEnum.AND): Observable<CollectionResponse<T>> {
+            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -46,7 +46,7 @@ export class StrapiTableService {
             'pagination[start]': (pageSize * pageNumber).toString(),
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
-        const query = this.parseStrapiFilters(filters, filterTypeCombination)
+        const query = this.parseStrapiFilters(filters)
         return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
             const total = response.meta.pagination.total;
             const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
@@ -54,35 +54,27 @@ export class StrapiTableService {
         }))
     }
 
-    parseStrapiFilters(rawFilters: FilterModel[], filterTypeCombination: FilterTypeCombinationEnum = FilterTypeCombinationEnum.AND): string {
+    parseStrapiFilters(rawFilters: FilterModel[]): string {
         const queryFilters: any = {
             filters: {}
         };
-        switch (filterTypeCombination) {
-            case FilterTypeCombinationEnum.AND:
-                queryFilters.filters.$and = [];
-                break;
-            case FilterTypeCombinationEnum.OR:
-                queryFilters.filters.$or = [];
-                break;
-            default:
-                queryFilters.filters.$and = [];
-        }
-        
         rawFilters.forEach(filter => {
             const key = filter.attribute;
             const type = filter.type;
             const filterObject = { [key]: { [type]: filter.value } };
 
-            switch (filterTypeCombination) {
+            switch (filter.combination) {
                 case FilterTypeCombinationEnum.AND:
-                    queryFilters.filters.$and.push(filterObject);
+                    queryFilters.filters[key] = { [type]: filter.value };
                     break;
                 case FilterTypeCombinationEnum.OR:
+                    if (!queryFilters.filters.$or) {
+                        queryFilters.filters.$or = []
+                    }
                     queryFilters.filters.$or.push(filterObject);
                     break;
                 default:
-                    queryFilters.filters.$and.push(filterObject);
+                    queryFilters.filters[key] = { [type]: filter.value };
             }
         });
         const query = qs.stringify(queryFilters,

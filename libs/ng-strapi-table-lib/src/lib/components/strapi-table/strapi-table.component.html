@@ -57,6 +57,6 @@
         </ng-container>
       </mat-table>
   </div>
-  <mat-paginator class="full-width" [length]="dataSource.numberOfEntity$ | async" [pageSize]="pageSize"
+  <mat-paginator class="full-width" [length]="numberOfEntities" [pageSize]="pageSize"
                  [pageSizeOptions]="pageSizeOptions"></mat-paginator>
 </div>

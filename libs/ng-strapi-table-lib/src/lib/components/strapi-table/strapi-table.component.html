@@ -32,7 +32,7 @@
           <mat-cell *matCellDef="let entity" class="padding-small-right">
             <div fxLayout="row" fxLayoutGap=".5rem" fxLayoutAlign="end center" class="action-buttons-container">
               <ng-container *ngFor="let action of actionButtons">
-                <button [color]="action.color" *ngIf="!action.conditionField || (entity[action.conditionField] === action.conditionValue)" mat-mini-fab (click)="handleActionButtonTrigger(action, entity)" [matTooltip]="action.tooltipKey | transloco">
+                <button *xevlabsNgUtilsShowActionButton="[action.conditionField, entity[action.conditionField!] , action.conditionOperator, action.conditionValue]" [color]="action.color"  mat-mini-fab (click)="handleActionButtonTrigger(action, entity)" [matTooltip]="action.tooltipKey | transloco">
                   <div fxLayout="row" fxLayoutAlign="center center">
                     <mat-icon>{{action.icon}}</mat-icon>
                   </div>

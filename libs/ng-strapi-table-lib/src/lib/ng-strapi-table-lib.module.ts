@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { RouteParserPipe } from './core/pipes/route-parser.pipe';
 import { QueryParamsParserPipe } from './core/pipes/query-params-parser.pipe';
 import { ParseEmptyFieldPipe } from './core/pipes/parse-empty-field.pipe';
+import { ShowActionButtonDirective } from './core/directives/show-action-button/show-action-button.directive';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { ParseEmptyFieldPipe } from './core/pipes/parse-empty-field.pipe';
     RouteParserPipe,
     QueryParamsParserPipe,
     ParseEmptyFieldPipe,
+    ShowActionButtonDirective,
   ],
   exports: [
     StrapiTableComponent,

@@ -4,5 +4,6 @@ export interface ActionButtonModel {
   color: 'accent' | 'primary' | 'warn',
   tooltipKey?: string,
   conditionField?: string,
-  conditionValue?: any
+  conditionValue?: any,
+  conditionOperator?: '>' | '<' | '>=' | '<=' | '===' | '!=='
 }

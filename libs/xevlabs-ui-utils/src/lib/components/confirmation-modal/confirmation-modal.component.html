@@ -1,5 +1,5 @@
 <div fxLayout="column" fxLayoutAlign="space-between" class="confirmation-modal">
-  <h1 class="no-margin-top">{{'COMMON.WARNING' | transloco}}</h1>
+  <h1 class="no-margin-top">{{ title ?? 'COMMON.WARNING' | transloco}}</h1>
   <p class="large-text text-color-warn pre-wrap" >{{ content | transloco:{translationContent: translationContent ? translationContent : ''} }}</p>
   <div class="full-width" fxLayoutAlign="end center" fxLayoutGap=".5rem">
     <button mat-button (click)="close()">{{ 'CONFIRMATION.CANCEL' | transloco }}</button>

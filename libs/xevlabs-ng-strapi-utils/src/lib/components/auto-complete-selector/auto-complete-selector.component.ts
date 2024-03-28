@@ -141,7 +141,9 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                 untilDestroyed(this))
                 .subscribe((filteredItemList: CollectionResponse<Record<string, unknown>>) => {
                     this.filteredItemList = filteredItemList.data
-                    this.removeSelectedItemsFromFilteredItemList(this.items?.value)
+                    if (this.items?.value) {
+                        this.removeSelectedItemsFromFilteredItemList(this.items?.value);
+                    }
                     this.busy = false
                 })
         }
@@ -150,7 +152,11 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         })
         if (this.submitEvent$) {
             this.submitEvent$.pipe(untilDestroyed(this)).subscribe(() => {
-                this.searchQuery?.setValue(null)
+                this.searchQuery?.setValue(null);
+                if (this.items?.value && !this.items?.value.length) {
+                    this.items.setValue(null);
+                };
+                this.autoCompleteForm.markAllAsTouched();
             })
         }
     }
@@ -166,6 +172,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         if (this.chipNumber == 1) {
             this.onChange(form && form.items ? form.items[0] : null)
             this.selectedValueChange.next(form && form.items ? form.items[0] : null)
+            this.onTouched()
         }
     }
 
@@ -228,7 +235,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
                         this.items?.setValue(response.data.splice(0, this.chipNumber))
                     }
                     if (this.chipNumber == 1) {
-                        this.items?.setValue(response.data[0])
+                        this.items?.setValue([response.data[0]])
                     }
                     this.searchQuery?.setValue('')
                     if (this.items?.value.length >= this.chipNumber) {

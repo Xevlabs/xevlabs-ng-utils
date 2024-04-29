@@ -15,7 +15,7 @@ export class ErrorFormatterService {
 
   formatServerError(error: ServerErrorModel): Observable<HandledErrorModel> {
     let handledError$: Observable<HandledErrorModel> = of();
-    if (!error || !(error.details)) {
+    if (!error || !(error.details) || !(error.details.key)) {
       handledError$ = this.handleErrorWithNoDetails(error);
     }
     if (error && error.details && error.details.key) {
@@ -34,7 +34,9 @@ export class ErrorFormatterService {
 
   private handleErrorWithNoDetails(error: ServerErrorModel): Observable<HandledErrorModel> {
     if (error && error.message && error.message.length) {
-      return of({ code: error.status, translatedMessage: error.message });
+      return this.translateService.selectTranslate<string>(error.message).pipe(map((translatedMessage: string): HandledErrorModel => {
+        return {code: error.status, translatedMessage: translatedMessage};
+      }));
     } else {
       return this.handleErrorWithNoKeyAndMessage().pipe(take(1), map((errorMessage: string) => ({
           code: error.status,
@@ -43,7 +45,7 @@ export class ErrorFormatterService {
       ));
     }
   }
-
+  
   private handleErrorWithNoKeyAndMessage(): Observable<string> {
     return this.translateService.selectTranslate('DEFAULT_ERROR');
   }

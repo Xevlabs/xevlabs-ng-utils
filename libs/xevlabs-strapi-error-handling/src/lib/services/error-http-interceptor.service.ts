@@ -22,8 +22,8 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
         return result
       }),
       catchError((error: HttpErrorResponse) => {
-        if (error.status && error.error?.error) {
-          this.handleError(error.error.error)
+        if (error && error.error) {
+          this.handleError(error.error)
         }
         throw new Error(error.message)
       }),
@@ -32,10 +32,11 @@ export class ErrorHttpInterceptorService implements HttpInterceptor {
 
   private handleError(error: ServerErrorModel) {
     const error$ = this.errorFormatterService.formatServerError(error)
-    error$.pipe(take(1)).subscribe((error: HandledErrorModel) => this.toast.error(error.translatedMessage, {
+    error$.pipe(take(1)).subscribe((error: HandledErrorModel) => {
+      this.toast.error(error.translatedMessage, {
       id: 'httpError',
       dismissible: true,
-    }))
+    });})
     throw new Error(error.message)
   }
 }

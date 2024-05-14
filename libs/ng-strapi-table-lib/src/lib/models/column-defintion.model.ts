@@ -13,6 +13,7 @@ export interface ColumnDefinitionModel {
   tooltip?: boolean,
   customTooltip?: string,
   operators?: OperatorModel[],
-  attributes?: string[]
+  attributes?: string[],
+  dateFormat?: string,
 }
 

@@ -19,7 +19,7 @@ import {
     Validators,
 } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import {
     CollectionResponse,
@@ -67,9 +67,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
     @Input() customLocale?: string;
     @Input() matAutoCompleteClasses = '';
     @Input() required = true;
-    @Input() initList = true;
 
-    itemListSubscription!: Subscription;
     activeLang?: string;
     filteredItemList: Record<string, unknown>[] = [];
     busy!: boolean;
@@ -116,15 +114,12 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
 
     private initItemList() {
         this.busy = true;
-        this.itemListSubscription?.unsubscribe();
-        if (this.initList) {
-            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
-                .pipe(untilDestroyed(this))
-                .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
-                    this.filteredItemList = items.data;
-                    this.busy = false;
-                })
-        }
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+        .pipe(untilDestroyed(this))
+        .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
+            this.filteredItemList = items.data;
+            this.busy = false;
+        })
     }
 
     private handleSearchQueryChanges() {
@@ -132,7 +127,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
             .pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string' && (searchTerm?.length > 2 || this.initList)) {
+                    if (typeof searchTerm === 'string' && searchTerm?.length > 2) {
                         this.busy = true;
                         return this.search<Record<string, unknown>>(searchTerm);
                     }
@@ -147,11 +142,6 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
                     >
                 ) => {
                     this.filteredItemList = filteredItemList.data;
-                    if (this.item?.value) {
-                        this.removeSelectedItemFromFilteredItemList(
-                            this.item.value
-                        );
-                    }
                     this.busy = false;
                 }
             );
@@ -215,8 +205,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
                 type: StrapiFilterTypesEnum.EQUAL,
                 value: controls.id,
             };
-            this.itemListSubscription?.unsubscribe();
-            this.itemListSubscription = this.tableService
+            this.tableService
                 .find(
                     this.collectionName,
                     [filter],
@@ -260,12 +249,6 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
             0,
             -1,
             this.activeLang
-        );
-    }
-
-    removeSelectedItemFromFilteredItemList(selectedItem: { id: number }) {
-        this.filteredItemList = this.filteredItemList.filter(
-            (item) => item !== selectedItem
         );
     }
 

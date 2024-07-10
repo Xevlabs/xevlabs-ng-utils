@@ -19,7 +19,7 @@ import {
     Validators,
 } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import {
     CollectionResponse,
@@ -67,10 +67,8 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
     @Input() customLocale?: string;
     @Input() matAutoCompleteClasses = '';
     @Input() required = true;
-    @Input() initList = true;
     @Input() maxChipNumber?: number;
-
-    itemListSubscription!: Subscription;
+    
     activeLang?: string;
     itemList: Record<string, unknown>[] = [];
     filteredItemList: Record<string, unknown>[] = [];
@@ -118,8 +116,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
 
     private initItemList() {
         this.busy = true;
-        this.itemListSubscription?.unsubscribe();
-        this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
                 .pipe(untilDestroyed(this))
                 .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
                     this.itemList = items.data;
@@ -133,7 +130,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
             .pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string' && (searchTerm?.length > 2 || this.initList)) {
+                    if (typeof searchTerm === 'string' && searchTerm?.length > 2) {
                         this.busy = true;
                         return this.search<Record<string, unknown>>(searchTerm);
                     }
@@ -242,8 +239,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                 type: StrapiFilterTypesEnum.IN,
                 value: idList,
             };
-            this.itemListSubscription?.unsubscribe();
-            this.itemListSubscription = this.tableService
+            this.tableService
                 .find<Record<string, unknown>>(
                     this.collectionName,
                     [filter],
@@ -266,6 +262,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                     } else {
                         this.items?.setValue(items.data)
                     }
+                    this.removeSelectedItemsFromFilteredItemList(this.items?.value);
                     this.busy = false;
                 });
         }

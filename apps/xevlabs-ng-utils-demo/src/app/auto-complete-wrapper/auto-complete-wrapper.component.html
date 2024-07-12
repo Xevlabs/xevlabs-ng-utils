@@ -1,17 +1,17 @@
 <form [formGroup]="autoCompleteForm" class="auto-complete-container">
     <h2>Autocomplete component test</h2>
-    <xevlabs-ng-utils-auto-complete-selector formControlName="selectedItem" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'textField'"
-        [collectionName]="'tests'" [required]="false">
+    <xevlabs-ng-utils-auto-complete-selector formControlName="selectedItem" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'slug'"
+        [collectionName]="'pages'" [required]="false">
     </xevlabs-ng-utils-auto-complete-selector>
     <p>Selected object id : {{ selectedItem?.value?.id }}</p>
     <h2>Single Chip Autocomplete component</h2>
-    <xevlabs-ng-utils-single-chip-autocomplete-selector formControlName="selectedSingleItem" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'textField'"
-        [collectionName]="'tests'" [required]="false">
+    <xevlabs-ng-utils-single-chip-autocomplete-selector formControlName="selectedSingleItem" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'slug'"
+        [collectionName]="'pages'" [required]="false">
     </xevlabs-ng-utils-single-chip-autocomplete-selector>
     <p>Selected object id : {{ selectedSingleItem?.value?.id }}</p>
     <h2>Multiple Chips Autocomplete component test</h2>
-    <xevlabs-ng-utils-multiple-chips-autocomplete-selector formControlName="selectedMultipleItems" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'textField'"
-        [collectionName]="'tests'" [required]="false">
+    <xevlabs-ng-utils-multiple-chips-autocomplete-selector formControlName="selectedMultipleItems" [prefix]="'autocomplete'" [path]="path" [searchByAttribute]="'slug'"
+        [collectionName]="'pages'" [required]="false">
     </xevlabs-ng-utils-multiple-chips-autocomplete-selector>
     <p>Selected object ids : <span *ngFor="let item of selectedMultipleItems?.value">{{ item.id }} </span></p>
 </form>

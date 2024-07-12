@@ -13,11 +13,21 @@ export class AutoCompleteWrapperComponent {
 
     constructor(private formBuilder: FormBuilder) { 
         this.autoCompleteForm = this.formBuilder.group({
-            selectedItem: ''
+            selectedItem: '',
+            selectedSingleItem: '',
+            selectedMultipleItems: [],
         });
     }
     
     get selectedItem() {
         return this.autoCompleteForm.get('selectedItem')
+    }
+
+    get selectedSingleItem() {
+        return this.autoCompleteForm.get('selectedSingleItem')
+    }
+
+    get selectedMultipleItems() {
+        return this.autoCompleteForm.get('selectedMultipleItems')
     }
 }

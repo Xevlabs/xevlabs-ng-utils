@@ -31,14 +31,14 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }]
 
   constructor(private tableService: StrapiTableService, private cdr: ChangeDetectorRef, private fb: FormBuilder) {
-    this.dataSource = new StrapiDatasource<any>(tableService, 'tests')
+    this.dataSource = new StrapiDatasource<any>(tableService, 'pages')
   }
 
   addFilter() {
     this.filters = [{
       type: StrapiFilterTypesEnum.CONTAINS,
       value: this.filterControl.value,
-      attribute: 'textField'
+      attribute: 'slug'
     }]
     this.dataSource.updateFilters(this.filters)
   }
@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   getDraftsAndPublished() {
     this.isDraftObject = !this.isDraftObject
     this.dataSource.updateShowDrafts(this.isDraftObject)
-    this.tableService.find('tests', [], ['*'], this.isDraftObject,'ASC', 'key', 0, 10).pipe(untilDestroyed(this)).subscribe((res) => {
+    this.tableService.find('pages', [], ['*'], this.isDraftObject,'ASC', 'key', 0, 10).pipe(untilDestroyed(this)).subscribe((res) => {
       this.selectedObjectByLocale = res.data
     })
   }
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   getItemsByLocale(filters: FilterModel[] = []) {
-    this.tableService.find('tests', filters, ['*'], this.isDraftObject, 'ASC', 'key', 0, 10, undefined ,this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
+    this.tableService.find('pages', filters, ['*'], this.isDraftObject, 'ASC', 'key', 0, 10, undefined ,this.toggledLocale ? 'en' : 'fr').pipe(untilDestroyed(this)).subscribe((res) => {
       this.selectedObjectByLocale = res.data
     })
   }
@@ -84,17 +84,15 @@ export class AppComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked(): void {
     this.columnsDefinition = [
       {
-        key: 'textField',
+        key: 'slug',
         sortable: true,
-        translationKey: 'TEXT_FIELD',
-        displayedProp: 'textField',
+        translationKey: 'SLUG',
         type: ColumnTypesEnum.STRING
       },
       {
-        key: 'numberField',
+        key: 'mainColor',
         sortable: true,
-        translationKey: 'NUMBER_FIELD',
-        displayedProp: 'numberField',
+        translationKey: 'MAIN_COLOR',
         type: ColumnTypesEnum.NUMBER
       },
       {

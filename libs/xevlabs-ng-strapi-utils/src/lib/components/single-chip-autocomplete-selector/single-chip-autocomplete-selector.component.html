@@ -1,0 +1,51 @@
+<form [formGroup]="autoCompleteForm">
+    <mat-form-field class="chip-list full-width" appearance="outline">
+        <mat-label>{{ prefix }}</mat-label>
+        <mat-error *ngIf="item!.errors?.required">
+            {{ 'ERRORS.REQUIRED_FIELD' | transloco }}</mat-error
+        >
+        <mat-error *ngIf="searchQuery!.errors?.minlength">
+            {{ 'ERRORS.MIN_LENGTH' | transloco: { length: 3 } }}</mat-error
+        >
+        <mat-chip-grid #chipList>
+            <div>
+                <mat-chip-row
+                    *ngIf="item && item.value"
+                    selected
+                    [removable]="!disabled"
+                    color="primary"
+                    (removed)="remove()"
+                    class="capitalize"
+                >
+                    {{ item.value[searchByAttribute] }}
+                    <mat-icon *ngIf="!disabled" matChipRemove>cancel</mat-icon>
+                </mat-chip-row>
+            </div>
+            <input
+                #refInput
+                formControlName="searchQuery"
+                [matAutocomplete]="autocomplete"
+                [matChipInputFor]="chipList"
+                [disabled]="disabled"
+            />
+        </mat-chip-grid>
+    </mat-form-field>
+    <mat-autocomplete
+        #autocomplete="matAutocomplete"
+        (optionSelected)="add($event)"
+        [class]="matAutoCompleteClasses"
+    >
+        <mat-option disabled *ngIf="busy">
+            <mat-spinner diameter="35"></mat-spinner>
+        </mat-option>
+        <div *ngIf="!busy">
+            <mat-option
+                *ngFor="let option of filteredItemList"
+                [value]="option"
+            >
+                {{ option[searchByAttribute] }}
+            </mat-option>
+        </div>
+    </mat-autocomplete>
+</form>
+

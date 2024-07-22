@@ -72,7 +72,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
     activeLang?: string;
     itemList: Record<string, unknown>[] = [];
     filteredItemList: Record<string, unknown>[] = [];
-    busy!: boolean;
+    busy = true;
     autoCompleteForm!: FormGroup;
 
     onChange!: (_: { id: number }[] | null) => void;
@@ -108,21 +108,9 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                 .get('items')
                 ?.addValidators(Validators.required);
         }
-        this.initItemList();
         this.handleSearchQueryChanges();
         this.handleStatusChanges();
         this.handleSubmitEvent();
-    }
-
-    private initItemList() {
-        this.busy = true;
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
-                .pipe(untilDestroyed(this))
-                .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
-                    this.itemList = items.data;
-                    this.resetFilteredItemList();
-                    this.busy = false;
-        });
     }
 
     private handleSearchQueryChanges() {
@@ -130,7 +118,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
             .pipe(
                 debounceTime(250),
                 switchMap((searchTerm: string | undefined) => {
-                    if (typeof searchTerm === 'string' && searchTerm?.length > 2) {
+                    if (typeof searchTerm === 'string' && (searchTerm?.length === 0 || searchTerm?.length > 2)) {
                         this.busy = true;
                         return this.search<Record<string, unknown>>(searchTerm);
                     }
@@ -138,12 +126,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                 }),
                 untilDestroyed(this)
             )
-            .subscribe(
-                (
-                    filteredItemList: CollectionResponse<
-                        Record<string, unknown>
-                    >
-                ) => {
+            .subscribe((filteredItemList: CollectionResponse<Record<string, unknown>>) => {
                     this.filteredItemList = filteredItemList.data;
                     if (this.items?.value) {
                         this.removeSelectedItemsFromFilteredItemList(
@@ -182,8 +165,6 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                 newChipList = [event.option.value];
             }
             this.items?.setValue(newChipList);
-            this.searchQuery?.setValue(null);
-            this.refInput.nativeElement.value = '';
             this.updateInput(this.autoCompleteForm.value);
             this.handleSearchQueryState();
             this.onTouched();
@@ -195,7 +176,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
             const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id);
             this.items?.setValue(filteredList);
             this.resetFilteredItemList();
-            this.removeSelectedItemsFromFilteredItemList(this.items?.value)
+            this.removeSelectedItemsFromFilteredItemList(this.items?.value);
         } else {
             this.items?.setValue(null);
             this.resetFilteredItemList();
@@ -213,6 +194,8 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
         if (form) {
             this.removeSelectedItemsFromFilteredItemList(form.items)
         }
+        this.searchQuery?.setValue(null);
+        this.refInput.nativeElement.value = '';
         this.onTouched();
     }
 
@@ -251,17 +234,23 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                     -1,
                     this.activeLang
                 )
-                .pipe(untilDestroyed(this))
-                .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
-                    this.searchQuery?.setValue('');
-                    if (this.maxChipNumber) {
-                        this.items?.setValue(items.data.splice(0, this.maxChipNumber));
-                        if (this.items?.value.length >= this.maxChipNumber) {
-                            this.searchQuery?.disable()
+                .pipe(
+                    switchMap((items: CollectionResponse<Record<string, unknown>>) => {
+                        if (this.maxChipNumber) {
+                            this.items?.setValue(items.data.splice(0, this.maxChipNumber));
+                            if (this.items?.value.length >= this.maxChipNumber) {
+                                this.searchQuery?.disable()
+                            }
+                        } else {
+                            this.items?.setValue(items.data)
                         }
-                    } else {
-                        this.items?.setValue(items.data)
-                    }
+                        return this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+                    }),
+                    untilDestroyed(this)
+                )
+                .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
+                    this.itemList = items.data;
+                    this.resetFilteredItemList();
                     this.removeSelectedItemsFromFilteredItemList(this.items?.value);
                     this.busy = false;
                 });
@@ -292,10 +281,12 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
     }
 
     removeSelectedItemsFromFilteredItemList(items: { id: number }[]) {
-        this.filteredItemList = this.filteredItemList.filter(
-            (item) =>
-                !items.map((item) => item.id).includes(item['id'] as number)
-        );
+        if (this.filteredItemList && this.filteredItemList.length) {
+            this.filteredItemList = this.filteredItemList.filter(
+                (item) =>
+                    !items.map((item) => item.id).includes(item['id'] as number)
+            );
+        }
     }
 
     resetFilteredItemList() {

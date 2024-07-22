@@ -131,6 +131,9 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
                         this.busy = true;
                         return this.search<Record<string, unknown>>(searchTerm);
                     }
+                    if (typeof searchTerm === 'string' && searchTerm?.length === 0) {
+                        this.initItemList();
+                    }
                     return [];
                 }),
                 untilDestroyed(this)
@@ -180,6 +183,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
         this.item?.setValue(null);
         this.updateInput(null);
         this.handleSearchQueryState();
+        this.initItemList();
         this.onTouched();
     }
 
@@ -222,7 +226,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
                     if (response.data.length) {
                         this.item?.setValue(response.data[0]);
                         this.searchQuery?.setValue('');
-                        this.searchQuery?.disable()
+                        this.searchQuery?.disable();
                     }
                     this.busy = false;
                 });

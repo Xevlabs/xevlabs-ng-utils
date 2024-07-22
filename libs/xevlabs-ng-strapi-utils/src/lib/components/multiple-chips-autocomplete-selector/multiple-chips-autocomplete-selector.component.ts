@@ -165,8 +165,6 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                 newChipList = [event.option.value];
             }
             this.items?.setValue(newChipList);
-            this.searchQuery?.setValue(null);
-            this.refInput.nativeElement.value = '';
             this.updateInput(this.autoCompleteForm.value);
             this.handleSearchQueryState();
             this.onTouched();
@@ -177,22 +175,8 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
         if (this.items?.value.length) {
             const filteredList = this.items?.value.filter((item: { id: number }) => item.id !== id);
             this.items?.setValue(filteredList);
-            if (this.searchQuery?.value?.length > 2) {
-                this.busy = true
-                this.search<Record<string, unknown>>(this.searchQuery?.value).pipe(untilDestroyed(this)).subscribe((filteredItemList: CollectionResponse<Record<string, unknown>>) => {
-                    this.filteredItemList = filteredItemList.data;
-                    if (this.items?.value) {
-                        this.removeSelectedItemsFromFilteredItemList(
-                            this.items?.value
-                        );
-                    }
-                    this.busy = false;
-                }
-            );
-            } else {
-                this.resetFilteredItemList();
-                this.removeSelectedItemsFromFilteredItemList(this.items?.value);
-            }
+            this.resetFilteredItemList();
+            this.removeSelectedItemsFromFilteredItemList(this.items?.value);
         } else {
             this.items?.setValue(null);
             this.resetFilteredItemList();
@@ -210,6 +194,8 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
         if (form) {
             this.removeSelectedItemsFromFilteredItemList(form.items)
         }
+        this.searchQuery?.setValue(null);
+        this.refInput.nativeElement.value = '';
         this.onTouched();
     }
 

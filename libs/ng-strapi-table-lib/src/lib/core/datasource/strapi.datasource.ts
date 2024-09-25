@@ -133,8 +133,6 @@ export class StrapiDatasource<T> implements DataSource<T> {
     }
 
     getFilters(): FilterModel[] {
-        console.log(this.filters$.value);
-        
         return this.filters$.value;
     }
 }

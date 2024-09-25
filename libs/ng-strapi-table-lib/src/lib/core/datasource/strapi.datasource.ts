@@ -131,4 +131,10 @@ export class StrapiDatasource<T> implements DataSource<T> {
         this.paginator.firstPage()
         this.searchValue$.next(searchText)
     }
+
+    getFilters(): FilterModel[] {
+        console.log(this.filters$.value);
+        
+        return this.filters$.value;
+    }
 }

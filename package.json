@@ -10,6 +10,9 @@
     "test": "nx test"
   },
   "private": true,
+  "overrides": {
+    "tar": "^7.5.8"
+  },
   "dependencies": {
     "@angular/animations": "~15.1.0",
     "@angular/cdk": "^15.1.4",

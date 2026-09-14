@@ -36,7 +36,9 @@ export class StrapiTableService {
             populates.forEach(param => params = params.append('populate', param));
         }
         if (showDrafts) {
-            params = params.append('publicationState', 'preview')
+            params = this.options.strapiVersion === 5
+                ? params.append('status', 'draft')
+                : params.append('publicationState', 'preview')
         }
         if (search) {
             params = params.append('_q', search)
@@ -49,7 +51,11 @@ export class StrapiTableService {
         const query = this.parseStrapiFilters(filters, filterTypeCombination)
         return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
             const total = response.meta.pagination.total;
-            const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
+            // Strapi v5 entries are already flattened ({ id, documentId, ...fields });
+            // v4 entries carry the { id, attributes } wrapper that needs merging
+            const data = this.options.strapiVersion === 5
+                ? (response.data ?? []) as unknown as T[]
+                : response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
             return { data, total }
         }))
     }

@@ -6,9 +6,15 @@ import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
 import { CollectionResponse } from '../../../models'
 import { StrapiFindModel } from '../../../models/strapi-find.model'
-import { StrapiBaseResponseDataModel } from '../../../models/strapi-base-response-data.model'
+import { StrapiBaseResponseDataModel, StrapiV5ResponseDataModel } from '../../../models/strapi-base-response-data.model'
 import { map } from 'rxjs/operators'
 import { FilterTypeCombinationEnum } from '../../../enums'
+
+function isV5Entry<T>(
+    entry: StrapiBaseResponseDataModel<T> | StrapiV5ResponseDataModel<T>
+): entry is StrapiV5ResponseDataModel<T> {
+    return 'documentId' in entry
+}
 
 @Injectable({
     providedIn: null,
@@ -53,9 +59,9 @@ export class StrapiTableService {
             const total = response.meta.pagination.total;
             // Strapi v5 entries are already flattened ({ id, documentId, ...fields });
             // v4 entries carry the { id, attributes } wrapper that needs merging
-            const data = this.options.strapiVersion === 5
-                ? (response.data ?? []) as unknown as T[]
-                : response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
+            const data: T[] = (response.data ?? []).map(entry =>
+                isV5Entry<T>(entry) ? entry : { id: entry.id, ...entry.attributes }
+            )
             return { data, total }
         }))
     }

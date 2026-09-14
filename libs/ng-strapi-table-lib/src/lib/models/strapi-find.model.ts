@@ -1,6 +1,6 @@
-import { StrapiBaseResponseDataModel } from "./strapi-base-response-data.model";
+import { StrapiBaseResponseDataModel, StrapiV5ResponseDataModel } from "./strapi-base-response-data.model";
 import { StrapiBaseResponseModel } from "./strapi-base-response.model";
 
 export interface StrapiFindModel<T> extends StrapiBaseResponseModel {
-    data: StrapiBaseResponseDataModel<T>[]
+    data: (StrapiBaseResponseDataModel<T> | StrapiV5ResponseDataModel<T>)[]
 }

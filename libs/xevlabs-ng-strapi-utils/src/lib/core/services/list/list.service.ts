@@ -10,6 +10,6 @@ export class ListService {
     constructor(private tableService: StrapiTableService) { }
 
     loadPage<T = any>(pageIndex = 0, collectionPath: string, filters: FilterModel[], populate?: string | string [], showDrafts?: boolean): Observable<CollectionResponse<T>> {
-        return this.tableService.find<T>(collectionPath, filters, populate, showDrafts,'desc', 'created_at', pageIndex, 5)
+        return this.tableService.find<T>(collectionPath, filters, populate, showDrafts,'desc', 'createdAt', pageIndex, 5)
     }
 }

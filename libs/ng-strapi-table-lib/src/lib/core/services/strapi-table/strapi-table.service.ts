@@ -5,8 +5,7 @@ import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
 import { CollectionResponse } from '../../../models'
-import { StrapiFindModel } from '../../../models/strapi-find.model'
-import { StrapiBaseResponseDataModel } from '../../../models/strapi-base-response-data.model'
+import { StrapiDocumentModel, StrapiFindResponseModel } from '../../../models/strapi-document.model'
 import { map } from 'rxjs/operators'
 import { FilterTypeCombinationEnum } from '../../../enums'
 
@@ -25,8 +24,8 @@ export class StrapiTableService {
         this.baseUrl = options.baseUrl
     }
 
-	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
-            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<T>> {
+	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'createdAt',
+            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<StrapiDocumentModel<T>>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -36,7 +35,7 @@ export class StrapiTableService {
             populates.forEach(param => params = params.append('populate', param));
         }
         if (showDrafts) {
-            params = params.append('publicationState', 'preview')
+            params = params.append('status', 'draft')
         }
         if (search) {
             params = params.append('_q', search)
@@ -47,9 +46,9 @@ export class StrapiTableService {
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
         const query = this.parseStrapiFilters(filters)
-        return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
+        return this.http.get<StrapiFindResponseModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindResponseModel<T>) => {
             const total = response.meta.pagination.total;
-            const data = response.data.length ? response.data.map((item: StrapiBaseResponseDataModel<T>) => { return { id: item.id, ...item.attributes } }) : []
+            const data = response.data ?? []
             return { data, total }
         }))
     }

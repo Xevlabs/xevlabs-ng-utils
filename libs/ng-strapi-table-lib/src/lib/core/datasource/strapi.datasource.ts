@@ -57,7 +57,7 @@ export class StrapiDatasource<T> implements DataSource<T> {
     }
 
     loadEntities (filters: FilterModel[] = [], populate?: string | string[], showDrafts?: boolean,
-                  sortDirection = 'asc', sortField = 'id', pageIndex = 0, pageSize = 3, search?: string, locale?: string) {
+                  sortDirection = 'asc', sortField = 'createdAt', pageIndex = 0, pageSize = 3, search?: string, locale?: string) {
         this.loadingSubject.next(true)
         this.tableService.find<T>(this.collectionName, filters, populate, showDrafts, sortDirection, sortField, pageIndex, pageSize, search, locale).pipe(
                 take(1),

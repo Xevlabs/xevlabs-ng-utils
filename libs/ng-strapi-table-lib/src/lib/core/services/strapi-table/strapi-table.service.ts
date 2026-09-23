@@ -5,9 +5,16 @@ import { FilterModel } from '../../../models/filter.model'
 import { TableLibOptionsModel } from '../../../models/table-lib-options.model'
 import * as qs from 'qs'
 import { CollectionResponse } from '../../../models'
-import { StrapiDocumentModel, StrapiFindResponseModel } from '../../../models/strapi-document.model'
+import { StrapiFindModel } from '../../../models/strapi-find.model'
+import { StrapiBaseResponseDataModel, StrapiV5ResponseDataModel } from '../../../models/strapi-base-response-data.model'
 import { map } from 'rxjs/operators'
 import { FilterTypeCombinationEnum } from '../../../enums'
+
+function isV5Entry<T>(
+    entry: StrapiBaseResponseDataModel<T> | StrapiV5ResponseDataModel<T>
+): entry is StrapiV5ResponseDataModel<T> {
+    return 'documentId' in entry
+}
 
 @Injectable({
     providedIn: null,
@@ -24,8 +31,8 @@ export class StrapiTableService {
         this.baseUrl = options.baseUrl
     }
 
-	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'createdAt',
-            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<StrapiDocumentModel<T>>> {
+	find<T>(collectionName: string, filters: FilterModel[], populate?: string | string[],showDrafts = false, sortOrder = 'asc', sortField = 'id',
+            pageNumber = 0, pageSize = 25, search?: string, locale?: string): Observable<CollectionResponse<T>> {
         let params = new HttpParams()
         if (locale) {
             params = params.append('locale', locale)
@@ -35,7 +42,9 @@ export class StrapiTableService {
             populates.forEach(param => params = params.append('populate', param));
         }
         if (showDrafts) {
-            params = params.append('status', 'draft')
+            params = this.options.strapiVersion === 5
+                ? params.append('status', 'draft')
+                : params.append('publicationState', 'preview')
         }
         if (search) {
             params = params.append('_q', search)
@@ -46,9 +55,13 @@ export class StrapiTableService {
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
         const query = this.parseStrapiFilters(filters)
-        return this.http.get<StrapiFindResponseModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindResponseModel<T>) => {
+        return this.http.get<StrapiFindModel<T>>(`${this.baseUrl}/${collectionName}?${query}`, { params }).pipe(map((response: StrapiFindModel<T>) => {
             const total = response.meta.pagination.total;
-            const data = response.data ?? []
+            // Strapi v5 entries are already flattened ({ id, documentId, ...fields });
+            // v4 entries carry the { id, attributes } wrapper that needs merging
+            const data: T[] = (response.data ?? []).map(entry =>
+                isV5Entry<T>(entry) ? entry : { id: entry.id, ...entry.attributes }
+            )
             return { data, total }
         }))
     }

@@ -5,4 +5,4 @@ export * from './column-defintion.model';
 export * from './action-button.model'
 export * from './operator.model'
 export * from './collection-response.model'
-export * from './strapi-document.model'
+export * from './table-lib-options.model'

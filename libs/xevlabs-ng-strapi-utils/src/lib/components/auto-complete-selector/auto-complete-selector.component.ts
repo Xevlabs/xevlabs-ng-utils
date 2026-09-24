@@ -121,7 +121,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
         }
         this.itemListSubscription?.unsubscribe()
         if (this.initList) {
-            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, undefined, this.activeLang)
                 .pipe(untilDestroyed(this))
                 .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
                     this.filteredItemList = items.data
@@ -229,7 +229,7 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             const idList: number[] = arrayedControls.map((control: {id: number} | number) => typeof control == "number"  ? control : control.id);
             const filter: FilterModel = { attribute: 'id', type: StrapiFilterTypesEnum.IN, value: idList }
             this.itemListSubscription?.unsubscribe()
-            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+            this.itemListSubscription = this.tableService.find(this.collectionName, [filter], this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, undefined, this.activeLang)
                 .pipe(untilDestroyed(this)).subscribe((response) => {
                     if (this.chipNumber > 1) {
                         this.items?.setValue(response.data.splice(0, this.chipNumber))
@@ -256,6 +256,6 @@ export class AutoCompleteSelectorComponent implements OnInit, ControlValueAccess
             type: StrapiFilterTypesEnum.CONTAINS,
             value: searchQuery,
         }
-        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+        return this.tableService.find<T>(this.collectionName, [...this.filters, filter], this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, undefined, this.activeLang)
     }
 }

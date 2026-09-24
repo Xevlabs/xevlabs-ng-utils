@@ -232,6 +232,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                     'id',
                     0,
                     -1,
+                    undefined,
                     this.activeLang
                 )
                 .pipe(
@@ -244,7 +245,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
                         } else {
                             this.items?.setValue(items.data)
                         }
-                        return this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'id', 0, -1, this.activeLang)
+                        return this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, undefined, this.activeLang)
                     }),
                     untilDestroyed(this)
                 )
@@ -276,6 +277,7 @@ export class MultipleChipsAutocompleteSelectorComponent implements OnInit, Contr
             'id',
             0,
             -1,
+            undefined,
             this.activeLang
         );
     }

@@ -10,6 +10,11 @@ import { StrapiBaseResponseDataModel, StrapiV5ResponseDataModel } from '../../..
 import { map } from 'rxjs/operators'
 import { FilterTypeCombinationEnum } from '../../../enums'
 
+// Strapi v5 no longer treats pagination[limit]=-1 as "no limit" (it returns a single
+// row), so pageSize -1 is translated to this explicit high limit instead. Strapi
+// clamps it to the API's configured maxLimit when one is set.
+const FETCH_ALL_LIMIT = 1000
+
 function isV5Entry<T>(
     entry: StrapiBaseResponseDataModel<T> | StrapiV5ResponseDataModel<T>
 ): entry is StrapiV5ResponseDataModel<T> {
@@ -49,9 +54,11 @@ export class StrapiTableService {
         if (search) {
             params = params.append('_q', search)
         }
+        const fetchAll = pageSize === -1
+        const limit = fetchAll ? FETCH_ALL_LIMIT : pageSize
         params = params.appendAll({
-            'pagination[limit]': pageSize.toString(),
-            'pagination[start]': (pageSize * pageNumber).toString(),
+            'pagination[limit]': limit.toString(),
+            'pagination[start]': (fetchAll ? 0 : pageSize * pageNumber).toString(),
             sort: `${sortField}:${sortOrder.toUpperCase()}`,
         })
         const query = this.parseStrapiFilters(filters)

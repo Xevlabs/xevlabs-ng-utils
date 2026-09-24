@@ -114,7 +114,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
 
     private initItemList() {
         this.busy = true;
-        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, this.activeLang)
+        this.tableService.find<Record<string, unknown>>(this.collectionName, this.filters, this.populate, this.showDrafts,'asc', 'createdAt', 0, -1, undefined, this.activeLang)
         .pipe(untilDestroyed(this))
         .subscribe((items: CollectionResponse<Record<string, unknown>>) => {
             this.filteredItemList = items.data;
@@ -219,6 +219,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
                     'id',
                     0,
                     -1,
+                    undefined,
                     this.activeLang
                 )
                 .pipe(untilDestroyed(this))
@@ -252,6 +253,7 @@ export class SingleChipAutocompleteSelectorComponent implements OnInit, ControlV
             'id',
             0,
             -1,
+            undefined,
             this.activeLang
         );
     }
